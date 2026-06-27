@@ -24,7 +24,7 @@
 
   const sphere = new THREE.Mesh(
     new THREE.SphereGeometry(0.92, 64, 64),
-    new THREE.MeshBasicMaterial({ color: 0x020202, side: THREE.DoubleSide })
+    new THREE.MeshBasicMaterial({ color: 0x030303, side: THREE.DoubleSide })
   );
   scene.add(sphere);
 

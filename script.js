@@ -745,8 +745,14 @@ const loaderDone = new Promise((resolve) => {
     },
   }, 2.8);
 
-  // Hand off at the exact final circle instead of cross-fading two circles.
-  tl.set(loader, { autoAlpha: 0, pointerEvents: 'none' }, 4.22);
+  // Hand off at the exact final circle. A tiny fade avoids a one-frame
+  // compositor snap at the clipped edge while the real sphere takes over.
+  tl.to(loader, {
+    autoAlpha: 0,
+    duration: 0.14,
+    ease: 'power2.out',
+    pointerEvents: 'none',
+  }, 4.18);
 
 });
 

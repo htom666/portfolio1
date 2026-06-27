@@ -13,6 +13,7 @@ html, body { margin: 0; padding: 0; }
   --ink:      oklch(0.095 0.010 255);     /* near-black, editorial */
   --line:     oklch(0.095 0.010 255 / 0.09);
   --accent:   oklch(0.095 0.010 255);
+  --hero-core: rgb(3, 3, 3);
 
   --serif: 'Fraunces', 'Instrument Serif', 'Times New Roman', serif;
   --sans:  'Inter', system-ui, -apple-system, Segoe UI, sans-serif;
@@ -87,9 +88,9 @@ body.is-loading .cursor {
 .loader {
   position: fixed; inset: 0;
   z-index: 1000;
-  /* deep near-black, close to the hero sphere so the field can neck down into
-     the circle seamlessly */
-  background: oklch(0.045 0.004 265);
+  /* Same tone as the hero sphere, so the shrinking loader becomes the circle
+     instead of flashing into a different black. */
+  background: var(--hero-core);
   overflow: hidden;
   pointer-events: auto;
   will-change: clip-path, opacity;
@@ -847,6 +848,11 @@ body.is-loading:not(.hero-intro-started) .panel--hero .hero-name--mask {
   isolation: isolate;
   --hero-lens-softness: 1;
   --hero-edge-fade: 0.35;
+  --hero-lens-detail-opacity: 0;
+  background: var(--hero-core);
+}
+
+body.hero-intro-started .hero-sphere-wrap {
   --hero-lens-detail-opacity: 1;
 }
 #hero-sphere-canvas {
@@ -870,7 +876,7 @@ body.is-loading:not(.hero-intro-started) .panel--hero .hero-name--mask {
   pointer-events: none;
   transform: translateZ(0);
   backface-visibility: hidden;
-  background: rgb(3, 3, 3);
+  background: var(--hero-core);
   border: none;
   outline: none;
   box-shadow: none;
@@ -890,12 +896,13 @@ body.is-loading:not(.hero-intro-started) .panel--hero .hero-name--mask {
       rgba(21, 21, 21, 0.72) 0%,
       rgba(8, 8, 8, 0.90) 52%,
       rgba(2, 2, 2, 1) 100%),
-    rgb(3, 3, 3);
+    var(--hero-core);
   filter: blur(calc(10px * var(--hero-lens-softness))) grayscale(1);
   -webkit-mask-image: radial-gradient(circle, black 0%, black 68%, transparent 94%);
   mask-image: radial-gradient(circle, black 0%, black 68%, transparent 94%);
   box-shadow: none;
   opacity: var(--hero-lens-detail-opacity);
+  transition: opacity 0.9s cubic-bezier(.16, 1, .3, 1);
 }
 
 .hero-bh-lens::after {
