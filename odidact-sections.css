@@ -1,0 +1,965 @@
+/* =========================================================
+   ODIDACT — rebuilt sections (clean, fluid, no !important)
+   Namespaced so project-level rules cannot bleed into these sections.
+   One spacing scale, one card style, one source of truth.
+   ========================================================= */
+.odidact-page {
+  --c-ink:    #0f1336;
+  --c-head:   #071b86;
+  --c-ink-2:  #5a628c;
+  --c-ink-3:  #8a93bd;
+  --c-blue:   #0d12f8;
+  --c-blue-2: #3313ff;
+  --c-pink:   #ff71b1;
+  --c-green:  #12b76a;
+  --c-line:   #e4e8f5;
+  --c-soft:   #eef1ff;
+  --c-card:   #ffffff;
+
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+
+  --sp-1: 6px;
+  --sp-2: 10px;
+  --sp-3: 16px;
+  --sp-4: 22px;
+  --sp-5: 32px;
+  --sp-6: 48px;
+  --sp-7: 72px;
+
+  --shadow-card: 0 14px 36px -22px rgba(13, 18, 120, 0.30);
+  --shadow-soft: 0 8px 24px -16px rgba(13, 18, 120, 0.22);
+}
+
+/* shared chapter eyebrow */
+.odidact-page .sec-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-blue);
+}
+.odidact-page .sec-eyebrow i {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--c-pink);
+  box-shadow: 0 0 0 4px rgba(255, 113, 177, 0.16);
+}
+
+/* =========================================================
+   03 · USER JOURNEY  (.jr)
+   ========================================================= */
+.odidact-page .jr {
+  display: flex;
+  align-items: center;
+  padding-top: 64px;          /* clear the fixed nav */
+}
+.odidact-page .jr-inner {
+  width: 1820px;            /* wider than the viewport — uses the horizontal scroll */
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 2.4vh, 34px);
+}
+
+/* head: title left, lede + result right */
+.odidact-page .jr-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: var(--sp-5);
+  align-items: end;
+}
+.odidact-page .jr-title {
+  margin: var(--sp-2) 0 0;
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  font-size: clamp(26px, 2.5vw, 40px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: var(--c-head);
+}
+.odidact-page .jr-title em { font-style: normal; color: var(--c-pink); }
+.odidact-page .jr-lede {
+  margin: 0 0 var(--sp-4);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--c-ink-2);
+}
+.odidact-page .jr-result {
+  border-left: 2px solid var(--c-line);
+  padding-left: var(--sp-3);
+}
+.odidact-page .jr-result span {
+  display: block;
+  margin-bottom: var(--sp-1);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-blue);
+}
+.odidact-page .jr-result p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--c-ink-2);
+}
+
+/* flow rail: 5 steps with a connecting line */
+.odidact-page .jr-flow { position: relative; }
+.odidact-page .jr-line {
+  position: absolute;
+  left: 0; right: 0;
+  top: 24px;            /* aligns with circle centers */
+  height: 56px;
+  width: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+.odidact-page .jr-steps {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--sp-4);
+}
+.odidact-page .jr-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.odidact-page .jr-step-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  margin-bottom: var(--sp-2);
+}
+.odidact-page .jr-step-circle {
+  width: 66px; height: 66px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--c-card);
+  box-shadow: 0 12px 28px -12px rgba(13, 18, 120, 0.18);
+}
+.odidact-page .jr-step-circle svg { width: 27px; height: 27px; }
+.odidact-page .jr-step-num {
+  width: 26px; height: 26px;
+  display: grid; place-items: center;
+  margin: var(--sp-2) 0 var(--sp-2);
+  border-radius: 50%;
+  font-size: 12px; font-weight: 800;
+  color: var(--c-ink);
+  background: var(--c-soft);
+}
+.odidact-page .jr-step h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--c-head);
+}
+.odidact-page .jr-step p {
+  margin: 0;
+  max-width: 17ch;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--c-ink-2);
+}
+/* step colours */
+.odidact-page .jr-step.is-blue  .jr-step-dot { background: var(--c-blue); }
+.odidact-page .jr-step.is-pink  .jr-step-dot { background: var(--c-pink); }
+.odidact-page .jr-step.is-green .jr-step-dot { background: var(--c-green); }
+.odidact-page .jr-step.is-blue  .jr-step-circle svg { color: var(--c-blue); }
+.odidact-page .jr-step.is-pink  .jr-step-circle svg { color: var(--c-pink); }
+.odidact-page .jr-step.is-green .jr-step-circle svg { color: var(--c-green); }
+.odidact-page .jr-step.is-blue  .jr-step-num { color: var(--c-blue); background: rgba(13,18,248,0.10); }
+.odidact-page .jr-step.is-pink  .jr-step-num { color: var(--c-pink); background: rgba(255,113,177,0.12); }
+.odidact-page .jr-step.is-green .jr-step-num { color: var(--c-green); background: rgba(18,183,106,0.12); }
+
+/* cards row: one card per step, equal */
+.odidact-page .jr-cards {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);   /* one card under each step */
+  gap: var(--sp-4);
+  align-items: stretch;                     /* equal height, content fills */
+}
+.odidact-page .jr-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;   /* content fills the equal height */
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-3);
+  background: var(--c-card);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+}
+
+/* card atoms (shared) */
+.odidact-page .jr-field {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--c-line);
+  border-radius: 999px;
+  font-size: 12.5px;
+  color: var(--c-ink-3);
+}
+.odidact-page .jr-field svg { width: 15px; height: 15px; color: var(--c-blue); }
+.odidact-page .jr-label {
+  font-size: 11px; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--c-ink-3);
+}
+.odidact-page .jr-chips { display: flex; flex-wrap: wrap; gap: var(--sp-1); }
+.odidact-page .jr-chip {
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--c-soft);
+  font-size: 11.5px; font-weight: 600; color: var(--c-blue);
+}
+.odidact-page .jr-avatar {
+  width: 38px; height: 38px; flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--c-soft) center / cover no-repeat;
+}
+.odidact-page .jr-avatar.is-f { background-image: url("assets/odidact/avatar-female.svg"); }
+.odidact-page .jr-avatar.is-m { background-image: url("assets/odidact/avatar-male.svg"); }
+.odidact-page .jr-row { display: flex; align-items: center; gap: var(--sp-2); }
+.odidact-page .jr-name { font-size: 13px; font-weight: 700; color: var(--c-ink); }
+.odidact-page .jr-sub  { font-size: 11.5px; color: var(--c-ink-3); }
+.odidact-page .jr-star { color: #f5b740; }
+.odidact-page .jr-rate { font-size: 12px; font-weight: 700; color: var(--c-ink); }
+.odidact-page .jr-muted { color: var(--c-ink-3); font-weight: 500; }
+
+/* compare */
+.odidact-page .jr-compare { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); }
+.odidact-page .jr-compare .jr-mini-profile {
+  padding: var(--sp-3);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-md);
+}
+.odidact-page .jr-compare .jr-mini-profile.is-top {
+  border-color: rgba(13,18,248,0.35);
+  background: rgba(13,18,248,0.03);
+}
+.odidact-page .jr-stat { margin-top: var(--sp-2); font-size: 11.5px; color: var(--c-ink-2); line-height: 1.5; }
+
+/* choose */
+.odidact-page .jr-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 11px;
+  border: 1px solid var(--c-line);
+  border-radius: 999px;
+  font-size: 11.5px; font-weight: 600; color: var(--c-ink-2);
+}
+.odidact-page .jr-pill svg { width: 14px; height: 14px; color: var(--c-blue); }
+.odidact-page .jr-check {
+  width: 24px; height: 24px; margin-left: auto;
+  display: grid; place-items: center;
+  border-radius: 50%; background: var(--c-green); color: #fff;
+}
+.odidact-page .jr-check svg { width: 14px; height: 14px; }
+.odidact-page .jr-ok {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 700; color: var(--c-green);
+}
+.odidact-page .jr-ok svg { width: 15px; height: 15px; }
+.odidact-page .jr-pills { display: flex; gap: var(--sp-2); }
+
+/* connect */
+.odidact-page .jr-video {
+  aspect-ratio: 16 / 9;
+  border-radius: var(--r-md);
+  background: #0f1336 url("assets/odidact/journey-videocall.png") 50% 38% / cover no-repeat;
+  position: relative;
+  overflow: hidden;
+}
+.odidact-page .jr-controls { display: flex; justify-content: center; gap: var(--sp-2); }
+.odidact-page .jr-ctrl {
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border-radius: 50%; background: var(--c-soft); color: var(--c-blue);
+}
+.odidact-page .jr-ctrl svg { width: 15px; height: 15px; }
+.odidact-page .jr-ctrl.is-end { background: var(--c-pink); color: #fff; }
+
+/* return */
+.odidact-page .jr-progress {
+  height: 8px; border-radius: 999px;
+  background: var(--c-soft);
+  overflow: hidden;
+}
+.odidact-page .jr-progress > i {
+  display: block; height: 100%; width: 70%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--c-blue), var(--c-pink));
+}
+.odidact-page .jr-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 9px 14px;
+  border-radius: var(--r-sm);
+  background: var(--c-blue); color: #fff;
+  font-size: 12.5px; font-weight: 700;
+}
+.odidact-page .jr-btn svg { width: 15px; height: 15px; }
+
+/* =========================================================
+   RESPONSIVE — journey stacks cleanly
+   ========================================================= */
+@media (max-width: 1100px) and (min-width: 901px) {
+  .odidact-page .jr-inner { width: 86vw; }
+}
+@media (max-width: 900px) {
+  .odidact-page .jr { display: block; }
+  .odidact-page .jr-inner { width: 100%; gap: var(--sp-5); }
+  .odidact-page .jr-head { grid-template-columns: 1fr; gap: var(--sp-4); align-items: start; }
+  .odidact-page .jr-line { display: none; }
+  .odidact-page .jr-steps { grid-template-columns: 1fr; gap: var(--sp-4); }
+  .odidact-page .jr-step {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: var(--sp-3);
+  }
+  .odidact-page .jr-step-dot { display: none; }
+  .odidact-page .jr-step-circle { width: 56px; height: 56px; flex: 0 0 auto; }
+  .odidact-page .jr-step-circle svg { width: 24px; height: 24px; }
+  .odidact-page .jr-step-num { display: none; }
+  .odidact-page .jr-step h3 { margin-bottom: 4px; font-size: 18px; }
+  .odidact-page .jr-step p { max-width: none; }
+  .odidact-page .jr-cards {
+    grid-template-columns: 1fr;
+    gap: var(--sp-4);
+  }
+}
+
+/* =========================================================
+   04 · SOLUTION SYSTEM  (.sol)
+   ========================================================= */
+.odidact-page .sol {
+  display: flex;
+  align-items: center;
+  padding-top: 64px;
+}
+.odidact-page .sol-inner {
+  width: min(1320px, 88vw);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 2.4vh, 30px);
+}
+.odidact-page .sol-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: var(--sp-6);
+  align-items: end;
+}
+.odidact-page .sol-title {
+  margin: var(--sp-4) 0 0;            /* clear gap below the eyebrow */
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  font-size: clamp(26px, 2.5vw, 40px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: var(--c-head);
+}
+.odidact-page .sol-title em { font-style: normal; color: var(--c-pink); }
+.odidact-page .sol-intro {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--c-ink-2);
+}
+
+.odidact-page .sol-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+}
+.odidact-page .sol-card {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+  background: var(--c-card);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+}
+.odidact-page .sol-info { display: flex; flex-direction: column; }
+.odidact-page .sol-ic {
+  width: 42px; height: 42px;
+  display: grid; place-items: center;
+  border-radius: var(--r-sm);
+  background: var(--c-soft); color: var(--c-blue);
+  margin-bottom: var(--sp-2);
+}
+.odidact-page .sol-ic svg { width: 21px; height: 21px; }
+.odidact-page .sol-num {
+  font-size: 12px; font-weight: 800; letter-spacing: 0.1em;
+  color: var(--c-ink-3);
+}
+.odidact-page .sol-name {
+  margin: 2px 0 var(--sp-2);
+  font-size: 19px; font-weight: 800; color: var(--c-head);
+}
+.odidact-page .sol-bullets { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.odidact-page .sol-bullets li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 12.5px; line-height: 1.4; color: var(--c-ink-2);
+}
+.odidact-page .sol-bullets li::before {
+  content: ""; position: absolute; left: 0; top: 7px;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--c-blue);
+}
+
+/* mock shell */
+.odidact-page .sol-mock {
+  display: flex; flex-direction: column; gap: var(--sp-2);
+  padding: var(--sp-3);
+  background: #fafbff;
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-md);
+  min-width: 0;
+}
+.odidact-page .sol-mock .m-field {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 11px; border-radius: 999px; background: #fff;
+  border: 1px solid var(--c-line);
+  font-size: 11.5px; color: var(--c-ink-3);
+}
+.odidact-page .sol-mock .m-field svg { width: 14px; height: 14px; color: var(--c-blue); }
+.odidact-page .m-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.odidact-page .m-chip { padding: 4px 9px; border-radius: 999px; background: var(--c-soft); font-size: 10.5px; font-weight: 600; color: var(--c-blue); }
+.odidact-page .m-row { display: flex; align-items: center; gap: var(--sp-2); }
+.odidact-page .m-av { width: 30px; height: 30px; flex: 0 0 auto; border-radius: 50%; background: var(--c-soft) center/cover no-repeat; }
+.odidact-page .m-av.is-f { background-image: url("assets/odidact/avatar-female.svg"); }
+.odidact-page .m-av.is-m { background-image: url("assets/odidact/avatar-male.svg"); }
+.odidact-page .m-name { font-size: 12px; font-weight: 700; color: var(--c-ink); }
+.odidact-page .m-sub { font-size: 10.5px; color: var(--c-ink-3); }
+.odidact-page .m-rate { margin-left: auto; font-size: 11px; font-weight: 700; color: var(--c-ink); }
+.odidact-page .m-star { color: #f5b740; }
+.odidact-page .m-btn {
+  margin-top: 2px; padding: 8px; border-radius: var(--r-sm);
+  background: var(--c-blue); color: #fff; text-align: center;
+  font-size: 11.5px; font-weight: 700;
+}
+.odidact-page .m-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-2); }
+.odidact-page .m-stat { text-align: center; padding: var(--sp-2) 4px; border-radius: var(--r-sm); background: #fff; border: 1px solid var(--c-line); }
+.odidact-page .m-stat b { display: block; font-size: 15px; color: var(--c-head); }
+.odidact-page .m-stat span { font-size: 9.5px; color: var(--c-ink-3); }
+.odidact-page .m-verified { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 999px; background: rgba(18,183,106,0.1); color: var(--c-green); font-size: 10.5px; font-weight: 700; }
+.odidact-page .m-verified svg { width: 12px; height: 12px; }
+.odidact-page .m-quote { padding: 2px 0 2px 4px; background: none; border: 0; font-style: italic; font-size: 12px; line-height: 1.5; color: var(--c-ink-2); }
+.odidact-page .m-tabs { display: flex; gap: 5px; }
+.odidact-page .m-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 7px 2px; border-radius: var(--r-sm); background: #fff; border: 1px solid var(--c-line); font-size: 9.5px; color: var(--c-ink-3); }
+.odidact-page .m-tab svg { width: 14px; height: 14px; }
+.odidact-page .m-tab.is-on { background: var(--c-blue); border-color: var(--c-blue); color: #fff; }
+.odidact-page .m-times { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.odidact-page .m-time { padding: 6px; border-radius: var(--r-sm); background: #fff; border: 1px solid var(--c-line); text-align: center; font-size: 10.5px; color: var(--c-ink-2); }
+.odidact-page .m-time.is-on { background: rgba(13,18,248,0.08); border-color: rgba(13,18,248,0.4); color: var(--c-blue); font-weight: 700; }
+.odidact-page .m-money { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); }
+.odidact-page .m-mbox { padding: var(--sp-2); border-radius: var(--r-sm); background: #fff; border: 1px solid var(--c-line); }
+.odidact-page .m-mbox.is-green { background: rgba(18,183,106,0.08); border-color: rgba(18,183,106,0.25); }
+.odidact-page .m-mbox b { display: block; font-size: 15px; color: var(--c-head); }
+.odidact-page .m-mbox.is-green b { color: var(--c-green); }
+.odidact-page .m-mbox span { font-size: 10px; color: var(--c-ink-3); }
+
+/* summary strip */
+.odidact-page .sol-summary {
+  display: flex; align-items: center; gap: var(--sp-5);
+  padding: var(--sp-3) var(--sp-5);
+  background: var(--c-card);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-soft);
+}
+.odidact-page .sol-summary p {
+  margin: 0; flex: 1;
+  font-size: 16px; font-weight: 700; line-height: 1.4; color: var(--c-head);
+}
+.odidact-page .sol-summary p em { font-style: normal; color: var(--c-blue); }
+.odidact-page .sol-summary p b { color: var(--c-pink); font-weight: 700; }
+.odidact-page .sol-flow { display: flex; align-items: center; gap: var(--sp-2); }
+.odidact-page .sol-flow span {
+  width: 38px; height: 38px; display: grid; place-items: center;
+  border-radius: 50%; background: var(--c-soft); color: var(--c-blue);
+}
+.odidact-page .sol-flow span svg { width: 17px; height: 17px; }
+.odidact-page .sol-flow i { width: 14px; height: 1.5px; background: var(--c-line); }
+
+/* responsive */
+@media (max-width: 1100px) and (min-width: 901px) {
+  .odidact-page .sol-inner { width: 92vw; }
+}
+@media (max-width: 900px) {
+  .odidact-page .sol { display: block; padding-top: 0; }
+  .odidact-page .sol-inner { width: 100%; gap: var(--sp-5); }
+  .odidact-page .sol-head { grid-template-columns: 1fr; gap: var(--sp-3); align-items: start; }
+  .odidact-page .sol-grid { grid-template-columns: 1fr; gap: var(--sp-4); }
+  .odidact-page .sol-card { grid-template-columns: 1fr; gap: var(--sp-3); }
+  .odidact-page .sol-summary { flex-direction: column; align-items: flex-start; gap: var(--sp-3); }
+  .odidact-page .sol-flow { flex-wrap: wrap; }
+}
+
+/* let the journey panel grow past the viewport (horizontal scroll) */
+@media (min-width: 901px) {
+  .odidact-page .section-panel.jr {
+    flex: 0 0 auto;
+    width: max-content;
+    overflow: visible;
+  }
+}
+
+/* journey card additions (meaningful fillers) */
+.odidact-page .jr-divider { height: 1px; background: var(--c-line); margin: 2px 0; }
+.odidact-page .jr-verdict {
+  display: flex; align-items: center; gap: 7px;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-sm);
+  background: rgba(18,183,106,0.08);
+  font-size: 11.5px; color: var(--c-ink-2);
+}
+.odidact-page .jr-verdict svg { width: 15px; height: 15px; color: var(--c-green); flex: 0 0 auto; }
+.odidact-page .jr-verdict b { color: var(--c-head); }
+.odidact-page .jr-detail {
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-sm);
+  background: #fafbff;
+  border: 1px solid var(--c-line);
+}
+
+/* big pink quotation marks on the review */
+.odidact-page .m-quote { position: relative; }
+.odidact-page .m-qm {
+  color: var(--c-pink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 0;
+  vertical-align: -8px;
+  margin: 0 1px;
+}
+.odidact-page .m-qm--end { vertical-align: -12px; }
+.odidact-page .m-quote small { display: block; margin-top: 4px; font-style: normal; color: var(--c-ink-3); }
+
+/* size the Solution panel to its content so the next section sits closer */
+@media (min-width: 901px) {
+  .odidact-page .section-panel.sol {
+    flex: 0 0 auto;
+    width: max-content;
+    overflow: visible;
+  }
+}
+
+/* match section eyebrows to the current sec-eyebrow look (appearance only) */
+@media (min-width: 901px) {
+  .odidact-page .ods-top-left,
+  .odidact-page .oi-eyebrow {
+    gap: var(--sp-2);
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--c-blue);
+  }
+  .odidact-page .ods-top-left > span:last-child,
+  .odidact-page .oi-eyebrow > span:last-child { color: var(--c-blue); }
+  .odidact-page .ods-dot,
+  .odidact-page .oi-eyebrow-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--c-pink);
+    box-shadow: 0 0 0 4px rgba(255, 113, 177, 0.16);
+  }
+}
+
+/* =========================================================
+   06 · DESIGN SYSTEM  (.ds) — clean, balanced board
+   ========================================================= */
+.odidact-page .ds {
+  display: flex;
+  align-items: center;
+  padding-top: 64px;
+}
+.odidact-page .ds-inner {
+  display: grid;
+  grid-template-columns: 300px repeat(3, minmax(320px, 1fr));
+  gap: var(--sp-5);
+  align-items: stretch;
+}
+.odidact-page .ds-head { align-self: center; }
+.odidact-page .ds-title {
+  margin: var(--sp-2) 0 var(--sp-3);
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  font-size: clamp(28px, 2.5vw, 40px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: var(--c-head);
+}
+.odidact-page .ds-title em { font-style: normal; color: var(--c-pink); }
+.odidact-page .ds-desc { margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--c-ink-2); }
+
+/* board cards */
+.odidact-page .ds-board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  background: var(--c-card);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+}
+.odidact-page .ds-board > header { flex: 0 0 auto; }
+.odidact-page .ds-board > header h3 {
+  margin: 0 0 2px;
+  font-size: 16px; font-weight: 800; color: var(--c-head);
+}
+.odidact-page .ds-board > header p {
+  margin: 0; font-size: 12px; line-height: 1.4; color: var(--c-ink-3);
+}
+
+/* color tokens */
+.odidact-page .ds-cgroup { display: grid; gap: var(--sp-2); }
+.odidact-page .ds-cgroup-t {
+  font-size: 11px; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--c-ink-3);
+}
+.odidact-page .ds-swatches { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-2); }
+.odidact-page .ds-sw { }
+.odidact-page .ds-sw i {
+  display: block; height: 40px; border-radius: var(--r-sm);
+  box-shadow: inset 0 0 0 1px rgba(15,19,54,0.06);
+}
+.odidact-page .ds-sw b { display: block; margin-top: 5px; font-size: 11px; font-weight: 700; color: var(--c-ink); }
+.odidact-page .ds-sw span { font-size: 10px; color: var(--c-ink-3); letter-spacing: 0.02em; }
+
+/* typography scale */
+.odidact-page .ds-type { display: grid; gap: var(--sp-2); flex: 1; align-content: space-between; }
+.odidact-page .ds-trow {
+  display: grid; grid-template-columns: 118px 1fr; gap: var(--sp-3); align-items: center;
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--c-line);
+}
+.odidact-page .ds-trow:last-child { border-bottom: 0; padding-bottom: 0; }
+.odidact-page .ds-tlabel { font-size: 11.5px; font-weight: 700; color: var(--c-ink); }
+.odidact-page .ds-tmeta { font-size: 10px; color: var(--c-ink-3); }
+.odidact-page .ds-tprev { color: var(--c-head); font-family: "Roboto", sans-serif; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.odidact-page .ds-tprev.l-display { font-size: 22px; font-weight: 900; letter-spacing: -0.02em; }
+.odidact-page .ds-tprev.l-section { font-size: 18px; font-weight: 700; }
+.odidact-page .ds-tprev.l-card { font-size: 15px; font-weight: 700; }
+.odidact-page .ds-tprev.l-bodyl { font-size: 14px; }
+.odidact-page .ds-tprev.l-body { font-size: 13px; }
+.odidact-page .ds-tprev.l-label { font-size: 12px; font-weight: 500; }
+.odidact-page .ds-tprev.l-meta { font-size: 11px; color: var(--c-ink-2); }
+.odidact-page .ds-tprev.l-cap { font-size: 11px; font-weight: 500; color: var(--c-ink-2); }
+
+/* layout tokens */
+.odidact-page .ds-lt { display: grid; gap: var(--sp-3); flex: 1; align-content: space-between; }
+.odidact-page .ds-lt-sub > b {
+  display: block; margin-bottom: var(--sp-2);
+  font-size: 12px; font-weight: 800; color: var(--c-head);
+}
+.odidact-page .ds-bars { display: grid; gap: 6px; }
+.odidact-page .ds-bar-row { display: flex; align-items: center; gap: var(--sp-2); }
+.odidact-page .ds-bar-row i { height: 7px; border-radius: 999px; background: linear-gradient(90deg, var(--c-blue), var(--c-blue-2)); }
+.odidact-page .ds-bar-row span { font-size: 10.5px; color: var(--c-ink-3); }
+.odidact-page .ds-radii { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.odidact-page .ds-radius { text-align: center; }
+.odidact-page .ds-radius i { display: block; width: 40px; height: 40px; background: linear-gradient(135deg, var(--c-blue), var(--c-blue-2)); box-shadow: 0 5px 12px -5px rgba(13,18,248,0.45); }
+.odidact-page .ds-cols { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; }
+.odidact-page .ds-cols i { height: 38px; border-radius: 3px; background: linear-gradient(180deg, rgba(13,18,248,0.14), rgba(51,19,255,0.05)); box-shadow: inset 0 0 0 1px rgba(13,18,248,0.20); }
+.odidact-page .ds-cols-meta { display: block; margin-top: 7px; font-size: 9.5px; color: var(--c-ink-3); }
+.odidact-page .ds-radius span { display: block; margin-top: 4px; font-size: 9.5px; color: var(--c-ink-3); }
+.odidact-page .ds-shadows { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-2); }
+.odidact-page .ds-shadow { text-align: center; }
+.odidact-page .ds-shadow i { display: block; height: 38px; border-radius: var(--r-sm); background: #fff; }
+.odidact-page .ds-shadow span { display: block; margin-top: 6px; font-size: 9.5px; color: var(--c-ink-3); }
+
+/* responsive */
+@media (max-width: 900px) {
+  .odidact-page .ds { display: block; padding-top: 0; }
+  .odidact-page .ds-inner { grid-template-columns: 1fr; gap: var(--sp-4); }
+  .odidact-page .ds-shadows { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* =========================================================
+   RESPONSIVE REPAIR (mobile) — hero, impact, nav
+   ========================================================= */
+@media (max-width: 900px) {
+  /* nav gets a readable backdrop that fades out at the bottom — no hard separation line */
+  .odidact-page .odtop {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .odidact-page .odtop::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 -22px 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(250, 251, 255, 0.96) 0%, rgba(250, 251, 255, 0.80) 50%, rgba(250, 251, 255, 0) 100%);
+    -webkit-backdrop-filter: blur(11px);
+    backdrop-filter: blur(11px);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 44%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 44%, transparent 100%);
+  }
+  .odidact-page .odtop__links a { font-size: 12px; }
+
+  /* ---- HERO: clean single landing image on mobile ---- */
+  .odidact-page .odidact-hero .odh { display: flex !important; flex-direction: column !important; }
+  .odidact-page .odidact-hero .odh-stage {
+    position: relative !important; inset: auto !important; display: block !important;
+    height: auto !important; min-height: 0 !important; margin-top: 12px !important;
+  }
+  .odidact-page .odidact-hero .odh-glow,
+  .odidact-page .odidact-hero .odh-chrome,
+  .odidact-page .odidact-hero .odh-phone { display: none !important; }
+  .odidact-page .odidact-hero .odh-main {
+    position: relative !important; inset: auto !important; display: block !important;
+    width: 100% !important; height: auto !important; aspect-ratio: auto !important;
+    transform: none !important; margin: 0 !important; overflow: hidden !important;
+    border: 1px solid var(--c-line) !important; border-radius: 14px !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+  .odidact-page .odidact-hero .odh-main__view {
+    position: relative !important; inset: auto !important; display: block !important;
+    height: auto !important; aspect-ratio: auto !important; margin: 0 !important; overflow: visible !important;
+  }
+  .odidact-page .odidact-hero .odh-main__view img {
+    position: static !important; inset: auto !important; display: block !important;
+    width: 100% !important; height: auto !important; max-width: none !important;
+    object-fit: contain !important; transform: none !important; margin: 0 !important;
+  }
+
+  /* ---- IMPACT: force the old artboard into a clean stack ---- */
+  .odidact-page .oi-impact-section {
+    height: auto !important; min-height: 0 !important; display: block !important;
+    padding: 72px 20px 56px !important; overflow: visible !important;
+  }
+  .odidact-page .oi-stage {
+    position: static !important; transform: none !important;
+    width: 100% !important; height: auto !important; display: block !important; overflow: visible !important;
+  }
+  .odidact-page .oi-side-label,
+  .odidact-page .oi-project-orbit,
+  .odidact-page .oi-sparkle-badge { display: none !important; }
+  .odidact-page .oi-top-grid {
+    position: static !important; display: grid !important;
+    grid-template-columns: 1fr !important; gap: 16px !important; width: auto !important; margin: 0 0 24px !important;
+  }
+  .odidact-page .oi-info-card {
+    position: static !important; width: auto !important; height: auto !important;
+    padding: 22px !important;
+  }
+  .odidact-page .oi-stats {
+    position: static !important; display: flex !important; flex-wrap: wrap;
+    gap: 18px !important; width: auto !important; margin-top: 14px !important;
+  }
+  .odidact-page .oi-stats > div { position: static !important; width: auto !important; }
+  .odidact-page .oi-stat-value { position: static !important; font-size: 30px !important; line-height: 1 !important; }
+  .odidact-page .oi-stat-label { position: static !important; }
+  .odidact-page .oi-divider { display: none !important; }
+  .odidact-page .oi-impact-copy,
+  .odidact-page .oi-takeaway-copy { position: static !important; width: auto !important; max-width: 100% !important; }
+  .odidact-page .oi-bottom-area {
+    position: static !important; width: auto !important; height: auto !important; display: block !important;
+    margin-top: 54px !important;
+  }
+  .odidact-page .oi-continue-label { margin-bottom: 20px !important; }
+  .odidact-page .oi-next-title { font-size: clamp(30px, 9vw, 44px) !important; width: auto !important; }
+  .odidact-page .oi-next-copy { width: auto !important; max-width: 100% !important; }
+}
+
+/* size the Design System panel to its content (close the gap to Impact) */
+@media (min-width: 901px) {
+  .odidact-page .section-panel.ds {
+    flex: 0 0 auto;
+    width: max-content;
+    overflow: visible;
+  }
+  .odidact-page .ds-inner { width: max-content; }
+}
+
+/* hero eyebrow breathing room above the wordmark */
+.odidact-page .odh-copy .sec-eyebrow { margin-bottom: 30px; }
+
+/* 3rd section: a touch more vertical air between blocks */
+@media (min-width: 901px) {
+  .odidact-page .jr-inner { gap: clamp(28px, 3.2vh, 44px); }
+  .odidact-page .jr-flow { margin-top: 6px; }
+  .odidact-page .jr-cards { margin-top: 8px; }
+}
+
+/* title clipping: give descenders room (key screens + design system) */
+.odidact-page .key-screens-copy h2 { line-height: 1.12 !important; padding-bottom: 6px; overflow: visible; }
+.odidact-page .ds-title { line-height: 1.14; padding-bottom: 4px; }
+
+/* hero: desktop-only — drop the floating assistance card, the browser stands alone */
+@media (min-width: 901px) {
+  .odidact-page .odidact-hero .odh-phone { display: none !important; }
+  .odidact-page .odidact-hero .odh-main { left: 0 !important; right: 0 !important; }
+}
+
+/* key screens: per-card image fit — show each mockup whole, framed with even breathing room.
+   contain = never crop the sides or clip the bottom; padding = balanced top/bottom spacing in the box. */
+@media (min-width: 901px) {
+  .odidact-page .key-shot--dashboard img,
+  .odidact-page .key-shot--hero img,
+  .odidact-page .key-shot--community img,
+  .odidact-page .key-shot--footer img,
+  .odidact-page .key-shot--live img {
+    object-fit: contain !important;
+    object-position: top center !important;
+    background: #ffffff !important;
+    padding:
+      clamp(22px, 1.8vw, 30px)
+      clamp(16px, 1.35vw, 24px)
+      clamp(24px, 2vw, 34px) !important;
+    box-sizing: border-box !important;
+    transform: none !important;
+    will-change: opacity !important;
+  }
+
+  .odidact-page .key-shot--dashboard,
+  .odidact-page .key-shot--hero,
+  .odidact-page .key-shot--live,
+  .odidact-page .key-shot--footer,
+  .odidact-page .key-shot--community {
+    gap: clamp(18px, 1.55vw, 26px) !important;
+  }
+
+  .odidact-page .key-shot--dashboard figcaption,
+  .odidact-page .key-shot--hero figcaption,
+  .odidact-page .key-shot--live figcaption,
+  .odidact-page .key-shot--footer figcaption,
+  .odidact-page .key-shot--community figcaption {
+    line-height: 1.24 !important;
+    margin-bottom: clamp(4px, 0.45vw, 8px) !important;
+  }
+
+  .odidact-page .key-shot--dashboard img {
+    padding:
+      clamp(24px, 2.1vw, 34px)
+      clamp(18px, 1.6vw, 26px)
+      clamp(28px, 2.4vw, 38px) !important;
+  }
+}
+
+/* Core Product mobile parity: same framed screen language as desktop, stacked
+   for a narrow viewport instead of switching to unrelated blue pills. */
+@media (max-width: 900px) {
+  .odidact-page .key-screens-collage {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+    height: auto !important;
+    width: 100% !important;
+  }
+
+  .odidact-page .key-shot,
+  .odidact-page .key-shot--dashboard,
+  .odidact-page .key-shot--hero,
+  .odidact-page .key-shot--live,
+  .odidact-page .key-shot--footer,
+  .odidact-page .key-shot--community {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 9px !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
+  .odidact-page .key-shot img,
+  .odidact-page .key-shot--dashboard img,
+  .odidact-page .key-shot--hero img,
+  .odidact-page .key-shot--live img,
+  .odidact-page .key-shot--footer img,
+  .odidact-page .key-shot--community img {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: top center !important;
+    padding: 10px !important;
+    box-sizing: border-box !important;
+    border: 1px solid rgba(160, 172, 210, 0.28) !important;
+    border-radius: 14px !important;
+    background: #fff !important;
+    box-shadow: 0 18px 42px -24px rgba(9, 36, 111, 0.22) !important;
+    transform-origin: 50% 50% !important;
+    will-change: transform, opacity, filter !important;
+  }
+
+  .odidact-page .key-shot figcaption,
+  .odidact-page .key-shot--dashboard figcaption,
+  .odidact-page .key-shot--hero figcaption,
+  .odidact-page .key-shot--live figcaption,
+  .odidact-page .key-shot--footer figcaption,
+  .odidact-page .key-shot--community figcaption {
+    position: static !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    width: auto !important;
+    max-width: 100% !important;
+    margin: 0 0 0 2px !important;
+    padding: 0 !important;
+    gap: 8px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: rgba(7, 27, 134, 0.76) !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+  }
+
+  .odidact-page .key-shot figcaption b {
+    display: inline-grid !important;
+    place-items: center !important;
+    width: 24px !important;
+    height: 24px !important;
+    flex: 0 0 24px !important;
+    border: 1px solid rgba(255, 79, 157, 0.28) !important;
+    border-radius: 999px !important;
+    background: rgba(255, 79, 157, 0.09) !important;
+    color: #ff4f9d !important;
+    font-size: 10px !important;
+    letter-spacing: 0 !important;
+  }
+
+  .odidact-page .key-shot--dashboard,
+  .odidact-page .key-shot--hero,
+  .odidact-page .key-shot--live,
+  .odidact-page .key-shot--footer,
+  .odidact-page .key-shot--community {
+    gap: 14px !important;
+  }
+
+  .odidact-page .key-shot--dashboard img,
+  .odidact-page .key-shot--hero img,
+  .odidact-page .key-shot--live img,
+  .odidact-page .key-shot--footer img,
+  .odidact-page .key-shot--community img {
+    padding: 16px 14px 18px !important;
+    transform: none !important;
+    will-change: opacity !important;
+  }
+}

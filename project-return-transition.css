@@ -1,0 +1,26 @@
+.project-return-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  pointer-events: auto;
+  --return-x: 50vw;
+  --return-y: 50vh;
+  --return-r: 0px;
+  background: oklch(0.010 0.003 255);
+  visibility: hidden;
+  -webkit-clip-path: circle(var(--return-r) at var(--return-x) var(--return-y));
+  clip-path: circle(var(--return-r) at var(--return-x) var(--return-y));
+  will-change: clip-path;
+}
+
+.project-return-curtain.is-active {
+  visibility: visible;
+}
+
+body.project-return-active {
+  overflow: hidden !important;
+}
+
+body.project-return-active > :not(.project-return-curtain):not(script):not(style) {
+  pointer-events: none !important;
+}

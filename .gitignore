@@ -1,0 +1,30 @@
+# Local agent/tooling folders
+.agents/
+.claude/
+.playwright-cli/
+skills-lock.json
+
+# Local reference material / old exported builds
+Ref/
+ryujin.github.io/
+
+# Local notes/dev helpers that are not part of the hosted static site
+PRODUCT.md
+portfolio-server.js
+serve.py
+
+# Unlinked old page prototype
+project-perception.html
+project-perception.css
+project-perception.js
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.log
+
+# Temporary/debug output
+.tmp*/
+tmp/
+temp/
+*.tmp

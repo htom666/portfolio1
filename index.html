@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hatem Dahech | Portfolio</title>
+  <meta name="description" content="Portfolio of Hatem Dahech, designer and developer." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    (function () {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var projectReferrer = false;
+        try {
+          var referrer = new URL(document.referrer);
+          projectReferrer = referrer.origin === window.location.origin && /\/project-(ryujin|odidact|3|tasty)\.html$/i.test(referrer.pathname);
+        } catch (_) {}
+        var fromProjectReturn = (
+          params.get('return') === 'project' ||
+          window.sessionStorage.getItem('portfolioProjectReturn') === '1' ||
+          (window.location.hash === '#works' && projectReferrer)
+        );
+        var navEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+        var isReload = navEntry ? navEntry.type === 'reload' : performance.navigation && performance.navigation.type === 1;
+        if (fromProjectReturn) {
+          document.documentElement.classList.add('from-project-return');
+          try {
+            window.sessionStorage.setItem('portfolioProjectReturn', '1');
+          } catch (_) {}
+          if (window.location.hash === '#works') {
+            try {
+              history.replaceState(null, '', window.location.pathname + window.location.search);
+            } catch (_) {}
+          }
+        }
+      } catch (_) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="styles.css?v=51" />
+</head>
+<body class="is-loading">
+
+  <!-- ========== LOADER ========== -->
+  <div class="loader" id="loader">
+    <div class="loader__count" aria-hidden="true">
+      <span class="loader__num" id="loader-pct">0</span>
+      <span class="loader__pct">%</span>
+    </div>
+  </div>
+
+  <!-- ========== FIXED CHROME ========== -->
+  <button class="menu-btn" aria-label="Open menu">
+    <span></span><span></span>
+  </button>
+
+  <span class="year-label" aria-hidden="true">&copy; <span id="year"></span></span>
+
+  <!-- Top-right: availability badge with pulsing dot -->
+  <div class="avail-badge" aria-label="Availability">
+    <span class="avail-dot" aria-hidden="true"></span>
+    <span>Available for work <em>&mdash;</em> Q3 &rarr;</span>
+  </div>
+
+  <div id="smooth-wrapper" class="smooth-wrapper">
+    <div id="smooth-content" class="smooth-content">
+
+  <!-- ========== SECTION 1 + SECTION 2 TRANSITION SCENE ========== -->
+  <div class="heroToSection2Scene">
+    <div class="section2ExitScene">
+      <div class="blackMaskLayer" aria-hidden="true"></div>
+      <div class="section2-bridge" aria-hidden="true">
+        <div class="section2-bridge__inner">
+          <p class="section2-bridge__title">A little more</p>
+          <p class="section2-bridge__body">I'm also a researcher. Studying human <span class="word-morph word-perception bridge-highlight" data-mode="perception"><span class="word-layer">perception</span><span class="canvas-wrap" aria-hidden="true"></span></span> through the psychophysics of presence, discomfort, and the geometry of <span class="word-morph word-space bridge-highlight" data-mode="space"><span class="word-layer">space</span><span class="canvas-wrap" aria-hidden="true"></span></span>.</p>
+        </div>
+      </div>
+      <div class="section2ContentLayer">
+        <div class="about-wrap">
+          <p class="eyebrow">Something little about me</p>
+          <p class="prose">
+            Three years of <span class="word-morph word-designing" data-mode="blueprint"><span class="word-layer">designing</span><span class="canvas-wrap" aria-hidden="true"></span></span> websites and <span class="word-morph word-building" data-mode="structure"><span class="word-layer">building</span><span class="canvas-wrap" aria-hidden="true"></span></span> them too. I've worked
+            with clients, handled the whole thing from sketching to deploying.
+            Somewhere along the way I got into <span class="word-morph word-3d" data-mode="depth"><span class="word-layer">3D</span><span class="canvas-wrap" aria-hidden="true"></span></span> as well.
+          </p>
+          <p class="cta-lead">Want to know more about me?</p>
+          <a class="pill" href="#contact">Read more <span>&#8599;</span></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="heroOverlayLayer">
+      <section class="panel panel--hero">
+
+        <!-- Dark veil: fades in as sphere fills viewport, seals to black -->
+        <div class="hero-veil" aria-hidden="true"></div>
+
+        <!-- Full-bleed name: background layer (black) -->
+        <h1 class="display hero-name">
+          <em class="d-line d-line--top"><span>Hatem</span></em>
+          <em class="d-line d-line--bottom"><span>Dahech</span></em>
+        </h1>
+
+        <!-- White name: clipped to sphere area, creates the collision effect -->
+        <h1 class="display hero-name hero-name--mask" aria-hidden="true">
+          <em class="d-line d-line--top"><span>Hatem</span></em>
+          <em class="d-line d-line--bottom"><span>Dahech</span></em>
+        </h1>
+
+        <!-- Center: hero black hole visual -->
+        <div class="hero-sphere-wrap hero-bh" id="hero-sphere-wrap">
+          <canvas id="hero-sphere-canvas"></canvas>
+          <div class="hero-bh-lens" aria-hidden="true"></div>
+        </div>
+
+        <!-- Bottom-right: CTA -->
+        <a class="hero-cta" href="#works">View Work <span>&#8599;</span></a>
+
+      </section>
+    </div>
+  </div>
+
+  <!-- ========== HORIZONTAL SCROLL TRACK (works / contact) ========== -->
+  <main class="h-wrap">
+    <div class="h-track">
+
+      <!-- PANEL 1: WORKS -->
+      <section class="panel panel--works" id="works">
+        <div class="section3-real-content">
+          <h2 class="display works-title">
+            <em class="d-line ink-morph"><span>Selected</span></em>
+            <em class="d-line tone-soft"><span>Works</span></em>
+          </h2>
+
+          <ol class="works-list">
+            <li class="work-row" data-color="#000000" data-image="assets/previews/ryu.webp">
+              <a href="project-ryujin.html">
+                <span class="work-num">001</span>
+                <span class="work-name">Ryujin</span>
+                <span class="work-tags">
+                  <i>UX/UI DESIGN</i>
+                  <i>THREE.JS</i>
+                  <i>LUXURY E-COMMERCE</i>
+                </span>
+                <span class="work-arrow" aria-hidden="true">&rarr;</span>
+              </a>
+            </li>
+            <li class="work-row" data-color="#495057" data-image="assets/previews/odi.webp">
+              <a href="project-odidact.html">
+                <span class="work-num">002</span>
+                <span class="work-name">Odidact</span>
+                <span class="work-tags">
+                  <i>UX/UI DESIGN</i>
+                  <i>PRODUCT PLATFORM</i>
+                  <i>DASHBOARD UX</i>
+                </span>
+                <span class="work-arrow" aria-hidden="true">&rarr;</span>
+              </a>
+            </li>
+            <li class="work-row" data-color="#17AA96" data-image="assets/previews/fit.webp">
+              <a href="project-3.html">
+                <span class="work-num">003</span>
+                <span class="work-name">Fitness</span>
+                <span class="work-tags">
+                  <i>UX/UI CASE STUDY</i>
+                  <i>MOBILE APP</i>
+                  <i>FITNESS TRACKER</i>
+                </span>
+                <span class="work-arrow" aria-hidden="true">&rarr;</span>
+              </a>
+            </li>
+            <li class="work-row" data-color="#000000" data-image="assets/previews/tast.webp">
+              <a href="project-tasty.html">
+                <span class="work-num">004</span>
+                <span class="work-name">Tasty</span>
+                <span class="work-tags">
+                  <i>UX/UI DESIGN</i>
+                  <i>E-COMMERCE</i>
+                  <i>BRANDING</i>
+                </span>
+                <span class="work-arrow" aria-hidden="true">&rarr;</span>
+              </a>
+            </li>
+          </ol>
+
+          <a class="pill pill--center" href="https://www.behance.net/hatemdahech" target="_blank" rel="noopener noreferrer">View more <span>&#8599;</span></a>
+        </div>
+      </section>
+
+      <section class="panel panel--contact" id="contact">
+        <p class="eyebrow">Want to say hello?</p>
+        <h2 class="display connect-title">
+          <em class="d-line tone-soft"><span>Let's</span></em>
+          <em class="d-line ink-morph"><span>Connect.</span></em>
+        </h2>
+
+        <a class="contact-mail" href="mailto:hatemdahech1@gmail.com">
+          <em>hatemdahech1@gmail.com</em><span class="arr">&#8599;</span>
+        </a>
+
+        <div class="or-divider"><span><em>or find me on</em></span></div>
+
+        <ul class="socials">
+          <li><a href="https://www.linkedin.com/in/hatemdahech/" target="_blank" rel="noopener noreferrer">LinkedIn <span>&#8599;</span></a></li>
+          <li><a href="https://github.com/htom666" target="_blank" rel="noopener noreferrer">GitHub <span>&#8599;</span></a></li>
+        </ul>
+
+        <p class="contact-meta">
+          <span><em>Based in</em> Tunis, TN</span>
+          <span class="meta-sep">&bull;</span>
+          <span><em>Available for</em> Q3 onward</span>
+          <span class="meta-sep">&bull;</span>
+          <span><em>Reply within</em> 24h</span>
+        </p>
+      </section>
+    </div>
+  </main>
+
+    </div>
+  </div>
+
+  <!-- ========== SCROLL INDICATOR ========== -->
+  <div class="scroll-indicator" aria-hidden="true">
+    <div class="scroll-indicator__bar"><div class="scroll-indicator__fill"></div></div>
+  </div>
+
+  <!-- Custom cursor dot (visible after Section 2 exit transition) -->
+  <div class="cursor" aria-hidden="true"></div>
+
+  <!-- ========== FULL-SCREEN MENU ========== -->
+  <div class="site-menu" id="site-menu" aria-hidden="true">
+    <button class="site-menu__close" id="site-menu-close" aria-label="Close menu" type="button">
+      <span></span><span></span>
+    </button>
+    <div class="site-menu__inner">
+      <nav class="site-menu__nav" aria-label="Primary">
+        <ul class="site-menu__list">
+          <li><a href="#" data-menu-target="hero">Home</a></li>
+          <li><a href="#" data-menu-target="about">About</a></li>
+          <li><a href="#works" data-menu-target="works">Selected Works</a></li>
+          <li><a href="#contact" data-menu-target="contact">Contact</a></li>
+        </ul>
+      </nav>
+      <p class="site-menu__meta"><em>Available for work</em> &mdash; Q3 &rarr;</p>
+    </div>
+  </div>
+  <!-- Smooth scroll + scroll-driven animation libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="hero-sphere.js"></script>
+  <script src="script.js?v=69"></script>
+</body>
+</html>

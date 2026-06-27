@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tasty — UX Case Study · Hatem Dahech</title>
+  <meta name="description" content="Tasty: e-commerce UX/UI for a Tunisian nut-butter brand. A horizontal-scroll case study by Hatem Dahech." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="project-tasty.css?v=13" />
+  <link rel="stylesheet" href="project-return-transition.css?v=3" />
+</head>
+<body class="tj">
+
+  <!-- ===== Fixed chrome ===== -->
+  <header class="tjtop" aria-label="Project navigation">
+    <a class="tjtop__star" href="index.html" aria-label="Back to home">*</a>
+    <nav class="tjtop__links" aria-label="Sections">
+      <a href="index.html?return=project#works">Selected Works</a>
+      <a class="tjtop__next" href="project-ryujin.html">Next Project</a>
+    </nav>
+  </header>
+
+  <!-- ===== Horizontal track : one wall, one shelf ===== -->
+  <main class="tj-track" id="tj-track" aria-label="Tasty case study, scrolls horizontally">
+   <div class="tj-wall" id="tj-wall">
+
+    <!-- 01 · COVER -->
+    <section class="tj-panel tjc" id="tasty-top" data-chapter="Case Study Introduction">
+
+      <!-- left column -->
+      <div class="tjc-left">
+        <h1 class="tjc-wordmark" data-reveal>Tasty
+          <svg class="tjc-heart" viewBox="0 0 36 32" aria-hidden="true"><path d="M18 28 C 6 20, 2 12, 7 7 C 11 3, 17 6, 18 10 C 19 6, 25 3, 29 7 C 34 12, 30 20, 18 28 Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </h1>
+        <p class="tjc-sub" data-reveal>E-commerce website case study</p>
+        <p class="tjc-lede" data-reveal>
+          A delightful e-commerce experience for Tasty, a Tunisian brand
+          of natural peanut butters. From product discovery to checkout,
+          the website was crafted to feel warm, trustworthy and delicious,
+          just like their spreads.
+        </p>
+
+        <ul class="tjc-chips" data-reveal>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h3l2.5 12.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.2L22 8H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10.5" cy="21" r="1.4" fill="currentColor"/><circle cx="18.5" cy="21" r="1.4" fill="currentColor"/></svg>E-commerce</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13c4-1 5-4 5-8 4 0 8 1 10 4s1 7-2 9-8 1-10-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="13" cy="11" r="1.3" fill="currentColor"/><path d="M4 20c1-2 3-3 5-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Branding</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3l5 5L8.5 20.5 3 21l.5-5.5L16 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 5.5l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>UX / UI</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10.5 18.5h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Responsive</li>
+        </ul>
+
+        <div class="tjc-goal" data-reveal>
+          <i class="tjc-tape" aria-hidden="true"></i>
+          <p class="tjc-goal__title">The goal?</p>
+          <p class="tjc-goal__body">Build a sweet &amp; smooth journey that makes
+            healthy indulgence irresistible.
+            <svg class="tjc-heart tjc-heart--mini" viewBox="0 0 36 32" aria-hidden="true"><path d="M18 28 C 6 20, 2 12, 7 7 C 11 3, 17 6, 18 10 C 19 6, 25 3, 29 7 C 34 12, 30 20, 18 28 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </p>
+        </div>
+
+        <p class="tjc-dive" data-reveal>Let&rsquo;s dive in!
+          <svg viewBox="0 0 60 26" class="tjc-dive__arrow" aria-hidden="true"><path d="M4 6 C 18 18, 34 20, 52 16 M44 10 l10 5 -8 8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </p>
+
+        <div class="tjc-ctarow" data-reveal>
+          <a class="tjc-cta" href="#tour" id="tjc-cta">View Project <span aria-hidden="true">&rarr;</span></a>
+          <svg class="tjc-toast" viewBox="0 0 90 90" aria-hidden="true">
+            <path d="M20 34 C 14 22, 24 13, 33 17 C 36 9, 50 8, 54 16 C 63 11, 74 20, 68 31 C 72 36, 71 64, 66 70 C 60 76, 28 76, 23 70 C 18 64, 17 40, 20 34 Z" fill="#F6E3C5" stroke="#9A5218" stroke-width="3" stroke-linejoin="round"/>
+            <rect x="29" y="34" width="31" height="30" rx="9" fill="#E5B161" opacity="0.55"/>
+            <circle cx="38" cy="46" r="2.6" fill="#5C3210"/>
+            <circle cx="52" cy="46" r="2.6" fill="#5C3210"/>
+            <path d="M40 54 C 43 58, 47 58, 50 54" fill="none" stroke="#5C3210" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M21 50 C 12 46, 10 40, 13 34" fill="none" stroke="#9A5218" stroke-width="3" stroke-linecap="round"/>
+            <path d="M69 50 C 78 46, 80 40, 77 34" fill="none" stroke="#9A5218" stroke-width="3" stroke-linecap="round"/>
+            <path d="M37 75 l-2 8 M53 75 l2 8" stroke="#9A5218" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- made with love stamp -->
+      <div class="tjc-stamp" data-reveal aria-hidden="true">
+        <svg class="tjc-heart tjc-heart--stamp" viewBox="0 0 36 32"><path d="M18 28 C 6 20, 2 12, 7 7 C 11 3, 17 6, 18 10 C 19 6, 25 3, 29 7 C 34 12, 30 20, 18 28 Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <b>Made</b><i>with love</i>
+      </div>
+
+      <!-- big browser -->
+      <figure class="tjc-browser" data-reveal>
+        <div class="tjc-browser__bar" aria-hidden="true">
+          <span class="tjc-browser__lights"><i></i><i></i><i></i></span>
+          <span class="tjc-browser__nav">&lsaquo;&ensp;&rsaquo;</span>
+          <span class="tjc-browser__url">
+            <svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+            tasty.tn
+          </span>
+          <span class="tjc-browser__acts">&#43;&ensp;&#9634;</span>
+        </div>
+        <span class="tjc-browser__view"><img src="assets/perception/web/home.png" alt="Tasty homepage in the browser: the love-is-like-butter quote, toast and jar, and the product range" /></span>
+      </figure>
+
+      <!-- tablet -->
+      <figure class="tjc-tablet" data-reveal>
+        <div class="tjc-mini-bar" aria-hidden="true">
+          <span class="tjc-browser__lights"><i></i><i></i><i></i></span>
+          <span class="tjc-mini-url">
+            <svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+            tasty.tn
+          </span>
+        </div>
+        <span class="tjc-tablet__screen"><img src="assets/perception/web/home.png" alt="The same homepage on a tablet" loading="lazy" /></span>
+      </figure>
+
+      <!-- phone -->
+      <figure class="tjc-phone" data-reveal>
+        <div class="tjc-mini-bar tjc-mini-bar--phone" aria-hidden="true">
+          <span class="tjc-browser__lights"><i></i><i></i><i></i></span>
+        </div>
+        <span class="tjc-phone__screen"><img src="assets/perception/screens/tasty-mobile-2.png" alt="Mobile screen: composing a mix of jars" loading="lazy" /></span>
+      </figure>
+
+      <!-- scattered doodles -->
+    </section>
+
+    <!-- 02 · THE BRIEF -->
+    <section class="tj-panel tj-brief" data-chapter="The Brief">
+
+      <div class="tj-brief__lead">
+        <p class="tj-kicker" data-reveal>The brief</p>
+        <h2 class="tj-h2 tj-brief__h2" data-reveal>Great product.<br/>No shelf presence<br/>online.</h2>
+        <p class="tj-lede" data-reveal>
+          Tasty makes premium peanut butter in Tunisia: no additives, no
+          palm oil, no shortcuts. Online, none of that warmth survived.
+          The brand needed visibility, trust and a real mobile experience,
+          for health-conscious families who buy with their eyes first.
+        </p>
+      </div>
+
+      <div class="tj-brief__cols">
+        <div class="tj-brief__col" data-reveal>
+          <h3>What was wrong</h3>
+          <ol class="tj-numlist">
+            <li><b>1</b>Products were invisible in a crowded market.</li>
+            <li><b>2</b>No storytelling, so no reason to trust a premium price.</li>
+            <li><b>3</b>Mobile shoppers had nowhere comfortable to land.</li>
+          </ol>
+        </div>
+        <div class="tj-brief__col tj-brief__col--low" data-reveal>
+          <h3>What success meant</h3>
+          <ol class="tj-numlist">
+            <li><b>1</b>Storytelling that makes the jar look delicious.</li>
+            <li><b>2</b>Browsing that feels like walking a market stall.</li>
+            <li><b>3</b>Conversion built on clarity, not pressure.</li>
+            <li><b>4</b>A community of tasters, not just customers.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 · EXPERIENCE FLOW -->
+    <section class="tj-panel tj-flow" data-chapter="Experience Flow">
+
+      <div class="tj-flow__intro">
+        <p class="tj-kicker" data-reveal>A smooth journey, from discovery to delight</p>
+        <h2 class="tj-h2" data-reveal>Experience<br/>Flow.</h2>
+        <p class="tj-lede" data-reveal>
+          Tasty&rsquo;s e-commerce flow is designed to be simple, intuitive
+          and enjoyable. Here is how users go from discovering the peanut
+          butters to receiving their order at their doorstep.
+        </p>
+
+        <div class="tj-flow__banner" data-reveal>
+          <svg class="tjc-toast" viewBox="0 0 90 90" aria-hidden="true">
+            <path d="M20 34 C 14 22, 24 13, 33 17 C 36 9, 50 8, 54 16 C 63 11, 74 20, 68 31 C 72 36, 71 64, 66 70 C 60 76, 28 76, 23 70 C 18 64, 17 40, 20 34 Z" fill="#F6E3C5" stroke="#9A5218" stroke-width="3" stroke-linejoin="round"/>
+            <rect x="29" y="34" width="31" height="30" rx="9" fill="#E5B161" opacity="0.55"/>
+            <circle cx="38" cy="46" r="2.6" fill="#5C3210"/>
+            <circle cx="52" cy="46" r="2.6" fill="#5C3210"/>
+            <path d="M40 54 C 43 58, 47 58, 50 54" fill="none" stroke="#5C3210" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M21 50 C 12 46, 10 40, 13 34" fill="none" stroke="#9A5218" stroke-width="3" stroke-linecap="round"/>
+            <path d="M69 50 C 78 46, 80 40, 77 34" fill="none" stroke="#9A5218" stroke-width="3" stroke-linecap="round"/>
+            <path d="M37 75 l-2 8 M53 75 l2 8" stroke="#9A5218" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <div class="tj-flow__banner-card">
+            <b>Made to make you smile</b>
+            <p>Every step is crafted to deliver a delightful, seamless and trustworthy shopping experience, just like the spreads.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tj-flow__steps">
+        <figure class="tj-step" data-reveal>
+          <b class="tj-step__num">01</b>
+          <span class="tj-step__shot"><img src="assets/perception/web/products.png" alt="Products page, jars to browse" loading="lazy" /></span>
+          <figcaption>
+            <span class="tj-step__ic"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5 L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <b>Discover products</b>
+            <p>Users browse the range of delicious peanut butters, explore flavors and find their favorites.</p>
+          </figcaption>
+        </figure>
+        <figure class="tj-step" data-reveal>
+          <b class="tj-step__num">02</b>
+          <span class="tj-step__shot"><img src="assets/perception/web/product-detail.png" alt="Product detail with ingredients and reviews" loading="lazy" /></span>
+          <figcaption>
+            <span class="tj-step__ic"><svg viewBox="0 0 24 24"><rect x="6" y="7" width="12" height="13" rx="2.6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 7V5.4A2.4 2.4 0 0 1 11.4 3h1.2A2.4 2.4 0 0 1 15 5.4V7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.5 12.5h5 M9.5 16h3.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <b>Product details</b>
+            <p>Full product info, ingredients, benefits and nutritional value to make informed choices.</p>
+          </figcaption>
+        </figure>
+        <figure class="tj-step" data-reveal>
+          <b class="tj-step__num">03</b>
+          <span class="tj-step__shot tj-step__shot--cart"><img src="assets/perception/web/cart-popup.png" alt="Cart pop-up with summary and total" loading="lazy" /></span>
+          <figcaption>
+            <span class="tj-step__ic"><svg viewBox="0 0 24 24"><path d="M3 4h3l2.5 12.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.2L22 8H7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10.5" cy="21" r="1.4" fill="currentColor"/><circle cx="18.5" cy="21" r="1.4" fill="currentColor"/></svg></span>
+            <b>Add to cart</b>
+            <p>Products are added easily, with a clear summary and total overview.</p>
+          </figcaption>
+        </figure>
+        <figure class="tj-step" data-reveal>
+          <b class="tj-step__num">04</b>
+          <span class="tj-step__shot"><img src="assets/perception/web/billing.png" alt="Billing details form" loading="lazy" /></span>
+          <figcaption>
+            <span class="tj-step__ic"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2.6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 10.5h18" stroke="currentColor" stroke-width="2"/><path d="M7 15h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <b>Checkout</b>
+            <p>A quick and secure checkout with a clean form and transparent order summary.</p>
+          </figcaption>
+        </figure>
+        <figure class="tj-step" data-reveal>
+          <b class="tj-step__num">05</b>
+          <span class="tj-step__shot tj-step__shot--pop"><img src="assets/perception/web/order-received.png" alt="Order received confirmation" loading="lazy" /></span>
+          <figcaption>
+            <span class="tj-step__ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 12.5 l2.6 2.6 L16.5 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <b>Order confirmation</b>
+            <p>A warm confirmation, and users can track their order with peace of mind.</p>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 04 · WIREFRAMES -->
+    <section class="tj-panel tj-wire" data-chapter="Wireframes">
+
+      <div class="tj-wire__intro">
+        <p class="tj-kicker" data-reveal>Structure first</p>
+        <h2 class="tj-h2" data-reveal>Nineteen tries<br/>at one homepage.</h2>
+        <p class="tj-lede" data-reveal>
+          Before any flavor, the argument happened in grayscale. Nineteen
+          homepage iterations, three fidelity stages, five flows validated
+          with real shoppers. When a layout survives without color, color
+          becomes a reward instead of a rescue.
+        </p>
+        <p class="tj-wire__facts" data-reveal><b>19</b> iterations <span>&middot;</span> <b>3</b> fidelity stages <span>&middot;</span> <b>5</b> validated flows</p>
+      </div>
+
+      <div class="tj-stand tj-wire__strip">
+        <figure class="tj-print tj-print--gray tj-h-56" data-reveal>
+          <span class="tj-print__view"><img src="assets/perception/wireframes/wf-1.jpg" alt="Wireframe v1, every idea on one page" loading="lazy" /></span>
+          <figcaption>v01 &middot; everything, everywhere</figcaption>
+        </figure>
+        <figure class="tj-print tj-print--gray tj-print--taped tj-h-48" data-reveal>
+          <span class="tj-print__view"><img src="assets/perception/wireframes/wf-3.jpg" alt="Wireframe v3, sections start to breathe" loading="lazy" /></span>
+          <figcaption>v03 &middot; sections find air</figcaption>
+        </figure>
+        <figure class="tj-print tj-print--gray tj-h-60" data-reveal>
+          <span class="tj-print__view"><img src="assets/perception/wireframes/wf-5.jpg" alt="Wireframe v5, the hero gets a voice" loading="lazy" /></span>
+          <figcaption>v05 &middot; the hero gets a voice</figcaption>
+        </figure>
+        <figure class="tj-print tj-print--gray tj-h-52" data-reveal>
+          <span class="tj-print__view"><img src="assets/perception/wireframes/wf-10.jpg" alt="Wireframe v10, products move above the fold" loading="lazy" /></span>
+          <figcaption>v10 &middot; products up front</figcaption>
+        </figure>
+        <figure class="tj-print tj-print--gray tj-print--taped tj-h-58" data-reveal>
+          <span class="tj-print__view"><img src="assets/perception/wireframes/wf-15.jpg" alt="Wireframe v15, hierarchy settles" loading="lazy" /></span>
+          <figcaption>v15 &middot; hierarchy settles</figcaption>
+        </figure>
+        <figure class="tj-print tj-print--gray tj-print--handoff tj-h-62" data-reveal>
+          <span class="tj-print__view"><img src="assets/perception/wireframes/wf-19.jpg" alt="Wireframe v19, signed off for UI" loading="lazy" /></span>
+          <figcaption>v19 &middot; handoff, finally</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 05 · CONTENT & TRUST -->
+    <section class="tj-panel tj-trust" data-chapter="Content &amp; Trust">
+
+      <div class="tj-trust__intro">
+        <p class="tj-kicker" data-reveal>Useful content that builds confidence</p>
+        <h2 class="tj-h2" data-reveal>Content<br/>&amp; Trust.</h2>
+        <p class="tj-lede" data-reveal>
+          Tasty goes beyond e-commerce with inspiring recipes, simple
+          guides and transparent information. This content-first approach
+          nurtures trust, educates the audience and strengthens brand
+          loyalty.
+        </p>
+      </div>
+
+      <div class="tj-stand tj-trust__collage">
+        <figure class="tj-print tj-print--tagged tj-print--taped tj-h-58" data-reveal>
+          <span class="tj-print__view"><img src="assets/perception/web/recipe-detail.png" alt="Recipe detail: homemade brownie with peanut butter" loading="lazy" /></span>
+          <figcaption><b>Recipe detail</b><p>Step-by-step guidance for perfect homemade results.</p></figcaption>
+        </figure>
+        <figure class="tj-print tj-print--tagged tj-h-66 tj-w-lg" data-reveal>
+          <span class="tj-print__view"><img src="assets/perception/web/recipes.png" alt="Recipes listing with colorful organic-shaped photos" loading="lazy" /></span>
+          <figcaption><b>Recipe inspiration</b><p>Browse categories and discover delicious ideas.</p></figcaption>
+        </figure>
+        <figure class="tj-print tj-print--tagged tj-h-56" data-reveal>
+          <span class="tj-print__view"><img src="assets/perception/web/about.png" alt="About page telling the brand story since 2017" loading="lazy" /></span>
+          <figcaption><b>Brand story</b><p>The journey, the values and the mission.</p></figcaption>
+        </figure>
+        <figure class="tj-print tj-print--tagged tj-print--taped tj-h-52" data-reveal>
+          <span class="tj-print__view"><img src="assets/perception/web/faq.png" alt="FAQ page answering common questions" loading="lazy" /></span>
+          <figcaption><b>FAQ support</b><p>Clear answers to common questions.</p></figcaption>
+        </figure>
+        <figure class="tj-print tj-print--tagged tj-h-54 tj-h-52" data-reveal>
+          <span class="tj-print__view"><img src="assets/perception/web/contact.png" alt="Contact page with a friendly form" loading="lazy" /></span>
+          <figcaption><b>Friendly contact</b><p>Easy ways to get in touch with the team.</p></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 06 · DESIGN SYSTEM & UI HIGHLIGHTS -->
+    <section class="tj-panel tj-sys" data-chapter="Design System">
+
+      <div class="tj-sys__intro">
+        <p class="tj-kicker" data-reveal>A consistent, warm, trustworthy experience</p>
+        <h2 class="tj-h2" data-reveal>Design System<br/>&amp; UI Highlights.</h2>
+        <p class="tj-lede" data-reveal>
+          Tasty&rsquo;s design system is built around warmth, naturalness
+          and simplicity. Rounded organic shapes, a delicious color palette
+          and friendly components create an e-commerce experience that
+          feels trustworthy and approachable.
+        </p>
+      </div>
+
+      <div class="tj-sys__stack">
+        <div class="tj-syscard tj-syscard--palette" data-reveal>
+          <i class="tjc-tape" aria-hidden="true"></i>
+          <h3 class="tj-syscard__label">01. Color palette</h3>
+          <div class="tj-palette">
+            <figure class="tj-pal tj-pal--cream"><figcaption><b>Cream</b><span>#FFF7F1</span></figcaption></figure>
+            <figure class="tj-pal tj-pal--peanut"><figcaption><b>Peanut</b><span>#F2C385</span></figcaption></figure>
+            <figure class="tj-pal tj-pal--caramel"><figcaption><b>Caramel</b><span>#E08B3D</span></figcaption></figure>
+            <figure class="tj-pal tj-pal--choco"><figcaption><b>Chocolate</b><span>#A4571F</span></figcaption></figure>
+            <figure class="tj-pal tj-pal--dark"><figcaption><b>Dark Brown</b><span>#5A3417</span></figcaption></figure>
+          </div>
+        </div>
+
+        <div class="tj-syscard tj-syscard--type" data-reveal>
+          <h3 class="tj-syscard__label">02. Typography</h3>
+          <div class="tj-type__hero">
+            <span class="tj-type__aa">Aa</span>
+            <b>Poppins</b>
+          </div>
+          <p class="tj-type__sample">L&rsquo;amour, c&rsquo;est comme le beurre, &ccedil;a rend tout meilleur.</p>
+          <div class="tj-type__row"><b>Headline / Bold 60px</b><span>ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 1234567890</span></div>
+          <div class="tj-type__row"><b>Title / SemiBold 24px</b><span>ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 1234567890</span></div>
+          <div class="tj-type__row"><b>Body / Regular 16px</b><span>ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 1234567890</span></div>
+        </div>
+      </div>
+
+      <div class="tj-syscard tj-syscard--comps" data-reveal>
+        <h3 class="tj-syscard__label">03. UI components</h3>
+        <div class="tj-comps">
+          <div class="tj-comps__col">
+            <h4>Buttons</h4>
+            <button class="tj-btn tj-btn--primary" type="button">Ajouter au panier</button>
+            <button class="tj-btn tj-btn--ghost" type="button">D&eacute;couvrir</button>
+            <button class="tj-btn tj-btn--text" type="button">Voir toutes les recettes <span aria-hidden="true">&rarr;</span></button>
+            <h4 class="tj-comps__gap">Pills / Filters</h4>
+            <div class="tj-comps__pills">
+              <span class="tj-tag tj-tag--solid">Tous</span>
+              <span class="tj-tag">Cacahu&egrave;te</span>
+              <span class="tj-tag">Pistache</span>
+              <span class="tj-tag">Amandes</span>
+              <span class="tj-tag">Noisette</span>
+              <span class="tj-tag">Noix De Cajou</span>
+            </div>
+          </div>
+
+          <div class="tj-comps__col">
+            <h4>Rating</h4>
+            <p class="tj-comps__rate">
+              <span class="tj-stars"><i>&#9733;</i><i>&#9733;</i><i>&#9733;</i><i>&#9733;</i><i>&#9733;</i></span>
+              <span class="tj-spec__ratetext">4.9 (60)</span>
+            </p>
+            <h4 class="tj-comps__gap">Icon badges</h4>
+            <div class="tj-badges">
+              <span class="tj-badge"><i>GF</i><em>Sans gluten</em></span>
+              <span class="tj-badge"><i>V</i><em>V&eacute;g&eacute;talien</em></span>
+              <span class="tj-badge"><i>&#10047;</i><em>Sans huile de palme</em></span>
+              <span class="tj-badge"><i>&#10005;</i><em>Sans sucre ajout&eacute;</em></span>
+            </div>
+            <h4 class="tj-comps__gap">Form fields</h4>
+            <input class="tj-field" type="email" placeholder="Votre e-mail" />
+            <input class="tj-field" type="text" placeholder="Votre avis" />
+          </div>
+
+          <div class="tj-comps__col">
+            <h4>Review card</h4>
+            <div class="tj-review">
+              <div class="tj-review__head">
+                <span class="tj-review__avatar">FB</span>
+                <div><b>Fahd Baccouche</b><i>il y a 2 jours</i></div>
+              </div>
+              <span class="tj-stars tj-stars--sm"><i>&#9733;</i><i>&#9733;</i><i>&#9733;</i><i>&#9733;</i><i>&#9733;</i></span>
+              <b class="tj-review__title">Le meilleur.</b>
+              <p>Le meilleur beurre d&rsquo;arachide au go&ucirc;t jamais, et tous les ingr&eacute;dients naturels incroyables !!</p>
+              <em>&#10003; Oui, je recommande ce produit.</em>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tj-syscard tj-syscard--shapes" data-reveal>
+        <h3 class="tj-syscard__label">04. Organic shapes</h3>
+        <i class="tj-shapes__blob" aria-hidden="true"></i>
+        <p class="tj-shapes__text">
+          Soft, rounded organic shapes across backgrounds, cards and
+          illustrations bring warmth, playfulness and a natural feel
+          to the brand experience.
+        </p>
+        <h3 class="tj-syscard__label tj-comps__gap">05. Design in context</h3>
+        <div class="tj-context">
+          <img src="assets/perception/screens/tasty-mobile-2.png" alt="Mobile: composing a jar mix" loading="lazy" />
+          <img src="assets/perception/screens/tasty-mobile-1.png" alt="Mobile: the quiz of the day" loading="lazy" />
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 · FINAL SHOWCASE -->
+    <section class="tj-panel tj-show" data-chapter="Final Showcase">
+      <p class="tj-show__note tj-note" aria-hidden="true">Made with love<br/>(and peanut butter)</p>
+      <div class="tjc-stamp tjc-stamp--show" data-reveal aria-hidden="true">
+        <svg class="tjc-heart tjc-heart--stamp" viewBox="0 0 36 32"><path d="M18 28 C 6 20, 2 12, 7 7 C 11 3, 17 6, 18 10 C 19 6, 25 3, 29 7 C 34 12, 30 20, 18 28 Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <b>Merci</b><i>beaucoup</i>
+      </div>
+
+      <div class="tj-stand tj-show__collage">
+        <figure class="tj-print tj-h-66 tj-w-lg" data-reveal>
+          <span class="tj-print__view"><img src="assets/perception/web/home.png" alt="Homepage, the full scroll" data-scrollimg="1" loading="lazy" /></span>
+        </figure>
+        <figure class="tj-print tj-print--taped tj-h-56" data-reveal>
+          <span class="tj-print__view"><img src="assets/perception/web/products.png" alt="Products grid" data-scrollimg="0.7" loading="lazy" /></span>
+        </figure>
+        <figure class="tj-print tj-h-62" data-reveal>
+          <span class="tj-print__view"><img src="assets/perception/web/product-detail.png" alt="Product detail" data-scrollimg="0.85" loading="lazy" /></span>
+        </figure>
+        <figure class="tj-print tj-h-58" data-reveal>
+          <span class="tj-print__view"><img src="assets/perception/web/dashboard.png" alt="Account dashboard" data-scrollimg="0.75" loading="lazy" /></span>
+        </figure>
+      </div>
+
+      <div class="tj-show__intro">
+        <h2 class="tj-h2" data-reveal>Final<br/>Showcase.</h2>
+        <p class="tjc-sub" data-reveal>The full Tasty experience, crafted with love.</p>
+        <p class="tj-lede" data-reveal>
+          From discovery to checkout, Tasty delivers a joyful, intuitive
+          and trustworthy experience that celebrates natural ingredients
+          and the pleasure of real food.
+        </p>
+
+        <ul class="tj-show__wins" data-reveal>
+          <li>
+            <span class="tj-step__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.7a5.4 5.4 0 0 0-7.7 0L12 5.8l-1.1-1.1a5.4 5.4 0 0 0-7.7 7.7L12 21.2l8.8-8.8a5.4 5.4 0 0 0 0-7.7Z" fill="none" stroke="currentColor" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <div><b>Warmer brand presence</b><p>A friendly, tasty universe that builds trust.</p></div>
+          </li>
+          <li>
+            <span class="tj-step__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="18" r="2.4" fill="none" stroke="currentColor" stroke-width="2.1"/><circle cx="18" cy="6" r="2.4" fill="none" stroke="currentColor" stroke-width="2.1"/><path d="M8.4 18h7.1a3.5 3.5 0 0 0 0-7h-7a3.5 3.5 0 0 1 0-7H15.6" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <div><b>Clearer shopping flow</b><p>A seamless path from product discovery to purchase.</p></div>
+          </li>
+          <li>
+            <span class="tj-step__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.8A2.8 2.8 0 0 1 6.8 3H20v16H7.2A3.2 3.2 0 0 1 4 15.8Z" fill="none" stroke="currentColor" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 7h8M8 11h6" fill="none" stroke="currentColor" stroke-width="2.15" stroke-linecap="round"/></svg></span>
+            <div><b>Better content discovery</b><p>Recipes, stories and values, easy to explore.</p></div>
+          </li>
+          <li>
+            <span class="tj-step__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.3" fill="none" stroke="currentColor" stroke-width="2.15"/><path d="M8.5 10h.01M15.5 10h.01M8.8 14.6c1.7 1.8 4.7 1.8 6.4 0" fill="none" stroke="currentColor" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <div><b>Playful, trustworthy experience</b><p>A delightful balance of fun, quality and clarity.</p></div>
+          </li>
+        </ul>
+
+        <p class="tjc-dive" data-reveal>Thanks for viewing!
+          <svg class="tjc-heart tjc-heart--mini" viewBox="0 0 36 32" aria-hidden="true"><path d="M18 28 C 6 20, 2 12, 7 7 C 11 3, 17 6, 18 10 C 19 6, 25 3, 29 7 C 34 12, 30 20, 18 28 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </p>
+        <div class="tjc-ctarow" data-reveal>
+          <a class="tjc-cta" href="#tasty-top">End of case study <span aria-hidden="true">&rarr;</span></a>
+          <svg class="tjc-toast" viewBox="0 0 90 90" aria-hidden="true">
+            <path d="M20 34 C 14 22, 24 13, 33 17 C 36 9, 50 8, 54 16 C 63 11, 74 20, 68 31 C 72 36, 71 64, 66 70 C 60 76, 28 76, 23 70 C 18 64, 17 40, 20 34 Z" fill="#F6E3C5" stroke="#9A5218" stroke-width="3" stroke-linejoin="round"/>
+            <rect x="29" y="34" width="31" height="30" rx="9" fill="#E5B161" opacity="0.55"/>
+            <circle cx="38" cy="46" r="2.6" fill="#5C3210"/>
+            <circle cx="52" cy="46" r="2.6" fill="#5C3210"/>
+            <path d="M40 54 C 43 58, 47 58, 50 54" fill="none" stroke="#5C3210" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M21 50 C 12 46, 10 40, 13 34" fill="none" stroke="#9A5218" stroke-width="3" stroke-linecap="round"/>
+            <path d="M69 50 C 78 46, 80 40, 77 34" fill="none" stroke="#9A5218" stroke-width="3" stroke-linecap="round"/>
+            <path d="M37 75 l-2 8 M53 75 l2 8" stroke="#9A5218" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="tj-outro__credit" data-reveal>Case 004 &middot; Tasty &middot; designed in Tunis by Hatem Dahech</p>
+      </div>
+    </section>
+   </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="project-tasty.js?v=7"></script>
+  <script src="project-return-transition.js?v=11"></script>
+</body>
+</html>
