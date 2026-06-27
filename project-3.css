@@ -4444,6 +4444,7 @@ body.p3 {
   line-height: 0;
   transition: background .3s ease, color .3s ease, transform .3s cubic-bezier(.22,1,.36,1);
 }
+
 .p3 .f-next i::before,
 .p3 .f-next i::after {
   content: "";
@@ -4584,5 +4585,58 @@ body.p3 {
     height: 115.2% !important;
     left: -26% !important;
     top: -5.2% !important;
+  }
+}
+
+/* Final mobile continuity pass. Keep this at the end so later hero-specific
+   mobile rules cannot reintroduce hard breaks between sections. */
+@media (max-width: 900px) {
+  body.p3 {
+    background: #F0F4F8;
+  }
+
+  .p3-track {
+    padding-top: 56px !important;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 78vw 34vh at 92% 7%, rgba(32,201,176,0.13), transparent 68%),
+      radial-gradient(ellipse 82vw 36vh at -14% 24%, rgba(242,97,129,0.075), transparent 70%),
+      radial-gradient(ellipse 78vw 36vh at 98% 48%, rgba(32,201,176,0.10), transparent 68%),
+      radial-gradient(ellipse 84vw 38vh at -18% 72%, rgba(242,97,129,0.065), transparent 70%),
+      linear-gradient(180deg, #F0F4F8 0%, #F5F8FB 34%, #EEF5F6 66%, #F1F5F8 100%) !important;
+  }
+
+  .p3-track::before {
+    opacity: 0.22;
+  }
+
+  .p3-panel {
+    background: transparent !important;
+    padding-top: clamp(42px, 9vw, 64px) !important;
+    padding-bottom: clamp(42px, 9vw, 64px) !important;
+    margin: 0 !important;
+    overflow: visible;
+  }
+
+  .p3-panel.f1 {
+    padding-bottom: clamp(34px, 8vw, 52px) !important;
+  }
+
+  .p3-panel + .p3-panel {
+    margin-top: -1px !important;
+    padding-top: clamp(28px, 7vw, 48px) !important;
+  }
+
+  .f1__bg {
+    background: transparent !important;
+  }
+
+  .f2__inner,
+  .f3__inner,
+  .f4__inner,
+  .f5__inner,
+  .f5__inner--screens {
+    position: relative;
+    z-index: 1;
   }
 }
