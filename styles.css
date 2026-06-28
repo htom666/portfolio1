@@ -949,42 +949,21 @@ body.hero-intro-started .hero-sphere-wrap {
 .hero-cta:hover { transform: translateY(-4px); }
 
 .arrow-icon {
-  position: relative;
   display: inline-block;
-  width: 0.86em;
-  height: 0.86em;
+  width: 0.92em;
+  height: 0.92em;
   flex: 0 0 auto;
   color: currentColor;
-  line-height: 1;
+  overflow: visible;
+  vertical-align: -0.08em;
 }
 
-.arrow-icon::before,
-.arrow-icon::after {
-  content: "";
-  position: absolute;
-  display: block;
-  background: currentColor;
-  border-radius: 999px;
-}
-
-.arrow-icon::before {
-  width: 0.82em;
-  height: 2px;
-  right: 0.02em;
-  top: 0.49em;
-  transform: rotate(-45deg);
-  transform-origin: right center;
-}
-
-.arrow-icon::after {
-  width: 0.44em;
-  height: 0.44em;
-  right: 0.01em;
-  top: 0.09em;
-  background: transparent;
-  border-top: 2px solid currentColor;
-  border-right: 2px solid currentColor;
-  border-radius: 0;
+.arrow-icon path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 @media (max-width: 1200px) {
@@ -2349,6 +2328,102 @@ html.lenis, html.lenis body { height: auto; }
     display: none !important;
     opacity: 0 !important;
     visibility: hidden !important;
+  }
+}
+
+/* Phone flow hard stop: iOS was fighting the pinned horizontal works/contact
+   track. Keep the bridge-to-works overlay, but make Works and Contact normal
+   vertical sections once the handoff finishes. */
+@media (max-width: 640px) {
+  html,
+  body {
+    overflow-x: hidden !important;
+  }
+
+  .h-wrap {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin-top: -100vh !important;
+    overflow: visible !important;
+    cursor: auto !important;
+    pointer-events: auto !important;
+    transform: none !important;
+  }
+
+  .h-wrap.is-section3-underlay {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100svh !important;
+    margin-top: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+  }
+
+  body.selected-works-ready .h-wrap.is-section3-underlay {
+    pointer-events: auto !important;
+  }
+
+  .h-track {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+
+  .h-wrap.is-section3-underlay .h-track {
+    height: 100svh !important;
+    overflow: hidden !important;
+  }
+
+  .h-track .panel {
+    flex: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 100svh !important;
+    overflow: visible !important;
+  }
+
+  .panel--works {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0 !important;
+  }
+
+  .section3-real-content {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    min-height: 100svh !important;
+    transform: none !important;
+    justify-content: flex-start !important;
+    padding:
+      max(126px, calc(env(safe-area-inset-top, 0px) + 116px))
+      18px
+      max(48px, calc(env(safe-area-inset-bottom, 0px) + 40px)) !important;
+  }
+
+  .works-title {
+    top: max(78px, calc(env(safe-area-inset-top, 0px) + 70px)) !important;
+  }
+
+  .panel--contact {
+    width: 100% !important;
+    min-height: 100svh !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding:
+      max(92px, calc(env(safe-area-inset-top, 0px) + 82px))
+      24px
+      max(86px, calc(env(safe-area-inset-bottom, 0px) + 76px)) !important;
+    gap: clamp(16px, 2.4vh, 28px) !important;
   }
 }
 
