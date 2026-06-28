@@ -2407,6 +2407,50 @@ if (!reduceMotion && !isMobile && window.gsap) {
     };
   };
 
+  const getLiveCursorOrigin = () => {
+    const cur = document.querySelector(CURSOR_SELECTOR);
+    if (cur) {
+      const cs = getComputedStyle(cur);
+      const r = cur.getBoundingClientRect();
+      if (cs.display !== 'none' && r.width > 0 && r.height > 0) {
+        return {
+          x: r.left + r.width / 2,
+          y: r.top + r.height / 2,
+          startR: Math.max(r.width, r.height) / 2,
+          source: 'live-cursor',
+        };
+      }
+    }
+
+    if (lastKnownCursorForReload.live) {
+      return {
+        x: Math.min(Math.max(lastKnownCursorForReload.x, 0), window.innerWidth),
+        y: Math.min(Math.max(lastKnownCursorForReload.y, 0), window.innerHeight),
+        startR: 22,
+        source: 'live-pointer',
+      };
+    }
+
+    return null;
+  };
+
+  const getMenuCloseOrigin = () => {
+    const section = detectSection();
+    if (section !== 'hero') {
+      const cursorOrigin = getLiveCursorOrigin();
+      if (cursorOrigin) {
+        DEBUG && debugLog('[MENU DEBUG] close using cursor origin', cursorOrigin.source, {
+          x: Math.round(cursorOrigin.x),
+          y: Math.round(cursorOrigin.y),
+          startR: Math.round(cursorOrigin.startR),
+          section,
+        });
+        return cursorOrigin;
+      }
+    }
+    return getMenuRevealOrigin();
+  };
+
   const getCoverRadius = (x, y) => {
     const w = window.innerWidth, h = window.innerHeight;
     return Math.ceil(Math.max(
@@ -2610,11 +2654,14 @@ if (!reduceMotion && !isMobile && window.gsap) {
     if (openTl) { openTl.kill(); openTl = null; }
     DEBUG && debugLog('[MENU] close');
 
-    const origin = getMenuRevealOrigin();
+    const origin = getMenuCloseOrigin();
     menu.style.setProperty('--menu-x', `${origin.x}px`);
     menu.style.setProperty('--menu-y', `${origin.y}px`);
 
-    const currentR = parseFloat(getComputedStyle(menu).getPropertyValue('--menu-r')) || getCoverRadius(origin.x, origin.y);
+    const currentR = Math.max(
+      parseFloat(getComputedStyle(menu).getPropertyValue('--menu-r')) || 0,
+      getCoverRadius(origin.x, origin.y)
+    );
     const targetR = origin.startR; // collapse back into the visible source circle
     const state = { r: currentR };
 
