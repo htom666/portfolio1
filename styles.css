@@ -2214,26 +2214,86 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 
-/* Final mobile hero polish: keep the desktop sphere/name collision, but with
-   proportions that breathe on a narrow viewport. */
+/* Final mobile hero art direction: the name is intentionally oversized and
+   clipped by the viewport, matching the desktop collision instead of shrinking
+   into a safe mobile stack. */
 @media (max-width: 640px) {
   .panel--hero {
-    --hero-name-size: clamp(78px, 26.5vw, 106px);
-    --hero-circle-size: min(68vw, 268px);
+    --hero-name-size: clamp(126px, 40vw, 168px);
+    --hero-circle-size: min(68vw, 300px);
+  }
+
+  .panel--hero .hero-name {
+    line-height: 0.82;
+    letter-spacing: -0.032em;
   }
 
   .panel--hero .d-line--top {
-    left: 5vw;
-    top: 27svh;
+    left: -4vw;
+    right: auto;
+    top: clamp(112px, 20.5svh, 206px);
+    text-align: left;
   }
 
   .panel--hero .d-line--bottom {
-    right: 5vw;
-    bottom: 22svh;
+    left: -4.5vw;
+    right: auto;
+    bottom: clamp(170px, 31svh, 300px);
+    text-align: left;
   }
 
   .hero-sphere-wrap {
-    transform: translate3d(0, 1svh, 0);
+    transform: translate3d(0, 0.8svh, 0);
+  }
+
+  .hero-cta {
+    right: clamp(20px, 6vw, 28px);
+    bottom: max(7svh, calc(env(safe-area-inset-bottom, 0px) + 42px));
+    min-height: 52px;
+    padding: 0 22px;
+    font-size: 10.5px;
+    letter-spacing: 0.145em;
+  }
+
+  .avail-badge {
+    top: max(20px, calc(env(safe-area-inset-top, 0px) + 14px));
+    right: clamp(20px, 6vw, 24px);
+    max-width: calc(100vw - 106px);
+    padding: 8px 12px 8px 10px;
+    gap: 8px;
+    font-size: 9.5px;
+    letter-spacing: 0.105em;
+  }
+
+  .avail-dot {
+    width: 7px;
+    height: 7px;
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 360px) {
+  .panel--hero {
+    --hero-name-size: clamp(116px, 38vw, 136px);
+  }
+
+  .panel--hero .d-line--top {
+    top: clamp(104px, 20svh, 150px);
+  }
+
+  .panel--hero .d-line--bottom {
+    bottom: clamp(146px, 29svh, 214px);
+  }
+
+  .hero-cta {
+    min-height: 48px;
+    padding: 0 20px;
+    font-size: 10px;
+  }
+
+  .avail-badge {
+    max-width: calc(100vw - 98px);
+    font-size: 9px;
   }
 }
 
