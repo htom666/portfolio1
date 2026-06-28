@@ -83,6 +83,43 @@ if (initialSectionHash) {
 // Per-frame / per-mousemove logging is off by default. Toggle to true while debugging.
 const DEBUG = false;
 const debugLog = (...args) => console.debug(...args);
+
+const installConsoleSignature = () => {
+  if (window.__hatemConsoleSignature) return;
+  window.__hatemConsoleSignature = true;
+
+  const titleStyle = [
+    'background:#080807',
+    'color:#f4f1ea',
+    'font:600 18px/1.2 Georgia, serif',
+    'padding:10px 12px',
+    'border-radius:999px',
+  ].join(';');
+  const bodyStyle = [
+    'color:#080807',
+    'font:500 12px/1.7 Inter, Arial, sans-serif',
+    'letter-spacing:.08em',
+    'text-transform:uppercase',
+  ].join(';');
+
+  console.groupCollapsed('%cHatem Dahech%c  portfolio', titleStyle, bodyStyle);
+  console.log('%cBlack sphere, white room, selected works. Type hatem() for the hidden card.', 'color:#3f3f3a;font:13px/1.6 Inter, Arial, sans-serif;');
+  console.groupEnd();
+
+  window.hatem = () => {
+    const card = [
+      'HATEM DAHECH',
+      'UX/UI designer + front-end developer',
+      'mailto: hatemdahech1@gmail.com',
+      'behance: https://www.behance.net/hatemdahech',
+      'github: https://github.com/htom666',
+    ].join('\n');
+    console.log(`%c${card}`, 'background:#080807;color:#f4f1ea;font:500 13px/1.75 Inter, Arial, sans-serif;padding:16px 18px;border-radius:14px;');
+    return 'The quiet room is open.';
+  };
+};
+installConsoleSignature();
+
 const cursorStateClasses = [
   'cursor-state-default',
   'cursor-state-transition',
@@ -865,6 +902,14 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     gsap.set(cursorEl, { opacity: cursorOpacityTarget });
   };
 
+  const setCursorOpacityFromScroll = (value) => {
+    if (!cursorEl) return;
+    const opacity = Math.max(0, Math.min(1, value));
+    cursorOpacityTarget = opacity;
+    gsap.killTweensOf(cursorEl, 'opacity');
+    gsap.set(cursorEl, { opacity });
+  };
+
   const getMaskDia = () => Math.max(window.innerWidth, window.innerHeight) * 2;
   const finalCursorSize = 44;
   const getCircleDia = () => finalCursorSize;
@@ -1154,18 +1199,19 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     document.body.classList.toggle('is-transition-cursor-active', active);
   };
 
-  const setDarkSectionCursor = (active) => {
+  const setDarkSectionCursor = (active, scrollOpacity = null) => {
     document.body.classList.toggle('cursor-on-dark', active);
     if (!cursorEl || isExitCursorActive || isSection3InteractiveReady) return;
     setTransitionCursorActive(active);
     if (active) {
       if (currentCursorState !== 'transition') setCursorState('transition');
       gsap.set(cursorEl, { x: mouseX, y: mouseY, scaleX: 1, scaleY: 1, rotation: 0 });
-      tweenCursorOpacity(true, 0.42);
+      if (Number.isFinite(scrollOpacity)) setCursorOpacityFromScroll(scrollOpacity);
+      else tweenCursorOpacity(true, 0.72);
     } else {
       if (currentCursorState === 'transition') setCursorState('default');
       gsap.set(cursorEl, { scaleX: 1, scaleY: 1, rotation: 0 });
-      tweenCursorOpacity(false, 0.24);
+      tweenCursorOpacity(false, 0.34);
     }
   };
 
@@ -1296,6 +1342,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
   const IRIS_INTERACTIVE_RAW = 0.965;
   const IRIS_CURSOR_HANDOFF_RAW = 0.995;
   const easeIrisScroll = gsap.parseEase('none');
+  const easeDarkCursor = gsap.parseEase('power2.inOut');
   const clampIris = gsap.utils.clamp(0, 1);
 
   const renderScrollDrivenIris = (self) => {
@@ -1306,7 +1353,9 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     const isInteractive = raw >= IRIS_INTERACTIVE_RAW;
     const isPreviewReady = self.progress >= selectedWorksPreviewVisibleProgress;
     const isVisuallyHandedOff = raw >= IRIS_CURSOR_HANDOFF_RAW;
-    const isDarkReadableSection = self.progress >= 0.45 && self.progress < IRIS_TRIGGER_PROGRESS;
+    const darkCursorFade = clampIris((self.progress - 0.405) / 0.12);
+    const darkCursorOpacity = easeDarkCursor(darkCursorFade);
+    const isDarkReadableSection = darkCursorFade > 0 && self.progress < IRIS_TRIGGER_PROGRESS;
     const isBeforeExitCursor = self.progress < shrinkMouseFollowProgress;
     const isBridgeInteractivePhase = self.progress >= bridgeInteractiveProgress && self.progress < shrinkMouseFollowProgress;
 
@@ -1344,7 +1393,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
         setSection3HandoffComplete(false);
         setSection3InvertActive(false);
         setBridgeSelectable(isBridgeInteractivePhase, isBridgeInteractivePhase);
-        setDarkSectionCursor(true);
+        setDarkSectionCursor(true, 1);
         return;
       }
       setDarkSectionCursor(false);
@@ -1379,7 +1428,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     setSection3ClickThrough(false);
     setSection3InvertActive(false);
     setBridgeSelectable(isBridgeInteractivePhase, isBridgeInteractivePhase);
-    setDarkSectionCursor(isDarkReadableSection);
+    setDarkSectionCursor(isDarkReadableSection, isDarkReadableSection ? darkCursorOpacity : null);
   };
 
   let projectReturnIrisSynced = false;
@@ -1480,14 +1529,20 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       duration: 162.5,
     }, 0);
 
-  masterTl.to('.corner-cross',
-    { autoAlpha: 0, ease: 'none', duration: 100 }, 0);
+  if (document.querySelector('.corner-cross')) {
+    masterTl.to('.corner-cross',
+      { autoAlpha: 0, ease: 'none', duration: 100 }, 0);
+  }
   masterTl.to('.hero-coords, .hero-cta',
     { y: '-5vh', autoAlpha: 0, ease: 'power2.in', duration: 125 }, 0);
-  masterTl.to('.hero-left',
-    { x: '10vw', autoAlpha: 0, filter: 'blur(6px)', ease: 'power2.in', duration: 125 }, 0);
-  masterTl.to('.hero-tagline',
-    { x: '-10vw', autoAlpha: 0, filter: 'blur(6px)', ease: 'power2.in', duration: 125 }, 0);
+  if (document.querySelector('.hero-left')) {
+    masterTl.to('.hero-left',
+      { x: '10vw', autoAlpha: 0, filter: 'blur(6px)', ease: 'power2.in', duration: 125 }, 0);
+  }
+  if (document.querySelector('.hero-tagline')) {
+    masterTl.to('.hero-tagline',
+      { x: '-10vw', autoAlpha: 0, filter: 'blur(6px)', ease: 'power2.in', duration: 125 }, 0);
+  }
   masterTl.to('.panel--hero .hero-name, .panel--hero .hero-name--mask',
     { scale: 0.88, autoAlpha: 0, filter: 'blur(12px)', ease: 'power2.in', duration: 125 }, 0);
 
