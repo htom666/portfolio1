@@ -1795,16 +1795,33 @@ html.lenis, html.lenis body { height: auto; }
   .about-wrap {
     width: 100%;
     max-width: min(760px, 86vw);
+    align-items: flex-start;
   }
 
   .about-wrap .eyebrow {
+    width: 100%;
     margin-bottom: clamp(26px, 5vh, 42px);
   }
 
   .prose {
+    width: 100%;
     font-size: clamp(32px, 6.6vw, 54px);
     line-height: 1.25;
     margin-bottom: clamp(36px, 6vh, 58px);
+  }
+
+  .section2ContentLayer .cta-lead {
+    width: auto;
+    max-width: min(100%, 22rem);
+    align-self: flex-start;
+    margin: 0 0 clamp(14px, 2.2vh, 20px);
+    text-align: left;
+    text-wrap: balance;
+    line-height: 1.45;
+  }
+
+  .section2ContentLayer .pill {
+    align-self: flex-start;
   }
 
   .section2-bridge {
@@ -2048,6 +2065,36 @@ html.lenis, html.lenis body { height: auto; }
   .prose,
   .section2-bridge__body {
     font-size: clamp(30px, 8vw, 42px);
+  }
+
+  .section2ContentLayer {
+    padding: 0 clamp(24px, 7vw, 30px);
+  }
+
+  .section2ContentLayer .about-wrap {
+    max-width: 100%;
+    transform: translateY(-1svh);
+  }
+
+  .section2ContentLayer .about-wrap .eyebrow {
+    margin-bottom: clamp(22px, 4.2svh, 32px);
+    font-size: clamp(15px, 4.1vw, 17px);
+  }
+
+  .section2ContentLayer .prose {
+    font-size: clamp(29px, 7.7vw, 38px);
+    line-height: 1.24;
+    margin-bottom: clamp(30px, 5.2svh, 42px);
+  }
+
+  .section2ContentLayer .cta-lead {
+    font-size: clamp(15px, 3.8vw, 16px);
+    margin-bottom: 14px;
+  }
+
+  .section2ContentLayer .pill {
+    min-height: 44px;
+    padding: 11px 19px;
   }
 }
 
