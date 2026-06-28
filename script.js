@@ -89,11 +89,13 @@ const installConsoleSignature = () => {
   window.__hatemConsoleSignature = true;
 
   const ink = '#080807';
-  const paper = '#f4f1ea';
   const mist = '#8f8a7d';
-  const line = '#cfc8ba';
   const serif = 'Georgia, "Times New Roman", serif';
   const sans = 'Inter, Arial, sans-serif';
+  const titleStyle = `color:inherit;font:600 20px/1.3 ${serif};letter-spacing:.01em;`;
+  const dotStyle = `color:${ink};font:900 42px/1 ${serif};`;
+  const labelStyle = `color:${mist};font:700 11px/1.75 ${sans};letter-spacing:.18em;text-transform:uppercase;`;
+  const noteStyle = `color:${mist};font:12px/1.75 ${sans};letter-spacing:.03em;`;
   const urlFor = (path) => new URL(path, window.location.href).href;
   const workIndex = [
     { id: '001', project: 'Ryujin', kind: 'Luxury e-commerce', command: 'hatem.go("ryujin")', route: urlFor('project-ryujin.html') },
@@ -113,29 +115,23 @@ const installConsoleSignature = () => {
 
   const printCard = () => {
     console.log(
-      `%c
-        ●
-
-  HATEM DAHECH
-  UX/UI DESIGN + FRONT-END
-
-  black sphere / white room / selected work
-  Tunis, TN / available Q3
-
-  hatem.work()       case-study index
-  hatem.contact()    direct links
-  hatem.about()      site note
-  hatem.go("works")  jump through the room
-`,
       [
-        `background:${ink}`,
-        `color:${paper}`,
-        `font:500 13px/1.72 ${sans}`,
-        'padding:18px 22px',
-        'border-radius:16px',
-        `border:1px solid ${line}`,
-        'letter-spacing:.02em',
-      ].join(';')
+        '%c●%c Hatem Dahech',
+        '%cUX/UI DESIGN + FRONT-END',
+        '',
+        'black sphere / white room / selected work',
+        'Tunis, TN / available Q3',
+        '',
+        '%cCOMMANDS',
+        '  hatem.work()       case-study index',
+        '  hatem.contact()    direct links',
+        '  hatem.about()      site note',
+        '  hatem.go("works")  jump through the room',
+      ].join('\n'),
+      dotStyle,
+      titleStyle,
+      labelStyle,
+      labelStyle
     );
     return 'Hidden room open: hatem.work(), hatem.contact(), hatem.about(), hatem.go("works").';
   };
@@ -153,16 +149,13 @@ const installConsoleSignature = () => {
       linkedin: 'https://www.linkedin.com/in/hatemdahech/',
       github: 'https://github.com/htom666',
     };
-    console.log(
-      '%cCONTACT /%c hatemdahech1@gmail.com\nbehance.net/hatemdahech\nlinkedin.com/in/hatemdahech\ngithub.com/htom666',
-      `background:${paper};color:${ink};font:700 11px/1.7 ${sans};letter-spacing:.18em;padding:10px 12px;border:1px solid ${ink};`,
-      `background:${paper};color:${ink};font:500 13px/1.7 ${sans};padding:10px 12px;border:1px solid ${ink};border-left:0;`
-    );
+    console.log('%cCONTACT', labelStyle);
+    console.table(contact);
     return contact;
   };
   hatem.about = () => {
-    console.log('%cThis site is built around one black sphere. Scroll is the camera. The work is the proof.', `color:${ink};font:italic 18px/1.5 ${serif};`);
-    console.log('%cDesign direction: editorial, monochrome, physical motion, no decoration without consequence.', `color:${mist};font:12px/1.7 ${sans};letter-spacing:.04em;`);
+    console.log('%cThis site is built around one black sphere. Scroll is the camera. The work is the proof.', `color:inherit;font:italic 18px/1.5 ${serif};`);
+    console.log('%cDesign direction: editorial, monochrome, physical motion, no decoration without consequence.', noteStyle);
     return 'One sphere, four case studies, no template.';
   };
   hatem.go = (target = 'home') => {
@@ -185,11 +178,11 @@ const installConsoleSignature = () => {
   console.groupCollapsed(
     '%c●%c Hatem Dahech %c/ console room',
     `color:${ink};font:900 34px/1 ${serif};`,
-    `color:${ink};font:600 18px/1.2 ${serif};`,
+    `color:inherit;font:600 18px/1.2 ${serif};`,
     `color:${mist};font:500 11px/1.2 ${sans};letter-spacing:.16em;text-transform:uppercase;`
   );
-  console.log('%cThe portfolio has a hidden room. Type %chatem()%c.', `color:${mist};font:13px/1.7 ${sans};`, `color:${ink};font:700 13px/1.7 ${sans};`, `color:${mist};font:13px/1.7 ${sans};`);
-  console.log('%cCommands:%c hatem.work()  hatem.contact()  hatem.about()  hatem.go("works")', `color:${ink};font:700 11px/1.7 ${sans};letter-spacing:.16em;text-transform:uppercase;`, `color:${mist};font:12px/1.7 ${sans};`);
+  console.log('%cThe portfolio has a hidden room. Type %chatem()%c.', noteStyle, `color:inherit;font:700 13px/1.7 ${sans};`, noteStyle);
+  console.log('%cCommands:%c hatem.work()  hatem.contact()  hatem.about()  hatem.go("works")', labelStyle, noteStyle);
   console.groupEnd();
 };
 installConsoleSignature();
