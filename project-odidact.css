@@ -19835,3 +19835,69 @@ body.odidact-page.is-entering .hero-visual {
     margin-top: 0 !important;
   }
 }
+
+/* =========================================================================
+   AUTHORITATIVE MOBILE FIXES (<=900px)
+   Appended last so it wins over the accumulated mobile blocks above.
+   Fixes the reported issues: edge-bleeding hero/section images, misaligned
+   eyebrows, and an inconsistent section rhythm. (Full cleanup of the older
+   duplicate mobile blocks is deferred to the planned audit pass.)
+   ========================================================================= */
+@media (max-width: 900px) {
+  /* 1. Consistent vertical rhythm on every chapter */
+  .odidact-page .section-panel {
+    padding-top: clamp(54px, 7vh, 74px) !important;
+    padding-bottom: clamp(54px, 7vh, 74px) !important;
+  }
+  .odidact-page .odidact-hero {
+    padding-top: clamp(74px, 9vh, 98px) !important;   /* clear the fixed nav */
+  }
+
+  /* 2. Eyebrows: always left-aligned to the section content edge.
+     (.challenge-copy is display:contents, so its eyebrow becomes a flex
+     child of .challenge-grid and was being centred.) */
+  .odidact-page .sec-eyebrow {
+    align-self: start !important;
+    justify-self: start !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  /* 3. Hero mockup: contained inside the screen (no side bleed) but still
+     large via a cover crop. Overrides the earlier full-bleed -5vw rules. */
+  .odidact-page .odidact-hero .odh-stage {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 10px 0 0 !important;
+    overflow: visible !important;
+  }
+  .odidact-page .odidact-hero .odh-main {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: clamp(240px, 62vw, 380px) !important;
+    margin: 0 auto !important;
+  }
+  .odidact-page .odidact-hero .odh-main__view { height: 100% !important; }
+  .odidact-page .odidact-hero .odh-main__view img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: top center !important;
+  }
+
+  /* 4. Section-2 (challenge) image: centred, no edge bleed */
+  .odidact-page .odidact-challenge .challenge-visual {
+    width: 100% !important;
+    max-width: 440px !important;
+    min-height: 0 !important;
+    margin: clamp(18px, 3vh, 30px) auto 0 !important;
+    overflow: visible !important;
+  }
+  .odidact-page .odidact-challenge .challenge-visual img {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 0 auto !important;
+  }
+}

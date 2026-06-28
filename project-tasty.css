@@ -1820,3 +1820,12 @@ body.tj::after {
     max-width: min(88vw, 390px);
   }
 }
+
+/* Equalize the cover's bottom gap with the rest of the chapters: the hero (.tjc)
+   kept a 7vh bottom pad while every other panel uses ~2.4vh, so the first gap
+   read noticeably bigger than the rest. Match it for a consistent rhythm. */
+@media (max-width: 899px) {
+  .tj-panel.tjc {
+    padding-bottom: clamp(16px, 2.4vh, 28px) !important;
+  }
+}
