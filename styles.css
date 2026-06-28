@@ -847,13 +847,14 @@ body.is-loading:not(.hero-intro-started) .panel--hero .hero-name--mask {
   border-radius: 50%;
   isolation: isolate;
   --hero-lens-softness: 1;
-  --hero-edge-fade: 0.35;
+  --hero-edge-fade: 0;
   --hero-lens-detail-opacity: 0;
   background: var(--hero-core);
 }
 
 body.hero-intro-started .hero-sphere-wrap {
-  --hero-lens-detail-opacity: 1;
+  --hero-edge-fade: 0;
+  --hero-lens-detail-opacity: 0;
 }
 #hero-sphere-canvas {
   position: relative;
