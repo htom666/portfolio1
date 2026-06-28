@@ -1778,33 +1778,41 @@ html.lenis, html.lenis body { height: auto; }
     overflow: visible;
   }
 
+  /* Vertical flow: hero -> about -> bridge stack as normal blocks (no overlap). */
   .heroToSection2Scene {
-    display: block;
-    height: 100vh;
-    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    z-index: auto;
   }
 
   .section2ExitScene {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    height: 100vh;
-    overflow: hidden;
-    display: block;
-    background: transparent;
+    position: relative;
+    inset: auto;
+    order: 2;
+    z-index: 2;            /* slides up over the pinned hero as you scroll */
+    height: auto;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    background: var(--ink);
   }
 
   .blackMaskLayer,
   .hero-veil {
-    display: block;
+    display: none;
   }
 
   .section2ContentLayer {
-    position: absolute;
-    inset: 0;
-    min-height: 0;
-    order: initial;
-    padding: 0 clamp(24px, 7vw, 72px);
+    position: relative;
+    inset: auto;
+    order: 1;
+    min-height: 100svh;
+    background: var(--ink);
+    padding: clamp(96px, 14vh, 140px) clamp(24px, 7vw, 56px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1843,15 +1851,16 @@ html.lenis, html.lenis body { height: auto; }
   }
 
   .section2-bridge {
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    display: grid;
-    place-items: center;
-    opacity: 0;
-    pointer-events: none;
-    padding: 0 clamp(24px, 7vw, 72px);
-    background: transparent;
+    position: relative;
+    inset: auto;
+    order: 2;
+    z-index: auto;
+    display: block;
+    place-items: initial;
+    opacity: 1;
+    pointer-events: auto;
+    padding: clamp(40px, 7vh, 80px) clamp(24px, 7vw, 56px) clamp(96px, 14vh, 140px);
+    background: var(--ink);
   }
 
   .section2-bridge__inner {
@@ -1876,45 +1885,38 @@ html.lenis, html.lenis body { height: auto; }
   }
 
   .heroOverlayLayer {
-    position: absolute;
-    inset: 0;
-    height: auto;
-    order: initial;
-    z-index: 10;
+    position: relative;
+    inset: auto;
+    order: 1;
+    height: 100svh;
+    z-index: 1;
+    will-change: transform;   /* JS pins this while the ball grows */
   }
 
   .h-wrap {
     position: relative;
-    height: 100vh;
-    overflow: hidden;
-    z-index: 1;
+    height: auto;
+    overflow: visible;
+    z-index: auto;
     cursor: auto;
-    margin-top: -100vh;
-  }
-
-  .h-wrap.is-section3-underlay {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
     margin-top: 0;
   }
 
   .h-track {
-    display: flex;
-    flex-direction: row;
-    width: max-content;
-    height: 100vh;
-    will-change: transform;
+    display: block;
+    width: 100%;
+    height: auto;
+    will-change: auto;
   }
 
   .panel {
-    flex: 0 0 100vw;
-    width: 100vw;
-    height: 100vh;
-    min-height: 100vh;
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 100svh;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     padding: 0;
   }
 
@@ -1923,14 +1925,17 @@ html.lenis, html.lenis body { height: auto; }
     --hero-circle-size: min(68vh, 76vw, 540px);
   }
 
+  /* Centered via left/top + the handler's translate(-50%,-50%) (see
+     onHeroScroll in script.js). margin:auto centering double-shifts it. */
   .hero-sphere-wrap {
-    inset: 0;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-    transform: translateZ(0);
+    inset: auto;
+    left: 50%;
+    top: 50svh;
+    right: auto;
+    bottom: auto;
+    margin: 0;
+    transform: translate(-50%, -50%) translateZ(0);
+    transform-origin: center center;
   }
 
   .panel--works {
@@ -1940,9 +1945,9 @@ html.lenis, html.lenis body { height: auto; }
   }
 
   .section3-real-content {
-    position: absolute;
-    inset: 0;
-    transform: translateY(clamp(8px, 1.8vh, 20px));
+    position: relative;
+    inset: auto;
+    transform: none;
     padding: clamp(64px, 9vh, 94px) clamp(22px, 6vw, 72px);
     justify-content: center;
     align-items: center;
@@ -2027,9 +2032,9 @@ html.lenis, html.lenis body { height: auto; }
 
   .panel--contact {
     width: 100%;
-    flex: 0 0 100vw;
-    min-height: 100vh;
-    height: 100vh;
+    flex: none;
+    min-height: 100svh;
+    height: auto;
     overflow: visible;
     justify-content: center;
     align-items: center;
@@ -2133,7 +2138,7 @@ html.lenis, html.lenis body { height: auto; }
   }
 
   .hero-sphere-wrap {
-    transform: translate3d(0, 1.5svh, 0);
+    transform: translate(-50%, calc(-50% + 1.5svh)) translateZ(0);
   }
 
   .section3-real-content {
@@ -2261,7 +2266,7 @@ html.lenis, html.lenis body { height: auto; }
   }
 
   .hero-sphere-wrap {
-    transform: translate3d(0, 0.6svh, 0);
+    transform: translate(-50%, calc(-50% + 0.6svh)) translateZ(0);
   }
 
   .hero-cta {
@@ -2331,8 +2336,99 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 
-/* (Removed) "Phone flow hard stop" — it forced Works/Contact into a vertical
-   stack on phones, which disabled the horizontal pin. The horizontal track now
-   runs on mobile too, matching the desktop flow (ball-grow -> about -> bridge
-   -> iris reveal -> horizontal swipe to Contact). */
+/* Phone flow hard stop: iOS was fighting the pinned horizontal works/contact
+   track. Keep the bridge-to-works overlay, but make Works and Contact normal
+   vertical sections once the handoff finishes. */
+@media (max-width: 640px) {
+  html,
+  body {
+    overflow-x: hidden !important;
+  }
+
+  .h-wrap {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin-top: 0 !important;
+    overflow: visible !important;
+    cursor: auto !important;
+    pointer-events: auto !important;
+    transform: none !important;
+  }
+
+  .h-wrap.is-section3-underlay {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100svh !important;
+    margin-top: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+  }
+
+  body.selected-works-ready .h-wrap.is-section3-underlay {
+    pointer-events: auto !important;
+  }
+
+  .h-track {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+
+  .h-wrap.is-section3-underlay .h-track {
+    height: 100svh !important;
+    overflow: hidden !important;
+  }
+
+  .h-track .panel {
+    flex: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 100svh !important;
+    overflow: visible !important;
+  }
+
+  .panel--works {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0 !important;
+  }
+
+  .section3-real-content {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    min-height: 100svh !important;
+    transform: none !important;
+    justify-content: flex-start !important;
+    padding:
+      max(126px, calc(env(safe-area-inset-top, 0px) + 116px))
+      18px
+      max(48px, calc(env(safe-area-inset-bottom, 0px) + 40px)) !important;
+  }
+
+  .works-title {
+    top: max(78px, calc(env(safe-area-inset-top, 0px) + 70px)) !important;
+  }
+
+  .panel--contact {
+    width: 100% !important;
+    min-height: 100svh !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding:
+      max(92px, calc(env(safe-area-inset-top, 0px) + 82px))
+      24px
+      max(86px, calc(env(safe-area-inset-bottom, 0px) + 76px)) !important;
+    gap: clamp(16px, 2.4vh, 28px) !important;
+  }
+}
 
