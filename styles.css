@@ -2,7 +2,7 @@
    Reset & base
    ========================================================= */
 *, *::before, *::after { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; }
+html, body { margin: 0; padding: 0; overscroll-behavior: none; }
 
 :root {
   /* OKLCH palette: tinted neutrals, no pure black/white */
@@ -1802,6 +1802,8 @@ html.lenis, html.lenis body { height: auto; }
   .section2ContentLayer {
     position: absolute;
     inset: 0;
+    bottom: auto;
+    height: 100svh;            /* center in the VISIBLE viewport, not 100vh */
     min-height: 0;
     order: initial;
     padding: 0 clamp(24px, 7vw, 72px);
@@ -1845,6 +1847,8 @@ html.lenis, html.lenis body { height: auto; }
   .section2-bridge {
     position: absolute;
     inset: 0;
+    bottom: auto;
+    height: 100svh;            /* center in the VISIBLE viewport, not 100vh */
     z-index: 5;
     display: grid;
     place-items: center;
@@ -1923,13 +1927,18 @@ html.lenis, html.lenis body { height: auto; }
     --hero-circle-size: min(68vh, 76vw, 540px);
   }
 
+  /* Center on the VISIBLE viewport (50svh) like the liked version, not the full
+     100vh panel — on a real phone the address bar makes svh < vh, so margin:auto
+     centering dropped the sphere below the visible centre. Negative-margin
+     centering is transform-safe so the masterTl's scale tween still works. */
   .hero-sphere-wrap {
-    inset: 0;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
+    inset: auto;
+    left: 50%;
+    top: 50svh;
+    right: auto;
+    bottom: auto;
+    margin-left: calc(var(--hero-circle-size) / -2);
+    margin-top: calc(var(--hero-circle-size) / -2);
     transform: translateZ(0);
   }
 
@@ -2028,12 +2037,13 @@ html.lenis, html.lenis body { height: auto; }
   .panel--contact {
     width: 100%;
     flex: 0 0 100vw;
-    min-height: 100vh;
-    height: 100vh;
+    min-height: 100svh;        /* center in the VISIBLE viewport, not 100vh */
+    height: 100svh;
     overflow: visible;
     justify-content: center;
     align-items: center;
-    padding: clamp(74px, 9vh, 108px) clamp(24px, 6vw, 80px);
+    /* slightly heavier bottom padding nudges the centred block up a touch */
+    padding: clamp(60px, 7.5vh, 88px) clamp(24px, 6vw, 80px) clamp(92px, 12vh, 124px);
     gap: clamp(16px, 2.4vh, 30px);
   }
 
@@ -2200,18 +2210,18 @@ html.lenis, html.lenis body { height: auto; }
   .section3-real-content {
     gap: 8px;
     padding:
-      max(128px, calc(env(safe-area-inset-top, 0px) + 118px))
+      max(104px, calc(env(safe-area-inset-top, 0px) + 96px))
       18px
-      max(46px, calc(env(safe-area-inset-bottom, 0px) + 36px));
+      max(72px, calc(env(safe-area-inset-bottom, 0px) + 60px));
   }
 
   .works-list {
     width: calc(100vw - 36px);
-    row-gap: 6px;
+    row-gap: 4px;
   }
 
   .work-row a {
-    padding: clamp(5px, 0.9vh, 8px) 0;
+    padding: clamp(2px, 0.5vh, 5px) 0;
   }
 
   .work-name {
@@ -2282,6 +2292,14 @@ html.lenis, html.lenis body { height: auto; }
     gap: 8px;
     font-size: 9.5px;
     letter-spacing: 0.105em;
+  }
+
+  /* Align the hamburger's vertical centre with the pill. The pill is ~32px tall
+     and the hamburger box is 40px, so the hamburger top is offset -4px from the
+     pill top; both share the same safe-area anchor so they stay aligned on
+     notched phones. */
+  .menu-btn {
+    top: max(16px, calc(env(safe-area-inset-top, 0px) + 10px));
   }
 
   .avail-dot {
