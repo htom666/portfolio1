@@ -90,7 +90,7 @@ img { max-width: 100%; }
   text-decoration: none;
   transition: color 0.25s;
 }
-.ryujin-page .rytop__links a:not(.rytop__next)::after {
+.ryujin-page .rytop__links a::after {
   content: "";
   position: absolute;
   left: 0; right: 0; bottom: -5px;
@@ -101,7 +101,7 @@ img { max-width: 100%; }
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .ryujin-page .rytop__links a:hover { color: var(--gold); }
-.ryujin-page .rytop__links a:not(.rytop__next):hover::after { transform: scaleX(1); }
+.ryujin-page .rytop__links a:hover::after { transform: scaleX(1); }
 
 @media (max-width: 900px) {
   .ryujin-page .rytop { height: 56px; padding: 0 18px; }

@@ -19362,7 +19362,7 @@ a {
   text-decoration: none;
   transition: color 0.25s;
 }
-.odidact-page .odtop__links a:not(.odtop__next)::after {
+.odidact-page .odtop__links a::after {
   content: "";
   position: absolute;
   left: 0; right: 0; bottom: -5px;
@@ -19373,7 +19373,7 @@ a {
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .odidact-page .odtop__links a:hover { color: #0d12f8; }
-.odidact-page .odtop__links a:not(.odtop__next):hover::after { transform: scaleX(1); }
+.odidact-page .odtop__links a:hover::after { transform: scaleX(1); }
 
 .odidact-page .odtop__next {
   display: inline-flex;

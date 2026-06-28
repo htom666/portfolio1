@@ -844,6 +844,26 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
   const section3RealContent = document.querySelector('.section3-real-content');
   const wrap = document.querySelector('.h-wrap');
   const track = document.querySelector('.h-track');
+  let cursorOpacityTarget = 0;
+
+  const tweenCursorOpacity = (visible, duration = 0.34) => {
+    if (!cursorEl) return;
+    const target = visible ? 1 : 0;
+    if (cursorOpacityTarget === target) return;
+    cursorOpacityTarget = target;
+    gsap.to(cursorEl, {
+      opacity: target,
+      duration,
+      ease: visible ? 'power2.out' : 'power2.inOut',
+      overwrite: 'auto',
+    });
+  };
+
+  const setCursorOpacityNow = (visible) => {
+    if (!cursorEl) return;
+    cursorOpacityTarget = visible ? 1 : 0;
+    gsap.set(cursorEl, { opacity: cursorOpacityTarget });
+  };
 
   const getMaskDia = () => Math.max(window.innerWidth, window.innerHeight) * 2;
   const finalCursorSize = 44;
@@ -1140,10 +1160,12 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     setTransitionCursorActive(active);
     if (active) {
       if (currentCursorState !== 'transition') setCursorState('transition');
-      gsap.set(cursorEl, { x: mouseX, y: mouseY, opacity: 1, scaleX: 1, scaleY: 1, rotation: 0 });
+      gsap.set(cursorEl, { x: mouseX, y: mouseY, scaleX: 1, scaleY: 1, rotation: 0 });
+      tweenCursorOpacity(true, 0.42);
     } else {
       if (currentCursorState === 'transition') setCursorState('default');
-      gsap.set(cursorEl, { opacity: 0, scaleX: 1, scaleY: 1, rotation: 0 });
+      gsap.set(cursorEl, { scaleX: 1, scaleY: 1, rotation: 0 });
+      tweenCursorOpacity(false, 0.24);
     }
   };
 
@@ -1215,6 +1237,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       force3D: true,
       transformOrigin: 'center center',
     });
+    setCursorOpacityNow(false);
   }
 
   const maskQuickX = maskEl ? gsap.quickTo(maskEl, 'x', { duration: 0.18, ease: 'power3.out' }) : null;
@@ -1303,7 +1326,10 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       setBridgeSelectable(false);
       setSection3InvertActive(false);
       setDarkSectionCursor(false);
-      if (cursorEl) gsap.set(cursorEl, { x: mouseX, y: mouseY, opacity: 1, scaleX: 1, scaleY: 1, rotation: 0 });
+      if (cursorEl) {
+        gsap.set(cursorEl, { x: mouseX, y: mouseY, scaleX: 1, scaleY: 1, rotation: 0 });
+        tweenCursorOpacity(true, 0.18);
+      }
       return;
     }
 
@@ -1332,7 +1358,16 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       setSelectedWorksReady(isInteractive, isInteractive ? 'scroll iris nearly clear' : 'scroll iris active');
       setSelectedWorksPreviewVisibleReady(isPreviewReady, isPreviewReady ? 'scroll iris preview clear' : 'scroll iris active');
       setBridgeSelectable(false);
-      if (cursorEl) gsap.set(cursorEl, { opacity: isInteractive ? 1 : 0, scaleX: 1, scaleY: 1, rotation: 0 });
+      if (cursorEl) {
+        const handoffOpacity = clampIris((raw - 0.88) / (IRIS_INTERACTIVE_RAW - 0.88));
+        cursorOpacityTarget = isInteractive ? 1 : handoffOpacity;
+        gsap.set(cursorEl, {
+          opacity: isInteractive ? 1 : handoffOpacity,
+          scaleX: 1,
+          scaleY: 1,
+          rotation: 0,
+        });
+      }
       return;
     }
 
