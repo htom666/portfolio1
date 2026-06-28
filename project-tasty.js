@@ -488,12 +488,9 @@
         let dragPointerId = null;
         let dragging = false;
         let lastPointerStartAt = 0;
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let touchStartLeft = 0;
-        let touchDragging = false;
 
         const startDrag = (event) => {
+          if (event.pointerType === 'touch') return;
           if (event.button !== undefined && event.button !== 0) return;
           lastPointerStartAt = event.type === 'pointerdown' ? performance.now() : lastPointerStartAt;
           dragPointerId = event.pointerId;
@@ -508,6 +505,7 @@
         };
 
         const moveDrag = (event) => {
+          if (event.pointerType === 'touch') return;
           if (dragPointerId !== null && event.pointerId !== dragPointerId) return;
           const dx = event.clientX - dragStartX;
           const dy = event.clientY - dragStartY;
@@ -536,35 +534,6 @@
           startDrag(event);
         };
 
-        const startTouchDrag = (event) => {
-          if (event.touches.length !== 1) return;
-          const touch = event.touches[0];
-          touchStartX = touch.clientX;
-          touchStartY = touch.clientY;
-          touchStartLeft = strip.scrollLeft;
-          touchDragging = false;
-        };
-
-        const moveTouchDrag = (event) => {
-          if (event.touches.length !== 1) return;
-          const touch = event.touches[0];
-          const dx = touch.clientX - touchStartX;
-          const dy = touch.clientY - touchStartY;
-          if (!touchDragging) {
-            if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 8) return;
-            if (Math.abs(dx) < 7) return;
-            touchDragging = true;
-            strip.classList.add('is-swiping');
-          }
-          event.preventDefault();
-          strip.scrollLeft = touchStartLeft - dx;
-        };
-
-        const endTouchDrag = () => {
-          touchDragging = false;
-          strip.classList.remove('is-swiping');
-        };
-
         strip.addEventListener('wheel', onWheel, { passive: false });
         strip.addEventListener('pointerdown', startDrag, { passive: true });
         strip.addEventListener('pointermove', moveDrag, { passive: false });
@@ -577,10 +546,6 @@
         strip.addEventListener('mousedown', startMouseDrag, { passive: true });
         window.addEventListener('mousemove', moveDrag, { passive: false });
         window.addEventListener('mouseup', endDrag, { passive: true });
-        strip.addEventListener('touchstart', startTouchDrag, { passive: true });
-        strip.addEventListener('touchmove', moveTouchDrag, { passive: false });
-        strip.addEventListener('touchend', endTouchDrag, { passive: true });
-        strip.addEventListener('touchcancel', endTouchDrag, { passive: true });
         return () => {
           strip.removeEventListener('wheel', onWheel);
           strip.removeEventListener('pointerdown', startDrag);
@@ -594,10 +559,6 @@
           strip.removeEventListener('mousedown', startMouseDrag);
           window.removeEventListener('mousemove', moveDrag);
           window.removeEventListener('mouseup', endDrag);
-          strip.removeEventListener('touchstart', startTouchDrag);
-          strip.removeEventListener('touchmove', moveTouchDrag);
-          strip.removeEventListener('touchend', endTouchDrag);
-          strip.removeEventListener('touchcancel', endTouchDrag);
         };
       });
 

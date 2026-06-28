@@ -1801,3 +1801,29 @@ body.ryujin-page.is-entering .ryujin-hero .reveal-stagger > * {
   .ds__spacing-labels b,
   .ds__spacing-labels em { font-size: 8px; }
 }
+
+/* Final mobile rhythm: keep every chapter spaced like the Solution -> Journey
+   handoff, instead of alternating between huge and cramped gaps. */
+@media (max-width: 900px) {
+  body.ryujin-page .section-panel {
+    padding-top: clamp(68px, 8vh, 84px);
+    padding-bottom: clamp(58px, 7vh, 76px);
+  }
+
+  body.ryujin-page .section-panel + .section-panel {
+    margin-top: -1px;
+  }
+
+  body.ryujin-page .ryujin-hero {
+    min-height: 100svh;
+    padding-top: clamp(86px, 11vh, 112px);
+  }
+
+  body.ryujin-page .ryujin-solution,
+  body.ryujin-page .ryujin-approach,
+  body.ryujin-page .ryujin-anatomy,
+  body.ryujin-page .ryujin-process,
+  body.ryujin-page .ryujin-system {
+    row-gap: clamp(22px, 4vh, 36px);
+  }
+}

@@ -1764,3 +1764,59 @@ body.tj::after {
     padding-bottom: clamp(64px, 10vh, 96px);
   }
 }
+
+/* Final mobile pass: native iOS momentum for image strips, softer snap, and
+   tighter chapter rhythm after the cover. */
+@media (max-width: 899px) {
+  .tj-panel:not(.tjc) {
+    padding-top: calc(var(--t-bar-h) + 10px);
+    padding-bottom: clamp(16px, 2.4vh, 28px);
+  }
+
+  .tj-panel:not(.tjc) + .tj-panel:not(.tjc) {
+    margin-top: -8px;
+  }
+
+  .tj-flow,
+  .tj-wire,
+  .tj-sys {
+    padding-bottom: clamp(16px, 2.6vh, 28px);
+  }
+
+  .tj-flow__steps,
+  .tj-stand {
+    scroll-snap-type: x proximity;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    margin-top: clamp(0.75rem, 2vh, 1.15rem);
+    padding-bottom: clamp(3.8rem, 10vh, 5.2rem);
+  }
+
+  .tj-flow__steps::-webkit-scrollbar,
+  .tj-stand::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tj-flow__steps > *,
+  .tj-stand > * {
+    scroll-snap-align: center;
+    scroll-snap-stop: normal;
+  }
+
+  .tj-step {
+    flex-basis: min(80vw, 330px);
+  }
+
+  .tj-print {
+    flex-basis: min(82vw, 350px);
+    max-width: min(82vw, 350px);
+  }
+
+  .tj-print.tj-w-lg {
+    flex-basis: min(88vw, 390px);
+    max-width: min(88vw, 390px);
+  }
+}

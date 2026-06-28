@@ -948,6 +948,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
   const section3RealContent = document.querySelector('.section3-real-content');
   const wrap = document.querySelector('.h-wrap');
   const track = document.querySelector('.h-track');
+  const isPhoneViewport = window.matchMedia('(max-width: 640px)').matches;
   let cursorOpacityTarget = 0;
 
   const tweenCursorOpacity = (visible, duration = 0.34) => {
@@ -1403,10 +1404,11 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
   // Iris close is scroll-driven only. The mask scale/opacity is derived from
   // ScrollTrigger progress, so it never keeps shrinking after scroll input stops.
   let irisPlayed = false;
-  const IRIS_TRIGGER_PROGRESS = 0.74;
+  const IRIS_TRIGGER_PROGRESS = isPhoneViewport ? 0.855 : 0.74;
 
   const IRIS_SCROLL_END_PROGRESS = 1;
-  const IRIS_INTERACTIVE_RAW = 0.965;
+  const IRIS_INTERACTIVE_RAW = isPhoneViewport ? 0.9 : 0.965;
+  const IRIS_PREVIEW_RAW = isPhoneViewport ? IRIS_INTERACTIVE_RAW : null;
   const IRIS_CURSOR_HANDOFF_RAW = 0.995;
   const easeIrisScroll = gsap.parseEase('none');
   const easeDarkCursor = gsap.parseEase('power2.inOut');
@@ -1418,7 +1420,9 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     const eased = easeIrisScroll(raw);
     const scale = gsap.utils.interpolate(1, dotScale(), eased);
     const isInteractive = raw >= IRIS_INTERACTIVE_RAW;
-    const isPreviewReady = self.progress >= selectedWorksPreviewVisibleProgress;
+    const isPreviewReady = isPhoneViewport
+      ? raw >= IRIS_PREVIEW_RAW
+      : self.progress >= selectedWorksPreviewVisibleProgress;
     const isVisuallyHandedOff = raw >= IRIS_CURSOR_HANDOFF_RAW;
     const darkCursorFade = clampIris((self.progress - 0.405) / 0.12);
     const darkCursorOpacity = easeDarkCursor(darkCursorFade);
@@ -1475,7 +1479,8 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       setSelectedWorksPreviewVisibleReady(isPreviewReady, isPreviewReady ? 'scroll iris preview clear' : 'scroll iris active');
       setBridgeSelectable(false);
       if (cursorEl) {
-        const handoffOpacity = clampIris((raw - 0.88) / (IRIS_INTERACTIVE_RAW - 0.88));
+        const cursorFadeStart = isPhoneViewport ? 0.76 : 0.88;
+        const handoffOpacity = clampIris((raw - cursorFadeStart) / (IRIS_INTERACTIVE_RAW - cursorFadeStart));
         cursorOpacityTarget = isInteractive ? 1 : handoffOpacity;
         gsap.set(cursorEl, {
           opacity: isInteractive ? 1 : handoffOpacity,
@@ -1626,6 +1631,13 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
   // changed; only the about-wrap exit moves later (more readability), the
   // bridge starts later and lingers longer, and the empty hold extends to
   // keep the iris threshold (0.86) firing just after bridge fade-out.
+  const section2AboutExitAt = isPhoneViewport ? 350 : 290;
+  const section2BridgeInAt = isPhoneViewport ? 430 : 344;
+  const section2BridgeBodyAt = isPhoneViewport ? 466 : 374;
+  const section2BridgeOutAt = isPhoneViewport ? 548 : 444;
+  const section2LayerOffAt = isPhoneViewport ? 574 : 466;
+  const section2HoldDuration = isPhoneViewport ? 70 : 81;
+
   masterTl.to('.section2ContentLayer .about-wrap',
     {
       autoAlpha: 0,
@@ -1635,38 +1647,38 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       duration: 50,
       onComplete: () => gsap.set('.section2ContentLayer .about-wrap', { pointerEvents: 'none' }),
       onReverseComplete: () => gsap.set('.section2ContentLayer .about-wrap', { pointerEvents: 'auto' }),
-    }, 290);
+    }, section2AboutExitAt);
 
   if (section2Bridge) {
     // Section 2 about-wrap exit ends ~340; quiet beat (~4 units) before the
     // bridge so the thought-shift reads as intentional.
     masterTl.to(section2Bridge,
-      { autoAlpha: 1, ease: 'power2.out', duration: 26 }, 344);
+      { autoAlpha: 1, ease: 'power2.out', duration: 26 }, section2BridgeInAt);
     masterTl.to('.section2-bridge__title',
-      { autoAlpha: 1, y: 0, ease: 'power3.out', duration: 28 }, 344);
+      { autoAlpha: 1, y: 0, ease: 'power3.out', duration: 28 }, section2BridgeInAt);
     // Body waits longer so "A little more" lands and lingers first.
     masterTl.to('.section2-bridge__body',
-      { autoAlpha: 1, y: 0, ease: 'power3.out', duration: 24 }, 374);
+      { autoAlpha: 1, y: 0, ease: 'power3.out', duration: 24 }, section2BridgeBodyAt);
     masterTl.to('.section2-bridge__title, .section2-bridge__body',
-      { autoAlpha: 0, y: -8, ease: 'power2.in', duration: 22 }, 444);
+      { autoAlpha: 0, y: -8, ease: 'power2.in', duration: 22 }, section2BridgeOutAt);
     masterTl.to(section2Bridge,
-      { autoAlpha: 0, ease: 'power1.out', duration: 22 }, 444);
+      { autoAlpha: 0, ease: 'power1.out', duration: 22 }, section2BridgeOutAt);
   }
 
   masterTl.to('.section2ContentLayer',
-    { autoAlpha: 0, pointerEvents: 'none', ease: 'none', duration: 0.01 }, 466);
+    { autoAlpha: 0, pointerEvents: 'none', ease: 'none', duration: 0.01 }, section2LayerOffAt);
 
   // Empty hold extended so total ~547. Iris threshold 0.86 → fires at
   // ~470 (just after bridge fully gone at 466).
-  masterTl.to({ _: 0 }, { _: 1, duration: 81 }, 466);
+  masterTl.to({ _: 0 }, { _: 1, duration: section2HoldDuration }, section2LayerOffAt);
   const getDistance = () => track ? Math.max(0, track.scrollWidth - window.innerWidth) : 0;
   const hasHorizontalDistance = () => getDistance() > 1;
 
   if (wrap && track && hasHorizontalDistance()) {
-    const horizontalMultiplier = window.matchMedia('(max-width: 640px)').matches
-      ? 2.0
+    const horizontalMultiplier = isPhoneViewport
+      ? 1.08
       : (window.matchMedia('(max-width: 1024px)').matches ? 1.65 : 1.55);
-    const selectedWorksHoldUnits = 0.42;
+    const selectedWorksHoldUnits = isPhoneViewport ? 0.2 : 0.42;
     const selectedWorksMoveUnits = 1;
     const selectedWorksHoldRatio = selectedWorksHoldUnits / (selectedWorksHoldUnits + selectedWorksMoveUnits);
     const getHorizontalMoveDistance = () => getDistance() * horizontalMultiplier;
@@ -1679,7 +1691,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
         pin: true,
         start: 'top top',
         end: () => '+=' + getHorizontalScrollDistance(),
-        scrub: 1,
+        scrub: isPhoneViewport ? 0.65 : 1,
         invalidateOnRefresh: true,
         anticipatePin: 1,
         onEnter(self) {
@@ -3073,11 +3085,14 @@ if (!reduceMotion && !isMobile && window.gsap) {
       return;
     }
     setInitial();
+    const isPhoneReveal = window.matchMedia('(max-width: 640px)').matches;
+    const revealAt = isPhoneReveal ? 0.40 : 0.50;
+    const resetAt = isPhoneReveal ? 0.36 : 0.46;
     const checkProgress = () => {
       const p = master.progress;
-      if (p >= 0.50 && !played) {
+      if (p >= revealAt && !played) {
         play();
-      } else if (p < 0.46 && played) {
+      } else if (p < resetAt && played) {
         reset();
       }
     };
@@ -3185,19 +3200,25 @@ if (!reduceMotion && !isMobile && window.gsap) {
   const wireUp = () => {
     const master = ScrollTrigger.getById('hero-transition');
     if (!master) { setTimeout(wireUp, 60); return; }
+    const isPhoneBridge = window.matchMedia('(max-width: 640px)').matches;
+    const resetAfter = isPhoneBridge ? 0.90 : 0.855;
+    const titleIn = isPhoneBridge ? 0.66 : 0.62;
+    const titleReset = isPhoneBridge ? 0.62 : 0.59;
+    const bodyIn = isPhoneBridge ? 0.72 : 0.68;
+    const bodyReset = isPhoneBridge ? 0.68 : 0.65;
     const check = () => {
       const p = master.progress;
-      if (p > 0.855) {
+      if (p > resetAfter) {
         resetTitle();
         resetBody();
         return;
       }
       // Master total ~547 after Section 2/bridge extension.
       // Title fade-in starts at position 344 (≈0.629). Body at 374 (≈0.684).
-      if (p >= 0.62 && !titlePlayed) playTitle();
-      else if (p < 0.59 && titlePlayed) resetTitle();
-      if (p >= 0.68 && !bodyPlayed) playBody();
-      else if (p < 0.65 && bodyPlayed) resetBody();
+      if (p >= titleIn && !titlePlayed) playTitle();
+      else if (p < titleReset && titlePlayed) resetTitle();
+      if (p >= bodyIn && !bodyPlayed) playBody();
+      else if (p < bodyReset && bodyPlayed) resetBody();
     };
     gsap.ticker.add(check);
     check();

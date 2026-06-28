@@ -19721,3 +19721,117 @@ body.odidact-page.is-entering .hero-visual {
     gap: clamp(18px, 1.45vw, 28px) !important;
   }
 }
+
+/* Final mobile rhythm and scale pass. Keep the case study feeling like one
+   continuous product story, while giving the first two mockups enough presence. */
+@media (max-width: 900px) {
+  .odidact-page .section-panel {
+    padding-top: clamp(70px, 8.6vh, 92px) !important;
+    padding-bottom: clamp(66px, 8vh, 88px) !important;
+  }
+
+  .odidact-page .section-panel + .section-panel {
+    margin-top: -1px !important;
+  }
+
+  .odidact-page .sec-eyebrow {
+    margin-bottom: clamp(18px, 3vh, 28px) !important;
+  }
+
+  .odidact-page .odidact-hero {
+    padding-top: calc(56px + clamp(18px, 3vh, 28px)) !important;
+  }
+
+  .odidact-page .odidact-hero .odh-stage {
+    width: min(110vw, 540px) !important;
+    max-width: none !important;
+    margin-left: -5vw !important;
+    margin-right: -5vw !important;
+  }
+
+  .odidact-page .odidact-hero .odh-main {
+    width: 106% !important;
+    height: clamp(260px, 70vw, 410px) !important;
+    max-height: none !important;
+  }
+
+  .odidact-page .odidact-hero .odh-main__view {
+    height: 100% !important;
+    aspect-ratio: auto !important;
+  }
+
+  .odidact-page .odidact-hero .odh-main__view img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: top center !important;
+  }
+
+  .odidact-page .odidact-challenge .challenge-visual {
+    order: 4 !important;
+    width: min(100%, 520px) !important;
+    min-height: clamp(260px, 66vw, 390px) !important;
+    margin-top: clamp(18px, 3vh, 30px) !important;
+    overflow: visible !important;
+  }
+
+  .odidact-page .odidact-challenge .challenge-visual img {
+    width: 112% !important;
+    max-width: none !important;
+    margin-left: -6% !important;
+  }
+
+  .odidact-page .odidact-challenge .challenge-grid {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .odidact-page .odidact-challenge .challenge-copy {
+    display: contents !important;
+  }
+
+  .odidact-page .odidact-challenge .challenge-copy .sec-eyebrow { order: 1 !important; }
+  .odidact-page .odidact-challenge .challenge-copy h2 { order: 2 !important; }
+  .odidact-page .odidact-challenge .challenge-copy > p { order: 3 !important; }
+  .odidact-page .odidact-challenge .friction-grid {
+    order: 5 !important;
+    margin-top: clamp(22px, 4vh, 34px) !important;
+  }
+
+  .odidact-page .sol-info {
+    display: grid !important;
+    grid-template-columns: 42px auto minmax(0, 1fr) !important;
+    grid-template-areas:
+      "icon num name"
+      "bullets bullets bullets" !important;
+    align-items: center !important;
+    column-gap: 10px !important;
+    row-gap: 12px !important;
+  }
+
+  .odidact-page .sol-info > .sol-ic {
+    grid-area: icon !important;
+    margin: 0 !important;
+  }
+
+  .odidact-page .sol-info > .sol-num {
+    grid-area: num !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  .odidact-page .sol-info > .sol-num::before {
+    content: "Loop ";
+  }
+
+  .odidact-page .sol-info > .sol-name {
+    grid-area: name !important;
+    margin: 0 !important;
+    line-height: 1.05 !important;
+  }
+
+  .odidact-page .sol-info > .sol-bullets {
+    grid-area: bullets !important;
+    margin-top: 0 !important;
+  }
+}

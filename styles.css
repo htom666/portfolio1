@@ -945,8 +945,47 @@ body.hero-intro-started .hero-sphere-wrap {
   text-transform: uppercase;
   transition: transform .4s cubic-bezier(.2,.8,.2,1);
 }
-.hero-cta span { font-size: 14px; }
+.hero-cta .arrow-icon { font-size: 14px; }
 .hero-cta:hover { transform: translateY(-4px); }
+
+.arrow-icon {
+  position: relative;
+  display: inline-block;
+  width: 0.86em;
+  height: 0.86em;
+  flex: 0 0 auto;
+  color: currentColor;
+  line-height: 1;
+}
+
+.arrow-icon::before,
+.arrow-icon::after {
+  content: "";
+  position: absolute;
+  display: block;
+  background: currentColor;
+  border-radius: 999px;
+}
+
+.arrow-icon::before {
+  width: 0.82em;
+  height: 2px;
+  right: 0.02em;
+  top: 0.49em;
+  transform: rotate(-45deg);
+  transform-origin: right center;
+}
+
+.arrow-icon::after {
+  width: 0.44em;
+  height: 0.44em;
+  right: 0.01em;
+  top: 0.09em;
+  background: transparent;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  border-radius: 0;
+}
 
 @media (max-width: 1200px) {
   .panel--hero {
@@ -1146,9 +1185,9 @@ body.hero-intro-started .hero-sphere-wrap {
   color: var(--ink);
   transition: background .3s ease, color .3s ease, transform .35s cubic-bezier(.2,.8,.2,1);
 }
-.pill span { font-size: 13px; transition: transform .3s ease; }
+.pill .arrow-icon { font-size: 13px; transition: transform .3s ease; }
 .pill:hover { background: var(--ink); color: var(--bg); transform: translateY(-3px); }
-.pill:hover span { transform: translate(2px, -2px); }
+.pill:hover .arrow-icon { transform: translate(2px, -2px); }
 .pill--center { display: inline-flex; margin: 40px auto 0; }
 .panel--works .pill--center { align-self: center; }
 
@@ -1469,7 +1508,7 @@ body.section3-ready .works-list:hover .work-row:hover a { opacity: 1; }
   font-size: clamp(18px, 1.6vw, 24px);
 }
 .socials a { display: inline-flex; gap: 8px; align-items: baseline; color: var(--ink); transition: color .2s ease; }
-.socials a span { font-size: 0.7em; }
+.socials a .arrow-icon { font-size: 0.7em; }
 .socials li:nth-child(2n) a { color: var(--ink-soft); }
 .socials li:nth-child(3n) a { color: var(--mute); }
 .socials a:hover { color: var(--ink); }
@@ -2036,13 +2075,13 @@ html.lenis, html.lenis body { height: auto; }
   }
 
   .works-title {
-    top: clamp(24px, 4vh, 36px);
+    top: max(78px, calc(env(safe-area-inset-top, 0px) + 70px));
     font-size: 9px;
   }
 
   .section3-real-content {
     gap: 0;
-    padding: clamp(62px, 8vh, 78px) 22px clamp(54px, 7vh, 72px);
+    padding: max(128px, calc(env(safe-area-inset-top, 0px) + 118px)) 22px clamp(54px, 7vh, 72px);
   }
 
   .work-row a {
@@ -2182,7 +2221,7 @@ html.lenis, html.lenis body { height: auto; }
   .section3-real-content {
     gap: 8px;
     padding:
-      max(90px, calc(env(safe-area-inset-top, 0px) + 82px))
+      max(128px, calc(env(safe-area-inset-top, 0px) + 118px))
       18px
       max(46px, calc(env(safe-area-inset-bottom, 0px) + 36px));
   }
@@ -2219,8 +2258,8 @@ html.lenis, html.lenis body { height: auto; }
    into a safe mobile stack. */
 @media (max-width: 640px) {
   .panel--hero {
-    --hero-name-size: clamp(126px, 40vw, 168px);
-    --hero-circle-size: min(68vw, 300px);
+    --hero-name-size: clamp(112px, 35.5vw, 150px);
+    --hero-circle-size: min(78vw, 344px);
   }
 
   .panel--hero .hero-name {
@@ -2229,26 +2268,27 @@ html.lenis, html.lenis body { height: auto; }
   }
 
   .panel--hero .d-line--top {
-    left: -4vw;
+    left: 5vw;
     right: auto;
     top: clamp(112px, 20.5svh, 206px);
     text-align: left;
   }
 
   .panel--hero .d-line--bottom {
-    left: -4.5vw;
+    left: 4vw;
     right: auto;
     bottom: clamp(170px, 31svh, 300px);
     text-align: left;
   }
 
   .hero-sphere-wrap {
-    transform: translate3d(0, 0.8svh, 0);
+    transform: translate3d(0, 0.6svh, 0);
   }
 
   .hero-cta {
     right: clamp(20px, 6vw, 28px);
-    bottom: max(7svh, calc(env(safe-area-inset-bottom, 0px) + 42px));
+    bottom: max(12svh, calc(env(safe-area-inset-bottom, 0px) + 78px));
+    z-index: 20;
     min-height: 52px;
     padding: 0 22px;
     font-size: 10.5px;
@@ -2274,7 +2314,8 @@ html.lenis, html.lenis body { height: auto; }
 
 @media (max-width: 360px) {
   .panel--hero {
-    --hero-name-size: clamp(116px, 38vw, 136px);
+    --hero-name-size: clamp(108px, 35.5vw, 126px);
+    --hero-circle-size: min(74vw, 258px);
   }
 
   .panel--hero .d-line--top {
@@ -2286,6 +2327,7 @@ html.lenis, html.lenis body { height: auto; }
   }
 
   .hero-cta {
+    bottom: max(10svh, calc(env(safe-area-inset-bottom, 0px) + 60px));
     min-height: 48px;
     padding: 0 20px;
     font-size: 10px;
@@ -2298,13 +2340,6 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 @media (max-width: 1024px) {
-  body.selected-works-preview-visible-ready .blackMaskLayer,
-  body.selected-works-ready .blackMaskLayer {
-    opacity: 0 !important;
-    visibility: hidden !important;
-  }
-
-  body.selected-works-preview-visible-ready .section2ExitScene,
   body.selected-works-ready .section2ExitScene {
     pointer-events: none !important;
   }
