@@ -917,8 +917,12 @@ if (window.ScrollTrigger) {
 }
 
 /* ---------- 2. ScrollTrigger setup ---------- */
+// Desktop only. Phones/tablets (<=1024px) fall through to the clean mobile path
+// below — the pinned hero choreography, 600% scroll spacer, horizontal track and
+// iris transition are all desktop-only. Running them on touch was the source of
+// the "scroll jumps / dead zones / wrong proportions" mess.
 let horizontalTween;
-if (!reduceMotion && window.gsap && window.ScrollTrigger) {
+if (!isMobile && !reduceMotion && window.gsap && window.ScrollTrigger) {
   gsap.registerPlugin(ScrollTrigger);
 
   const sphereEl = document.getElementById('hero-sphere-wrap');
@@ -2369,14 +2373,15 @@ function applyInitialScroll() {
   if (reloadY !== null) {
     y = reloadY;
   } else if (hash === '#works' || hash === '#contact') {
-    if (window.ScrollTrigger) {
-      const ms = ScrollTrigger.getById('hero-transition');
-      const hs = ScrollTrigger.getById('horizontal-scroll');
-      if (hash === '#works') y = hs ? hs.start : (ms ? ms.end : window.innerHeight * 4);
-      else                   y = hs ? hs.end - 4 : (ms ? ms.end + window.innerHeight : window.innerHeight * 5);
+    const ms = window.ScrollTrigger ? ScrollTrigger.getById('hero-transition') : null;
+    const hs = window.ScrollTrigger ? ScrollTrigger.getById('horizontal-scroll') : null;
+    if (hs || ms) {
+      if (hash === '#works') y = hs ? hs.start : ms.end;
+      else                   y = hs ? hs.end - 4 : ms.end + window.innerHeight;
     } else {
+      // Mobile / no desktop choreography → resolve to the real element position.
       const el = document.querySelector(hash === '#works' ? '.panel--works' : '.panel--contact');
-      if (el) y = Math.max(0, el.getBoundingClientRect().top + window.scrollY - 1);
+      if (el) y = Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY - 1));
     }
   }
 
@@ -2860,24 +2865,34 @@ if (!reduceMotion && !isMobile && window.gsap) {
   const resolveTarget = (key) => {
     const ms = window.ScrollTrigger ? ScrollTrigger.getById('hero-transition') : null;
     const hs = window.ScrollTrigger ? ScrollTrigger.getById('horizontal-scroll') : null;
+    // Mobile / no desktop choreography: the sections are a normal vertical flow,
+    // so resolve to the actual element's document position.
+    const elTop = (sel) => {
+      const el = document.querySelector(sel);
+      if (!el) return null;
+      return Math.round(el.getBoundingClientRect().top + window.scrollY);
+    };
     switch (key) {
       case 'hero': return 0;
       case 'about': {
         // Section 2 visible — about progress ~0.55 of master.
         if (ms) return ms.start + (ms.end - ms.start) * 0.55;
-        return window.innerHeight * 1.5;
+        const y = elTop('.section2ContentLayer');
+        return y != null ? y : window.innerHeight * 1.5;
       }
       case 'works': {
         // Just past the master pin → entering the horizontal pin (works panel).
         if (hs) return hs.start;
         if (ms) return ms.end;
-        return window.innerHeight * 4;
+        const y = elTop('.panel--works');
+        return y != null ? y : window.innerHeight * 4;
       }
       case 'contact': {
         // End of the horizontal pin → contact panel fully on screen.
         if (hs) return hs.end - 4;
         if (ms) return ms.end + window.innerHeight;
-        return window.innerHeight * 5;
+        const y = elTop('.panel--contact');
+        return y != null ? y : window.innerHeight * 5;
       }
       default: return 0;
     }
