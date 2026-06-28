@@ -917,13 +917,26 @@ if (window.ScrollTrigger) {
 }
 
 /* ---------- 2. ScrollTrigger setup ---------- */
-// Desktop only. Phones/tablets (<=1024px) fall through to the clean mobile path
-// below — the pinned hero choreography, 600% scroll spacer, horizontal track and
-// iris transition are all desktop-only. Running them on touch was the source of
-// the "scroll jumps / dead zones / wrong proportions" mess.
+// Runs on every device: the full choreography (pinned hero ball-grow -> about ->
+// bridge -> iris shrink revealing Selected Works -> horizontal pin to Contact)
+// is intentionally shared between desktop and mobile. Phone-specific timing is
+// tuned via isPhoneViewport below.
 let horizontalTween;
-if (!isMobile && !reduceMotion && window.gsap && window.ScrollTrigger) {
+if (!reduceMotion && window.gsap && window.ScrollTrigger) {
   gsap.registerPlugin(ScrollTrigger);
+
+  // --- Mobile: make pinned scroll behave on touch ---
+  // Phones fire scroll events while the address bar shows/hides, which resizes
+  // the viewport and makes pinned ScrollTriggers recalculate mid-scroll — this
+  // was the "possessed" jumping / snap-back-to-top the desktop choreography had
+  // on phones. normalizeScroll() proxies touch scrolling through GSAP (using
+  // transform-based pinning), and ignoreMobileResize stops the address-bar
+  // resize from forcing refreshes. This is what makes the desktop flow usable
+  // on touch.
+  if (isMobile) {
+    ScrollTrigger.config({ ignoreMobileResize: true });
+    ScrollTrigger.normalizeScroll(true);
+  }
 
   const sphereEl = document.getElementById('hero-sphere-wrap');
   const heroPanel = document.querySelector('.panel--hero');
@@ -1678,7 +1691,7 @@ if (!isMobile && !reduceMotion && window.gsap && window.ScrollTrigger) {
   const getDistance = () => track ? Math.max(0, track.scrollWidth - window.innerWidth) : 0;
   const hasHorizontalDistance = () => getDistance() > 1;
 
-  if (wrap && track && hasHorizontalDistance() && !isPhoneViewport) {
+  if (wrap && track && hasHorizontalDistance()) {
     const horizontalMultiplier = isPhoneViewport
       ? 1.08
       : (window.matchMedia('(max-width: 1024px)').matches ? 1.65 : 1.55);
@@ -1724,7 +1737,7 @@ if (!isMobile && !reduceMotion && window.gsap && window.ScrollTrigger) {
   }
 
   const fill = document.querySelector('.scroll-indicator__fill');
-  if (fill && wrap && hasHorizontalDistance() && !isPhoneViewport) {
+  if (fill && wrap && hasHorizontalDistance()) {
     ScrollTrigger.create({
       trigger: wrap,
       start: 'top top',
