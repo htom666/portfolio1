@@ -88,35 +88,109 @@ const installConsoleSignature = () => {
   if (window.__hatemConsoleSignature) return;
   window.__hatemConsoleSignature = true;
 
-  const titleStyle = [
-    'background:#080807',
-    'color:#f4f1ea',
-    'font:600 18px/1.2 Georgia, serif',
-    'padding:10px 12px',
-    'border-radius:999px',
-  ].join(';');
-  const bodyStyle = [
-    'color:#080807',
-    'font:500 12px/1.7 Inter, Arial, sans-serif',
-    'letter-spacing:.08em',
-    'text-transform:uppercase',
-  ].join(';');
-
-  console.groupCollapsed('%cHatem Dahech%c  portfolio', titleStyle, bodyStyle);
-  console.log('%cBlack sphere, white room, selected works. Type hatem() for the hidden card.', 'color:#3f3f3a;font:13px/1.6 Inter, Arial, sans-serif;');
-  console.groupEnd();
-
-  window.hatem = () => {
-    const card = [
-      'HATEM DAHECH',
-      'UX/UI designer + front-end developer',
-      'mailto: hatemdahech1@gmail.com',
-      'behance: https://www.behance.net/hatemdahech',
-      'github: https://github.com/htom666',
-    ].join('\n');
-    console.log(`%c${card}`, 'background:#080807;color:#f4f1ea;font:500 13px/1.75 Inter, Arial, sans-serif;padding:16px 18px;border-radius:14px;');
-    return 'The quiet room is open.';
+  const ink = '#080807';
+  const paper = '#f4f1ea';
+  const mist = '#8f8a7d';
+  const line = '#cfc8ba';
+  const serif = 'Georgia, "Times New Roman", serif';
+  const sans = 'Inter, Arial, sans-serif';
+  const urlFor = (path) => new URL(path, window.location.href).href;
+  const workIndex = [
+    { id: '001', project: 'Ryujin', kind: 'Luxury e-commerce', command: 'hatem.go("ryujin")', route: urlFor('project-ryujin.html') },
+    { id: '002', project: 'Odidact', kind: 'Product platform', command: 'hatem.go("odidact")', route: urlFor('project-odidact.html') },
+    { id: '003', project: 'Fitness', kind: 'Mobile app case study', command: 'hatem.go("fitness")', route: urlFor('project-3.html') },
+    { id: '004', project: 'Tasty', kind: 'E-commerce case study', command: 'hatem.go("tasty")', route: urlFor('project-tasty.html') },
+  ];
+  const routeMap = {
+    home: 'index.html',
+    works: 'index.html#works',
+    contact: 'index.html#contact',
+    ryujin: 'project-ryujin.html',
+    odidact: 'project-odidact.html',
+    fitness: 'project-3.html',
+    tasty: 'project-tasty.html',
   };
+
+  const printCard = () => {
+    console.log(
+      `%c
+        ●
+
+  HATEM DAHECH
+  UX/UI DESIGN + FRONT-END
+
+  black sphere / white room / selected work
+  Tunis, TN / available Q3
+
+  hatem.work()       case-study index
+  hatem.contact()    direct links
+  hatem.about()      site note
+  hatem.go("works")  jump through the room
+`,
+      [
+        `background:${ink}`,
+        `color:${paper}`,
+        `font:500 13px/1.72 ${sans}`,
+        'padding:18px 22px',
+        'border-radius:16px',
+        `border:1px solid ${line}`,
+        'letter-spacing:.02em',
+      ].join(';')
+    );
+    return 'Hidden room open: hatem.work(), hatem.contact(), hatem.about(), hatem.go("works").';
+  };
+
+  const hatem = () => printCard();
+  hatem.work = () => {
+    console.table(workIndex.map(({ id, project, kind, command }) => ({ id, project, kind, command })));
+    console.log('%cUse hatem.go("ryujin"), hatem.go("odidact"), hatem.go("fitness"), or hatem.go("tasty").', `color:${mist};font:12px/1.6 ${sans};`);
+    return workIndex;
+  };
+  hatem.contact = () => {
+    const contact = {
+      email: 'hatemdahech1@gmail.com',
+      behance: 'https://www.behance.net/hatemdahech',
+      linkedin: 'https://www.linkedin.com/in/hatemdahech/',
+      github: 'https://github.com/htom666',
+    };
+    console.log(
+      '%cCONTACT /%c hatemdahech1@gmail.com\nbehance.net/hatemdahech\nlinkedin.com/in/hatemdahech\ngithub.com/htom666',
+      `background:${paper};color:${ink};font:700 11px/1.7 ${sans};letter-spacing:.18em;padding:10px 12px;border:1px solid ${ink};`,
+      `background:${paper};color:${ink};font:500 13px/1.7 ${sans};padding:10px 12px;border:1px solid ${ink};border-left:0;`
+    );
+    return contact;
+  };
+  hatem.about = () => {
+    console.log('%cThis site is built around one black sphere. Scroll is the camera. The work is the proof.', `color:${ink};font:italic 18px/1.5 ${serif};`);
+    console.log('%cDesign direction: editorial, monochrome, physical motion, no decoration without consequence.', `color:${mist};font:12px/1.7 ${sans};letter-spacing:.04em;`);
+    return 'One sphere, four case studies, no template.';
+  };
+  hatem.go = (target = 'home') => {
+    const key = String(target).toLowerCase();
+    const route = routeMap[key];
+    if (!route) {
+      console.warn(`Unknown room: ${target}. Try home, works, contact, ryujin, odidact, fitness, tasty.`);
+      return null;
+    }
+    window.location.href = urlFor(route);
+    return `Opening ${key}.`;
+  };
+  Object.defineProperty(hatem, 'rooms', {
+    value: Object.freeze(Object.keys(routeMap)),
+    enumerable: true,
+  });
+
+  window.hatem = hatem;
+
+  console.groupCollapsed(
+    '%c●%c Hatem Dahech %c/ console room',
+    `color:${ink};font:900 34px/1 ${serif};`,
+    `color:${ink};font:600 18px/1.2 ${serif};`,
+    `color:${mist};font:500 11px/1.2 ${sans};letter-spacing:.16em;text-transform:uppercase;`
+  );
+  console.log('%cThe portfolio has a hidden room. Type %chatem()%c.', `color:${mist};font:13px/1.7 ${sans};`, `color:${ink};font:700 13px/1.7 ${sans};`, `color:${mist};font:13px/1.7 ${sans};`);
+  console.log('%cCommands:%c hatem.work()  hatem.contact()  hatem.about()  hatem.go("works")', `color:${ink};font:700 11px/1.7 ${sans};letter-spacing:.16em;text-transform:uppercase;`, `color:${mist};font:12px/1.7 ${sans};`);
+  console.groupEnd();
 };
 installConsoleSignature();
 
