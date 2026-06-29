@@ -2501,6 +2501,7 @@ body.p3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 18px;
+  align-items: start;        /* size each card to its content, not the tallest */
 }
 .f2card {
   background: var(--f1-surface);
@@ -2509,7 +2510,6 @@ body.p3 {
   padding: 22px 20px 22px;
   box-shadow: var(--f1-shadow-sm);
   display: flex; flex-direction: column; gap: 14px;
-  min-height: 540px;
 }
 .f2card__head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
 .f2card__cic { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; }
@@ -2712,7 +2712,7 @@ body.p3 {
   .f2__inner { max-width: 100%; padding: 0 60px 0 130px; gap: 24px; }
   .f2__toprow { grid-template-columns: 380px 1fr; gap: 32px; }
   .f2__title { font-size: 54px; }
-  .f2card { min-height: 480px; padding: 20px 18px 22px; }
+  .f2card { padding: 20px 18px 22px; }
 }
 @media (max-width: 1100px) {
   .f2__title { font-size: 44px; }
