@@ -1750,6 +1750,14 @@ body.ryujin-page.is-entering .ryujin-hero .reveal-stagger > * {
   .challenge-visual,
   .approach-visual,
   .solution-mockup { min-height: 360px; height: 360px; }
+  /* Samurai (challenge) and the PC mockups (approach) images have a dark/empty
+     lower band that read as an oversized gap before the next eyebrow. Trim their
+     height so the next chapter sits closer (solution-mockup keeps its height). */
+  .ryujin-challenge .challenge-visual,
+  .ryujin-approach .approach-visual {
+    min-height: 290px;
+    height: 290px;
+  }
   .hero-sword {
     overflow: hidden;
     min-height: clamp(330px, 58vh, 450px);

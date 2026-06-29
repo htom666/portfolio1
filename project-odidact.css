@@ -19876,6 +19876,13 @@ body.odidact-page.is-entering .hero-visual {
   .odidact-page .key-title {
     margin-top: 0 !important;
   }
+  /* Some sections wrap the heading in a flex/grid container whose gap STACKS on
+     top of the eyebrow margin (challenge-grid 38, jr-inner 32, key copy 16),
+     making 02/03/05 gaps bigger than 04/06. Neutralise each so the eyebrow->
+     heading gap is ~30px everywhere (matching the Solution/Design System). */
+  .odidact-page .odidact-challenge .sec-eyebrow { margin-bottom: -8px !important; }
+  .odidact-page .jr .sec-eyebrow { margin-bottom: -2px !important; }
+  .odidact-page .odidact-key-screens .sec-eyebrow { margin-bottom: 14px !important; }
 
   /* 3. Hero mockup: contained inside the screen (no side bleed) but still
      large via a cover crop. Overrides the earlier full-bleed -5vw rules. */

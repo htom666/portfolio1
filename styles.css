@@ -2248,14 +2248,13 @@ html.lenis, html.lenis body { height: auto; }
    clipped by the viewport, matching the desktop collision instead of shrinking
    into a safe mobile stack. */
 @media (max-width: 640px) {
-  /* Hero sized to the VISIBLE viewport so the View Work CTA isn't pushed under
-     the address bar, and the name is a touch smaller so "Dahech" clears the
-     right edge. */
+  /* Liked proportions (intentionally oversized + viewport-clipped name). Panel
+     kept at 100svh so the View Work CTA stays in the visible viewport. */
   .panel--hero {
     height: 100svh;
     min-height: 100svh;
-    --hero-name-size: clamp(84px, 27.5vw, 116px);
-    --hero-circle-size: min(74vw, 320px);
+    --hero-name-size: clamp(112px, 35.5vw, 150px);
+    --hero-circle-size: min(78vw, 344px);
   }
 
   .panel--hero .hero-name {
@@ -2266,14 +2265,14 @@ html.lenis, html.lenis body { height: auto; }
   .panel--hero .d-line--top {
     left: 5vw;
     right: auto;
-    top: clamp(96px, 17svh, 168px);
+    top: clamp(112px, 20.5svh, 206px);
     text-align: left;
   }
 
   .panel--hero .d-line--bottom {
     left: 4vw;
     right: auto;
-    bottom: clamp(206px, 34svh, 320px);
+    bottom: clamp(170px, 31svh, 300px);
     text-align: left;
   }
 
