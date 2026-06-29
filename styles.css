@@ -536,10 +536,14 @@ body.cursor-on-dark .cursor {
   border-color: transparent;
 }
 
-/* Entering the white Selected Works during the iris: solid dark cursor (no
-   difference-blend) so it reads black on the cream Works instead of flashing
-   white against the shrinking black mask. */
-body.cursor-works-incoming .cursor:not(.is-project-preview) {
+/* Selected Works circle cursor: solid dark, no difference-blend — both while
+   the iris is revealing Works (cursor-works-incoming) AND once it has fully
+   arrived (cursor-state-work). The difference-blend "mask" made the plain
+   circle flip white whenever it passed over a dark element inside Works; this
+   disables that mask for the circle only. The hover/preview cursor
+   (.is-project-preview) is excluded, so the hover behaviour is untouched. */
+body.cursor-works-incoming .cursor:not(.is-project-preview),
+body.cursor-state-work .cursor:not(.is-project-preview) {
   mix-blend-mode: normal !important;
   background-color: oklch(0.095 0.010 255) !important;
   border-color: transparent !important;
