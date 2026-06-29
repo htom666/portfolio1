@@ -1437,14 +1437,19 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     const eased = easeIrisScroll(raw);
     const scale = gsap.utils.interpolate(1, dotScale(), eased);
     const isInteractive = raw >= IRIS_INTERACTIVE_RAW;
-    // During the iris shrink the cursor sits over the white Selected Works, but
-    // the difference-blend makes it flash white against the still-large black
-    // mask. Switch it to a solid dark cursor for the shrink only (the work/
-    // preview cursor states take over once interactive).
-    document.body.classList.toggle('cursor-works-incoming', raw > 0 && !isInteractive);
     const isPreviewReady = isPhoneViewport
       ? raw >= IRIS_PREVIEW_RAW
       : self.progress >= selectedWorksPreviewVisibleProgress;
+    // The bridge IS the big black iris mask (with its text) that shrinks to
+    // reveal the white Selected Works. While that mask still dominates the
+    // screen the cursor sits over black, so its difference-blend already reads
+    // white — leave it alone. Only force the solid dark cursor once Selected
+    // Works has visually arrived (preview gate: mask shrunk small enough to
+    // clear the project rows) and before the work/preview cursor states take
+    // over at interactive. Previously this fired at `raw > 0`, flipping the
+    // cursor dark the instant the iris began shrinking — i.e. while the user
+    // was still looking at the dark bridge.
+    document.body.classList.toggle('cursor-works-incoming', isPreviewReady && !isInteractive);
     const isVisuallyHandedOff = raw >= IRIS_CURSOR_HANDOFF_RAW;
     const darkCursorFade = clampIris((self.progress - 0.405) / 0.12);
     const darkCursorOpacity = easeDarkCursor(darkCursorFade);
