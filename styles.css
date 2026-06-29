@@ -1567,7 +1567,7 @@ html.lenis, html.lenis body { height: auto; }
     overflow-y: visible;
   }
   .smooth-wrapper, .smooth-content { transform: none !important; overflow: visible; }
-  .cursor, .cursor-dot, .side-label, .scroll-indicator { display: none; }
+  .cursor, .cursor-dot, .side-label, .scroll-indicator, .year-label { display: none !important; }
 
   /* -- collapse the horizontal track into a vertical column -- */
   .h-wrap {
@@ -2246,9 +2246,14 @@ html.lenis, html.lenis body { height: auto; }
    clipped by the viewport, matching the desktop collision instead of shrinking
    into a safe mobile stack. */
 @media (max-width: 640px) {
+  /* Hero sized to the VISIBLE viewport so the View Work CTA isn't pushed under
+     the address bar, and the name is a touch smaller so "Dahech" clears the
+     right edge. */
   .panel--hero {
-    --hero-name-size: clamp(112px, 35.5vw, 150px);
-    --hero-circle-size: min(78vw, 344px);
+    height: 100svh;
+    min-height: 100svh;
+    --hero-name-size: clamp(84px, 27.5vw, 116px);
+    --hero-circle-size: min(74vw, 320px);
   }
 
   .panel--hero .hero-name {
@@ -2259,14 +2264,14 @@ html.lenis, html.lenis body { height: auto; }
   .panel--hero .d-line--top {
     left: 5vw;
     right: auto;
-    top: clamp(112px, 20.5svh, 206px);
+    top: clamp(96px, 17svh, 168px);
     text-align: left;
   }
 
   .panel--hero .d-line--bottom {
     left: 4vw;
     right: auto;
-    bottom: clamp(170px, 31svh, 300px);
+    bottom: clamp(206px, 34svh, 320px);
     text-align: left;
   }
 
