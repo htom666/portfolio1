@@ -1423,7 +1423,9 @@ body.section3-ready .works-list:hover .work-row:hover a { opacity: 1; }
 }
 .panel--contact .eyebrow { margin-bottom: 0; }
 .connect-title {
-  font-size: clamp(100px, 16vw, 280px);
+  /* the min(...,30vh) cap only engages on short viewports (laptops), so the
+     Contact section stops overflowing the screen; tall desktops are unchanged. */
+  font-size: min(clamp(100px, 16vw, 280px), 26vh);
   line-height: 0.84;
   margin: 0;
   color: var(--ink);
