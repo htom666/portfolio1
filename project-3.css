@@ -2060,6 +2060,14 @@ body.p3 {
   object-position: center top;
 }
 
+/* Center phone uses the f1.png crop, which is wider than the tall phone screen.
+   Contain it (don't crop the rings/chart); the image's white margins blend into
+   the white screen, so it reads as a normal screenshot with breathing room. */
+.f1ph--center .f1ph__shot-img--raster {
+  object-fit: contain;
+  object-position: center;
+}
+
 /* ss1 — scale 1.045 (slightly oversized to cover full screen after upward shift) */
 .f1ph--left.f1ph--shot .f1ph__shot-img {
   width: 291px;
