@@ -13,8 +13,12 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const body = document.body;
 
-  /* ---------- Lenis smooth scroll ---------- */
-  if (!reduceMotion && window.Lenis) {
+  /* ---------- Lenis smooth scroll ----------
+     Desktop only. The horizontal scroll engine below is also gated to
+     >=901px; on phones/tablets the layout is a normal vertical column, and
+     running Lenis there hijacked single-finger touch on some Android browsers
+     (page only scrolled with two fingers). Native scroll on mobile fixes it. */
+  if (!reduceMotion && window.Lenis && window.matchMedia('(min-width: 901px)').matches) {
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

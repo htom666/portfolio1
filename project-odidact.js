@@ -102,7 +102,9 @@ if (window.ResizeObserver) {
   });
 }
 
-if (!reduceMotion && window.Lenis) {
+/* Desktop only — Lenis hijacked single-finger touch on some phones (page only
+   scrolled with two fingers). Mobile is a vertical column with native scroll. */
+if (!reduceMotion && window.Lenis && window.matchMedia('(min-width: 901px)').matches) {
   const lenis = new Lenis({
     duration: 1.12,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

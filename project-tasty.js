@@ -7,8 +7,10 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const body = document.body;
 
-  /* ---------- Lenis smooth scroll ---------- */
-  if (!reduceMotion && window.Lenis) {
+  /* ---------- Lenis smooth scroll (desktop only) ---------- */
+  /* Lenis hijacked single-finger touch on some phones (page only scrolled with
+     two fingers). Mobile is a vertical column with native scroll. */
+  if (!reduceMotion && window.Lenis && window.matchMedia('(min-width: 900px)').matches) {
     const lenis = new Lenis({
       duration: 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
