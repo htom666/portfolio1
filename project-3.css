@@ -4078,7 +4078,11 @@ body.p3 {
 .f5__flow .f5__row {
   flex: 0 0 auto;
 }
-/* Sharpen embedded raster content inside the SVG assets */
+/* Embedded raster content inside the SVG assets. NOTE: do NOT use
+   image-rendering: crisp-edges / -webkit-optimize-contrast here — these mockups
+   are downscaled ~3-4x, and crisp-edges forces nearest-neighbour sampling,
+   which drops pixels and reads as rough/"blurry". Smooth (auto) high-quality
+   resampling is what keeps the now-full-resolution rasters clean. */
 .p3-panel img,
 .p3-panel .f4wf__phone img,
 .p3-panel .f5__shot img,
@@ -4086,8 +4090,7 @@ body.p3 {
 .p3-panel .f4icons--strip img,
 .p3-panel .f4metrics img,
 .p3-panel .f4illus img {
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+  image-rendering: auto;
   filter: contrast(1.04) saturate(1.06);
   backface-visibility: hidden;
   transform: translateZ(0);
