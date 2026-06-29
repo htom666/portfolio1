@@ -2291,7 +2291,7 @@ html.lenis, html.lenis body { height: auto; }
 
   .hero-cta {
     right: clamp(20px, 6vw, 28px);
-    bottom: max(12svh, calc(env(safe-area-inset-bottom, 0px) + 78px));
+    bottom: max(16svh, calc(env(safe-area-inset-bottom, 0px) + 108px));
     z-index: 20;
     min-height: 52px;
     padding: 0 22px;
