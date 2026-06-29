@@ -2281,7 +2281,7 @@ html.lenis, html.lenis body { height: auto; }
   .panel--hero .d-line--bottom {
     left: -2vw;                          /* Dahech further left */
     right: auto;
-    bottom: clamp(206px, 35svh, 330px);  /* Dahech higher */
+    bottom: clamp(232px, 38.5svh, 358px);  /* Dahech higher */
     text-align: left;
   }
 
