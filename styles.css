@@ -536,6 +536,15 @@ body.cursor-on-dark .cursor {
   border-color: transparent;
 }
 
+/* Entering the white Selected Works during the iris: solid dark cursor (no
+   difference-blend) so it reads black on the cream Works instead of flashing
+   white against the shrinking black mask. */
+body.cursor-works-incoming .cursor:not(.is-project-preview) {
+  mix-blend-mode: normal !important;
+  background-color: oklch(0.095 0.010 255) !important;
+  border-color: transparent !important;
+}
+
 /* Cursor inversion: applied only when the menu is opened from Selected
    Works so the black cursor reveal is visible on the black menu overlay.
    Removed in closeMenu's onComplete so the cursor returns to ink. */
