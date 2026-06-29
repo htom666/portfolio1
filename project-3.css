@@ -4078,11 +4078,13 @@ body.p3 {
 .f5__flow .f5__row {
   flex: 0 0 auto;
 }
-/* Embedded raster content inside the SVG assets. NOTE: do NOT use
-   image-rendering: crisp-edges / -webkit-optimize-contrast here — these mockups
-   are downscaled ~3-4x, and crisp-edges forces nearest-neighbour sampling,
-   which drops pixels and reads as rough/"blurry". Smooth (auto) high-quality
-   resampling is what keeps the now-full-resolution rasters clean. */
+/* Embedded raster content inside the SVG assets. Render the SVGs natively at
+   device resolution — NO crisp-edges (nearest-neighbour, reads rough) and,
+   importantly, NO CSS filter / translateZ / backface layer hints. Those hints
+   promote an <img src=*.svg> to a composited layer that gets rasterised once at
+   layout size and then GPU-scaled, which blurs it on high-DPI screens and
+   inside the transformed phone mockups — the file is crisp on its own, the blur
+   only appeared once it was layer-promoted here. */
 .p3-panel img,
 .p3-panel .f4wf__phone img,
 .p3-panel .f5__shot img,
@@ -4091,9 +4093,6 @@ body.p3 {
 .p3-panel .f4metrics img,
 .p3-panel .f4illus img {
   image-rendering: auto;
-  filter: contrast(1.04) saturate(1.06);
-  backface-visibility: hidden;
-  transform: translateZ(0);
 }
 
 .f5__arrow {
