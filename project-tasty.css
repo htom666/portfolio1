@@ -1792,7 +1792,9 @@ body.tj::after {
     overscroll-behavior-x: contain;
     scrollbar-width: none;
     margin-top: clamp(0.75rem, 2vh, 1.15rem);
-    padding-bottom: clamp(3.8rem, 10vh, 5.2rem);
+    /* enough room for the hanging captions, without the oversized gap before
+       the next heading (discover->structure, wireframes->useful content) */
+    padding-bottom: clamp(1.2rem, 3.5vh, 1.9rem);
   }
 
   .tj-flow__steps::-webkit-scrollbar,

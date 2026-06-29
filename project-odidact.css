@@ -19844,23 +19844,32 @@ body.odidact-page.is-entering .hero-visual {
    duplicate mobile blocks is deferred to the planned audit pass.)
    ========================================================================= */
 @media (max-width: 900px) {
-  /* 1. Consistent vertical rhythm on every chapter */
+  /* 1. Consistent, tighter vertical rhythm on every chapter (reduce the big
+     gaps above the eyebrows, e.g. hero mockup -> 02, content -> User Journey). */
   .odidact-page .section-panel {
-    padding-top: clamp(54px, 7vh, 74px) !important;
-    padding-bottom: clamp(54px, 7vh, 74px) !important;
+    padding-top: clamp(36px, 4.5vh, 52px) !important;
+    padding-bottom: clamp(36px, 4.5vh, 52px) !important;
   }
   .odidact-page .odidact-hero {
     padding-top: clamp(74px, 9vh, 98px) !important;   /* clear the fixed nav */
   }
 
-  /* 2. Eyebrows: always left-aligned to the section content edge.
-     (.challenge-copy is display:contents, so its eyebrow becomes a flex
-     child of .challenge-grid and was being centred.) */
+  /* 2. Eyebrows: always left-aligned to the section content edge, with a
+     consistent eyebrow->heading gap matching the Design System section. */
   .odidact-page .sec-eyebrow {
     align-self: start !important;
     justify-self: start !important;
     margin-left: 0 !important;
     padding-left: 0 !important;
+    margin-bottom: 30px !important;
+  }
+  /* zero per-section heading margins so the eyebrow gap is the single source */
+  .odidact-page .section-panel h2,
+  .odidact-page .jr-title,
+  .odidact-page .sol-title,
+  .odidact-page .ds-title,
+  .odidact-page .key-title {
+    margin-top: 0 !important;
   }
 
   /* 3. Hero mockup: contained inside the screen (no side bleed) but still

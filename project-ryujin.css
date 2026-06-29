@@ -1806,8 +1806,8 @@ body.ryujin-page.is-entering .ryujin-hero .reveal-stagger > * {
    handoff, instead of alternating between huge and cramped gaps. */
 @media (max-width: 900px) {
   body.ryujin-page .section-panel {
-    padding-top: clamp(40px, 5vh, 56px);
-    padding-bottom: clamp(38px, 4.6vh, 52px);
+    padding-top: clamp(30px, 3.8vh, 44px);
+    padding-bottom: clamp(28px, 3.4vh, 42px);
   }
 
   body.ryujin-page .section-panel + .section-panel {
