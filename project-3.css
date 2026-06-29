@@ -2061,10 +2061,10 @@ body.p3 {
 }
 
 /* Center phone uses the f1.png crop, which is wider than the tall phone screen.
-   Contain it (don't crop the rings/chart); the image's white margins blend into
-   the white screen, so it reads as a normal screenshot with breathing room. */
+   Cover so it fills top-to-bottom like a real screenshot (no floating white
+   bands); only the white side-margins get trimmed — the rings/chart stay. */
 .f1ph--center .f1ph__shot-img--raster {
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
 }
 
