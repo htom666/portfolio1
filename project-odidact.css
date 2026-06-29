@@ -19922,3 +19922,11 @@ body.odidact-page.is-entering .hero-visual {
     margin: 0 auto !important;
   }
 }
+
+/* Desktop: the first-section hero mockup overflows ~66px into the next
+   (challenge) section, which — being a later sibling at the same z-index —
+   painted over the mockup's right edge (visible when zoomed out). Raise the
+   hero above the adjacent section so the mockup stays in the foreground. */
+@media (min-width: 901px) {
+  .odidact-page .odidact-hero { z-index: 5 !important; }
+}

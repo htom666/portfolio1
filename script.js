@@ -1627,8 +1627,12 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     masterTl.to('.corner-cross',
       { autoAlpha: 0, ease: 'none', duration: 100 }, 0);
   }
-  masterTl.to('.hero-coords, .hero-cta',
-    { y: '-5vh', autoAlpha: 0, ease: 'power2.in', duration: 125 }, 0);
+  // fromTo (not to) with an explicit autoAlpha:1 start so scrubbing back to the
+  // top always restores the CTA. A plain .to() recorded its start value while
+  // the intro/loader still had the CTA hidden, so it never came back on scroll-up.
+  masterTl.fromTo('.hero-coords, .hero-cta',
+    { autoAlpha: 1, y: 0 },
+    { y: '-5vh', autoAlpha: 0, ease: 'power2.in', duration: 125, immediateRender: false }, 0);
   if (document.querySelector('.hero-left')) {
     masterTl.to('.hero-left',
       { x: '10vw', autoAlpha: 0, filter: 'blur(6px)', ease: 'power2.in', duration: 125 }, 0);

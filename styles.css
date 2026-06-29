@@ -2274,14 +2274,14 @@ html.lenis, html.lenis body { height: auto; }
   .panel--hero .d-line--top {
     left: 5vw;
     right: auto;
-    top: clamp(112px, 20.5svh, 206px);
+    top: clamp(138px, 24svh, 226px);   /* Hatem a bit lower */
     text-align: left;
   }
 
   .panel--hero .d-line--bottom {
-    left: 4vw;
+    left: -2vw;                          /* Dahech further left */
     right: auto;
-    bottom: clamp(170px, 31svh, 300px);
+    bottom: clamp(206px, 35svh, 330px);  /* Dahech higher */
     text-align: left;
   }
 
