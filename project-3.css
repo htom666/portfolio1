@@ -2047,6 +2047,19 @@ body.p3 {
   max-width: none;
 }
 
+/* Raster screen image (direct PNG/WebP instead of the SVG mockup). The SVG
+   wrapper rasterised the embedded screenshot at its tiny viewBox resolution and
+   scaled it up = blurry; a direct raster renders at full device resolution.
+   It simply fills the dark phone's screen; the frame/notch/radius are CSS. */
+.f1ph--shot .f1ph__shot-img--raster {
+  position: absolute;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  object-position: center top;
+}
+
 /* ss1 — scale 1.045 (slightly oversized to cover full screen after upward shift) */
 .f1ph--left.f1ph--shot .f1ph__shot-img {
   width: 291px;
