@@ -2061,9 +2061,14 @@ body.p3 {
 }
 
 /* Center phone uses the f1.png crop, which is wider than the tall phone screen.
-   Cover so it fills top-to-bottom like a real screenshot (no floating white
-   bands); only the white side-margins get trimmed — the rings/chart stay. */
+   Cover so it fills like a real screenshot, but with a small inner margin
+   (padding) so the content isn't glued to the top/bottom edges — back arrow and
+   tab bar get breathing room. box-sizing makes object-fit honour the padding;
+   the margin shows the white screen behind, and a smaller box also trims the
+   sides less. */
 .f1ph--center .f1ph__shot-img--raster {
+  box-sizing: border-box;
+  padding: 4% 0 5%;
   object-fit: cover;
   object-position: center;
 }
