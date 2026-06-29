@@ -2066,7 +2066,8 @@ body.p3 {
    tab bar get breathing room. box-sizing makes object-fit honour the padding;
    the margin shows the white screen behind, and a smaller box also trims the
    sides less. */
-.f1ph--center .f1ph__shot-img--raster {
+.f1ph--center .f1ph__shot-img--raster,
+.f1ph--right .f1ph__shot-img--raster {
   box-sizing: border-box;
   padding: 11% 0 5%;
   object-fit: cover;
