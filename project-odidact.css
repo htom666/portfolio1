@@ -19443,6 +19443,11 @@ a {
   align-items: center;
   height: 72px !important;
   padding: 0 clamp(26px, 3.4vw, 50px) !important;
+  /* frosted bar so section content never shows THROUGH the (previously
+     transparent) fixed navbar at any viewport height */
+  background: rgba(247, 247, 252, 0.72);
+  -webkit-backdrop-filter: saturate(1.35) blur(14px);
+  backdrop-filter: saturate(1.35) blur(14px);
 }
 .odidact-page .odtop__star { justify-self: start; font-size: 30px !important; margin-top: -6px; }
 .odidact-page .odtop__title {
