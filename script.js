@@ -1622,11 +1622,11 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
   masterTl.to('.hero-bh',
     {
       '--hero-lens-softness': 0,
-      // On phones the growing lens detail/edge layers read as a stray ring inside
-      // the circle as it zooms in, so keep them off there (resting value is 0).
-      // Desktop/tablet keep the gravitational-lens detail as the hole fills.
-      '--hero-edge-fade': isPhoneViewport ? 0 : 1,
-      '--hero-lens-detail-opacity': isPhoneViewport ? 0 : 0.2,
+      // Keep the lens detail/edge layers OFF as the hole zooms in (resting value
+      // is 0). Ramping them up read as a stray ring inside the growing circle;
+      // the 3D sphere underneath still carries the black-hole feel, just clean.
+      '--hero-edge-fade': 0,
+      '--hero-lens-detail-opacity': 0,
       ease: 'none',
       duration: 162.5,
     }, 0);
