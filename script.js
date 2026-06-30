@@ -222,6 +222,7 @@ class WordStage {
     this.progress = 0;
     this.time = 0;
     this.hovered = false;
+    this.userHovering = false;
     this.running = false;
 
     this.canvas = document.createElement('canvas');
@@ -267,9 +268,13 @@ class WordStage {
     this.observer = new ResizeObserver(() => this.resize());
     this.observer.observe(this.wrap);
 
-    this.root.addEventListener('mouseenter', () => this.enter());
+    this.root.addEventListener('mouseenter', () => { this.userHovering = true; this.enter(); });
     this.root.addEventListener('mousemove', (event) => this.move(event));
-    this.root.addEventListener('mouseleave', () => this.leave());
+    this.root.addEventListener('mouseleave', () => { this.userHovering = false; this.leave(); });
+    // Touch has no hover, so tap to reveal for a beat — lets phone users explore.
+    this.root.addEventListener('pointerup', (event) => {
+      if (event.pointerType === 'touch') this.peek(2800);
+    });
   }
 
   line(points, material = this.edgeMaterial, parent = this.core) {
@@ -618,6 +623,17 @@ class WordStage {
     this.start();
   }
 
+  // Auto-reveal for `hold` ms then fall back, unless the user is genuinely
+  // hovering/holding it. Used for the one-time scroll-in "show off".
+  peek(hold = 1300) {
+    if (this.hovered) return;
+    this.enter();
+    clearTimeout(this._peekTimer);
+    this._peekTimer = setTimeout(() => {
+      if (!this.userHovering) this.leave();
+    }, hold);
+  }
+
   start() {
     if (this.running) return;
     this.running = true;
@@ -703,7 +719,7 @@ class WordStage {
 
 if (!reduceMotion && window.THREE) {
   document.querySelectorAll('.word-morph').forEach((word) => {
-    new WordStage(word);
+    word._wordStage = new WordStage(word);
   });
 }
 
@@ -1702,6 +1718,31 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       { autoAlpha: 0, y: -8, ease: 'power2.in', duration: 22 }, section2BridgeOutAt);
     masterTl.to(section2Bridge,
       { autoAlpha: 0, ease: 'power1.out', duration: 22 }, section2BridgeOutAt);
+  }
+
+  // One-time auto "peek" of the interactive word-morphs as About and the Bridge
+  // first scroll into view, so visitors discover them without hovering — and so
+  // touch users, who have no hover at all, see the effect at least once. Guarded
+  // so it plays only the first time the playhead crosses (scrubbing back/forth
+  // won't replay it); a real hover/tap mid-peek takes over cleanly.
+  const peekWords = (selector, stagger) => {
+    gsap.utils.toArray(selector + ' .word-morph').forEach((word, i) => {
+      if (word._wordStage) gsap.delayedCall(i * stagger, () => word._wordStage.peek(1200));
+    });
+  };
+  let aboutPeeked = false;
+  let bridgePeeked = false;
+  masterTl.call(() => {
+    if (aboutPeeked) return;
+    aboutPeeked = true;
+    peekWords('.section2ContentLayer .about-wrap', 0.42);
+  }, null, section2AboutExitAt - 35);
+  if (section2Bridge) {
+    masterTl.call(() => {
+      if (bridgePeeked) return;
+      bridgePeeked = true;
+      peekWords('.section2-bridge', 0.5);
+    }, null, section2BridgeOutAt - 45);
   }
 
   masterTl.to('.section2ContentLayer',
