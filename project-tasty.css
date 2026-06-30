@@ -309,7 +309,7 @@ body.tj::after { content: ""; position: fixed; inset: 0; z-index: 90; pointer-ev
 }
 /* ========================================================= TOP NAV — star + Selected Works + Next Project (Tasty amber/ink) ========================================================= */
 .tj .tjtop { position: fixed; inset: 0 0 auto 0; z-index: 200; display: grid; grid-template-columns: 1fr auto; align-items: center; height: var(--t-bar-h, 60px); padding: 0 clamp(22px, 3.4vw, 48px); font-family: var(--t-body, "Nunito", sans-serif); pointer-events: none; }
-.tj .tjtop::before { display: none; }
+.tj .tjtop::before { content: ""; position: absolute; inset: 0 0 -22px 0; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, oklch(0.965 0.018 85 / 0.62), oklch(0.965 0.018 85 / 0.32) 55%, oklch(0.965 0.018 85 / 0)); -webkit-backdrop-filter: blur(14px) saturate(1.15); backdrop-filter: blur(14px) saturate(1.15); -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 100%); mask-image: linear-gradient(to bottom, #000 58%, transparent 100%); }
 .tj .tjtop > * { pointer-events: auto; }
 .tj .tjtop__star { justify-self: start; color: var(--t-amber); font-size: 28px; font-weight: 800; line-height: 1; margin-top: -4px; text-decoration: none; transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
 .tj .tjtop__star:hover { transform: rotate(90deg) scale(1.1); }
@@ -363,6 +363,15 @@ body.tj::after { content: ""; position: fixed; inset: 0; z-index: 90; pointer-ev
   .tj-step { flex-basis: min(80vw, 330px); }
   .tj-print { flex-basis: min(82vw, 350px); max-width: min(82vw, 350px); }
   .tj-print.tj-w-lg { flex-basis: min(88vw, 390px); max-width: min(88vw, 390px); }
+}
+/* Carousel captions hang below each card (figcaption is position:absolute,
+   top:100%), and the strip is overflow-y:hidden. A generic .tj-stand rule above
+   had shrunk padding-bottom to ~29px, clipping those captions. This block comes
+   after it so it wins: enough bottom room for the simple hanging captions, and
+   extra for the taller tagged caption cards in the Content & Trust collage. */
+@media (max-width: 899px) {
+  .tj-stand { padding-bottom: clamp(5.25rem, 11vh, 6.5rem); }
+  .tj-trust__collage { padding-bottom: clamp(8.5rem, 17vh, 10rem); }
 }
 /* Equalize the cover's bottom gap with the rest of the chapters: the hero (.tjc) kept a 7vh bottom pad while every other panel uses ~2.4vh, so the first gap read noticeably bigger than the rest. Match it for a consistent rhythm. */
 @media (max-width: 899px) {

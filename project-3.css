@@ -1,8 +1,12 @@
 /* ========================================================= EcoSense — Project 3 case study (rebuilt) White board · teal accent · navy text · horizontal scroll ========================================================= */
 :root { --p3-bg: #ffffff; --p3-ink: #0f1f2c; --p3-ink-soft: #4b5b6a; --p3-mute: #8896a4; --p3-line: #e6edf1; --p3-card: #f7fafa; --p3-card-2: #f1f5f9; --p3-teal: #16a085; --p3-teal-strong: #0e8e72; --p3-teal-soft: #c4ebe1; --p3-teal-tint: #e8f6f1; --p3-navy: #1c3447; --p3-warn: #f3a623; --p3-err: #e2604f; --p3-radius: 16px; --p3-radius-sm: 10px; --p3-radius-lg: 22px; --p3-shadow: 0 6px 22px -10px rgba(15, 31, 44, 0.18); --p3-shadow-soft: 0 2px 8px -3px rgba(15, 31, 44, 0.08); --p3-nav-h: 64px; }
 * { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; overscroll-behavior: none; }
-html { overflow-x: clip; }
+/* Body is the ONLY scroll container. A prior `html { overflow-x: clip }` forced
+   html into a second, nested scroll container (overflow-x:non-visible makes
+   overflow-y compute to auto). Nested scroll containers are the classic reason
+   Android needs two fingers to scroll a page. Ryujin/Tasty scroll fine with just
+   body overflow-x:hidden, so match that. */
+html, body { margin: 0; padding: 0; }
 body.p3 { font-family: 'Roboto', system-ui, -apple-system, Segoe UI, sans-serif; background: var(--p3-bg); color: var(--p3-ink); font-size: 15px; line-height: 1.4; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 .p3 a { color: inherit; text-decoration: none; }
 .p3 ul, .p3 ol { margin: 0; padding: 0; list-style: none; }
@@ -543,7 +547,7 @@ body.p3 { font-family: 'Roboto', system-ui, -apple-system, Segoe UI, sans-serif;
 }
 /* ========================================================= TOP NAV — Odidact/Ryujin-style bar in Fitness teal/navy ========================================================= */
 .p3 .ftop { position: fixed; inset: 0 0 auto 0; z-index: 200; display: grid; grid-template-columns: 1fr auto; align-items: center; height: var(--p3-nav-h, 64px); padding: 0 clamp(22px, 3.4vw, 48px); font-family: "Roboto", sans-serif; pointer-events: none; }
-.p3 .ftop::before { display: none; }
+.p3 .ftop::before { content: ""; position: absolute; inset: 0 0 -22px 0; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, rgba(255,255,255,0.62), rgba(255,255,255,0.32) 55%, rgba(255,255,255,0)); -webkit-backdrop-filter: blur(14px) saturate(1.1); backdrop-filter: blur(14px) saturate(1.1); -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 100%); mask-image: linear-gradient(to bottom, #000 58%, transparent 100%); }
 .p3 .ftop > * { pointer-events: auto; }
 .p3 .ftop__star { justify-self: start; color: var(--f1-teal); font-size: 28px; font-weight: 900; line-height: 1; margin-top: -4px; text-decoration: none; transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
 .p3 .ftop__star:hover { transform: rotate(90deg) scale(1.1); }
@@ -641,10 +645,13 @@ body.p3 { font-family: 'Roboto', system-ui, -apple-system, Segoe UI, sans-serif;
   .f1__right { --f1-center-w: min(210px, 55vw); position: relative !important; display: block !important; width: min(calc(100vw - 44px), 332px) !important; height: clamp(452px, 122vw, 548px) !important; margin: 4px auto 0 !important; }
   .f1ph { padding: 7px !important; border-radius: 34px !important; }
   .f1ph__screen { border-radius: 28px !important; }
-  .f1ph--left, .f1ph--right { display: block !important; position: absolute !important; }
-  .f1ph--center { position: absolute !important; left: 50% !important; top: 0 !important; width: var(--f1-center-w) !important; height: auto !important; aspect-ratio: 296 / 620 !important; margin-left: calc(var(--f1-center-w) / -2) !important; transform: none !important; z-index: 3 !important; }
-  .f1ph--left { left: 0 !important; top: 72px !important; width: min(162px, 42vw) !important; height: auto !important; aspect-ratio: 248 / 520 !important; transform: rotate(-13deg) !important; z-index: 1 !important; opacity: 0.97; }
-  .f1ph--right { right: 8px !important; top: 82px !important; width: min(160px, 41vw) !important; height: auto !important; aspect-ratio: 270 / 560 !important; transform: rotate(6deg) !important; z-index: 2 !important; opacity: 0.96; }
+  /* Two-phone duo (the 3rd phone was removed): a balanced, group-centred pair.
+     The detailed Dashboard sits front and slightly right; the Workouts splash
+     tucks behind to the left. Mirrored tilts so it reads as an intentional pair
+     rather than one phone with a leftover slab beside it. */
+  .f1ph--left { display: block !important; position: absolute !important; }
+  .f1ph--center { position: absolute !important; left: 50% !important; top: 30px !important; width: var(--f1-center-w) !important; height: auto !important; aspect-ratio: 296 / 620 !important; margin-left: calc(var(--f1-center-w) / -2 + 22px) !important; transform: rotate(2.5deg) !important; z-index: 3 !important; }
+  .f1ph--left { left: 50% !important; top: 18px !important; width: min(170px, 45vw) !important; height: auto !important; aspect-ratio: 248 / 520 !important; margin-left: calc(min(170px, 45vw) / -2 - 60px) !important; transform: rotate(-11deg) !important; z-index: 1 !important; opacity: 1; }
   .f1ph__notch { top: 12px !important; width: 70px !important; height: 16px !important; }
   .f1ph--left.f1ph--shot .f1ph__shot-img { width: 125.5% !important; height: 104.5% !important; left: -14.2% !important; top: -2.2% !important; }
   .f1ph--center.f1ph--shot .f1ph__shot-img { width: 142.5% !important; height: 117.5% !important; left: -22.5% !important; top: -7.8% !important; }
