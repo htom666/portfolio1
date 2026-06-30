@@ -2275,17 +2275,22 @@ html.lenis, html.lenis body { height: auto; }
     letter-spacing: -0.032em;
   }
 
+  /* Names anchored to the centred sphere (50svh), not the viewport edges, so the
+     collision overlap holds at every phone height. Offsets scale with the circle
+     so the proportion is identical from 320 to 430+. Calibrated to the liked 390 look. */
   .panel--hero .d-line--top {
     left: 5vw;
     right: auto;
-    top: clamp(138px, 24svh, 226px);   /* Hatem a bit lower */
+    top: 50svh; bottom: auto;
+    transform: translateY(calc(var(--hero-circle-size) * -0.72));
     text-align: left;
   }
 
   .panel--hero .d-line--bottom {
     left: -2vw;                          /* Dahech further left */
     right: auto;
-    bottom: clamp(232px, 38.5svh, 358px);  /* Dahech higher */
+    top: 50svh; bottom: auto;
+    transform: translateY(calc(var(--hero-circle-size) * -0.05));
     text-align: left;
   }
 
@@ -2329,19 +2334,8 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 @media (max-width: 360px) {
-  .panel--hero {
-    --hero-name-size: clamp(108px, 35.5vw, 126px);
-    --hero-circle-size: min(74vw, 258px);
-  }
-
-  .panel--hero .d-line--top {
-    top: clamp(104px, 20svh, 150px);
-  }
-
-  .panel--hero .d-line--bottom {
-    bottom: clamp(146px, 29svh, 214px);
-  }
-
+  /* Hero name/circle/positions now come from the unified fluid system in the
+     <=640 block (centred-sphere anchoring), so no size-specific overrides here. */
   .hero-cta {
     bottom: max(10svh, calc(env(safe-area-inset-bottom, 0px) + 60px));
     min-height: 48px;
