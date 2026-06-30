@@ -2501,7 +2501,7 @@ body.p3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 18px;
-  align-items: start;        /* size each card to its content, not the tallest */
+  align-items: stretch;      /* equal height (tallest content) — balanced row */
 }
 .f2card {
   background: var(--f1-surface);
