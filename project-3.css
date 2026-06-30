@@ -555,7 +555,7 @@ body.p3 { font-family: 'Roboto', system-ui, -apple-system, Segoe UI, sans-serif;
 }
 /* ========================================================= TOP NAV — Odidact/Ryujin-style bar in Fitness teal/navy ========================================================= */
 .p3 .ftop { position: fixed; inset: 0 0 auto 0; z-index: 200; display: grid; grid-template-columns: 1fr auto; align-items: center; height: var(--p3-nav-h, 64px); padding: 0 clamp(22px, 3.4vw, 48px); font-family: "Roboto", sans-serif; pointer-events: none; }
-.p3 .ftop::before { content: ""; position: absolute; inset: 0 0 -22px 0; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.72) 50%, rgba(255, 255, 255, 0) 100%); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 100%); }
+.p3 .ftop::before { display: none; }
 .p3 .ftop > * { pointer-events: auto; }
 .p3 .ftop__star { justify-self: start; color: var(--f1-teal); font-size: 28px; font-weight: 900; line-height: 1; margin-top: -4px; text-decoration: none; transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
 .p3 .ftop__star:hover { transform: rotate(90deg) scale(1.1); }
@@ -655,7 +655,7 @@ body.p3 { font-family: 'Roboto', system-ui, -apple-system, Segoe UI, sans-serif;
   .f1ph__screen { border-radius: 28px !important; }
   .f1ph--left, .f1ph--right { display: block !important; position: absolute !important; }
   .f1ph--center { position: absolute !important; left: 50% !important; top: 0 !important; width: var(--f1-center-w) !important; height: auto !important; aspect-ratio: 296 / 620 !important; margin-left: calc(var(--f1-center-w) / -2) !important; transform: none !important; z-index: 3 !important; }
-  .f1ph--left { left: 8px !important; top: 58px !important; width: min(154px, 39.5vw) !important; height: auto !important; aspect-ratio: 248 / 520 !important; transform: rotate(-7deg) !important; z-index: 1 !important; opacity: 0.96; }
+  .f1ph--left { left: 0 !important; top: 72px !important; width: min(162px, 42vw) !important; height: auto !important; aspect-ratio: 248 / 520 !important; transform: rotate(-13deg) !important; z-index: 1 !important; opacity: 0.97; }
   .f1ph--right { right: 8px !important; top: 82px !important; width: min(160px, 41vw) !important; height: auto !important; aspect-ratio: 270 / 560 !important; transform: rotate(6deg) !important; z-index: 2 !important; opacity: 0.96; }
   .f1ph__notch { top: 12px !important; width: 70px !important; height: 16px !important; }
   .f1ph--left.f1ph--shot .f1ph__shot-img { width: 125.5% !important; height: 104.5% !important; left: -14.2% !important; top: -2.2% !important; }
@@ -668,9 +668,7 @@ body.p3 { font-family: 'Roboto', system-ui, -apple-system, Segoe UI, sans-serif;
   .p3-track { padding-top: 56px !important; overflow: hidden; background: radial-gradient(ellipse 78vw 34vh at 92% 7%, rgba(32,201,176,0.13), transparent 68%), radial-gradient(ellipse 82vw 36vh at -14% 24%, rgba(242,97,129,0.075), transparent 70%), radial-gradient(ellipse 78vw 36vh at 98% 48%, rgba(32,201,176,0.10), transparent 68%), radial-gradient(ellipse 84vw 38vh at -18% 72%, rgba(242,97,129,0.065), transparent 70%), linear-gradient(180deg, #F0F4F8 0%, #F5F8FB 34%, #EEF5F6 66%, #F1F5F8 100%) !important; }
   .p3-track::before { opacity: 0.22; }
   .p3-panel { position: relative; isolation: isolate; background: transparent !important; padding-top: clamp(34px, 8vw, 52px) !important; padding-bottom: clamp(34px, 8vw, 52px) !important; margin: 0 !important; overflow: visible; }
-  .p3-panel::before, .p3-panel::after { content: ""; position: absolute; left: -24px; right: -24px; height: clamp(76px, 18vw, 132px); z-index: 0; pointer-events: none; background: linear-gradient(180deg, rgba(240, 244, 248, 0) 0%, rgba(240, 244, 248, 0.82) 46%, rgba(240, 244, 248, 0) 100%), radial-gradient(ellipse 92vw 88px at 72% 50%, rgba(32, 201, 176, 0.075), transparent 72%), radial-gradient(ellipse 82vw 80px at 12% 52%, rgba(242, 97, 129, 0.045), transparent 74%); filter: blur(12px); opacity: 0.86; }
-  .p3-panel::before { top: calc(clamp(76px, 18vw, 132px) * -0.58); }
-  .p3-panel::after { bottom: calc(clamp(76px, 18vw, 132px) * -0.58); }
+  .p3-panel::before, .p3-panel::after { display: none; }
   .p3-panel > * { position: relative; z-index: 3; }
   .p3-panel.f1 { padding-bottom: clamp(34px, 8vw, 52px) !important; }
   .p3-panel + .p3-panel { margin-top: 0 !important; padding-top: clamp(34px, 8vw, 52px) !important; }

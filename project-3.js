@@ -106,11 +106,10 @@
     const panel = panels[1]; if (!panel) return;
     const title  = q('.f2__title',  panel);
     const lede   = q('.f2__lede',   panel);
-    const visual = q('.f2__visual', panel);
     const cards  = qa('.f2card',    panel);
     const steps  = qa('.f2step',    panel);
 
-    gsap.set([title, lede, visual], fromBelow);
+    gsap.set([title, lede], fromBelow);
     gsap.set(cards, { y: 60, autoAlpha: 0, scale: 0.97 });
     gsap.set(steps, { y: 24, autoAlpha: 0 });
 
@@ -121,7 +120,6 @@
 
     tl.to(title,  calmIn)
       .to(lede,   calmIn, '-=0.5')
-      .to(visual, calmIn, '-=0.45')
       // cards reveal in narrative order: Overview, Problem, Solution
       .to(cards, {
         y: 0, autoAlpha: 1, scale: 1,
@@ -329,18 +327,14 @@
     };
   });
 
-  /* Mobile fallback */
-  mm.add('(max-width: 900px)', () => {
-    buildSection1(null);
-    buildSection2(null);
-    buildSection3(null);
-    buildSection4(null);
-    buildSection5(null);
-
-    return () => {
-      ScrollTrigger.getAll().forEach((st) => st.kill());
-    };
-  });
+  /* Mobile: clean native vertical scroll, no scroll engine at all.
+     The reveal sequences are built for the horizontal container ('left 75%'
+     start positions); running them on a vertical page left whole sections
+     stuck hidden (autoAlpha:0 never cleared) and the stray ScrollTriggers
+     interfered with single-finger touch scroll (page only moved with two
+     fingers on Android). On mobile we create no ScrollTriggers and never hide
+     anything — content renders as-is and the browser scrolls natively. */
+  mm.add('(max-width: 900px)', () => {});
 
   body.classList.add('is-motion-ready');
 

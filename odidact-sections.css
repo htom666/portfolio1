@@ -738,7 +738,7 @@
   /* ---- IMPACT: force the old artboard into a clean stack ---- */
   .odidact-page .oi-impact-section {
     height: auto !important; min-height: 0 !important; display: block !important;
-    padding: 72px 20px 56px !important; overflow: visible !important;
+    padding: 40px 20px 56px !important; overflow: visible !important;
   }
   .odidact-page .oi-stage {
     position: static !important; transform: none !important;
