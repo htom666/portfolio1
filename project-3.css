@@ -2009,6 +2009,9 @@ body.p3 {
 .f1__right {
   position: relative;
   height: 720px;
+  /* Only 2 phones now (3rd removed) — shift the pair toward centre so §1
+     doesn't leave a big empty gap on the right before §2. */
+  transform: translateX(7vw);
 }
 
 /* phone shells */
