@@ -2380,13 +2380,13 @@ html.lenis, html.lenis body { height: auto; }
   .panel--hero .d-line--top {
     left: 5vw; right: auto;
     top: 50svh; bottom: auto;
-    transform: translateY(calc(var(--hero-circle-size) * -0.60));
+    transform: translateY(calc(var(--hero-circle-size) * -0.50));
     text-align: left;
   }
   .panel--hero .d-line--bottom {
     left: auto; right: 5vw;          /* Dahech to the right, desktop-style diagonal */
     top: 50svh; bottom: auto;
-    transform: translateY(calc(var(--hero-circle-size) * 0.05));
+    transform: translateY(calc(var(--hero-circle-size) * 0.15));
     text-align: right;
   }
   .hero-cta {
