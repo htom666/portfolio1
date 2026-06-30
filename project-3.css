@@ -4685,7 +4685,7 @@ body.p3 {
 
   .p3-panel > * {
     position: relative;
-    z-index: 1;
+    z-index: 3;   /* keep all section content above the seam-mask blur bands */
   }
 
   .p3-panel.f1 {
