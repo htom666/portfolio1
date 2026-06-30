@@ -2374,7 +2374,7 @@ html.lenis, html.lenis body { height: auto; }
    and desktop (>=1025) are unaffected. */
 @media (min-width: 641px) and (max-width: 1024px) {
   .panel--hero {
-    --hero-name-size: clamp(150px, 23vw, 230px);
+    --hero-name-size: clamp(170px, 26vw, 262px);
     --hero-circle-size: min(64vw, 540px);
   }
   .panel--hero .d-line--top {
