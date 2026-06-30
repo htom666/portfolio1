@@ -1421,13 +1421,18 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
   // Iris close is scroll-driven only. The mask scale/opacity is derived from
   // ScrollTrigger progress, so it never keeps shrinking after scroll input stops.
   let irisPlayed = false;
-  const IRIS_TRIGGER_PROGRESS = isPhoneViewport ? 0.855 : 0.74;
+  // Mobile + tablet have no cursor, so the bridge -> Selected Works shrink is a
+  // plain scroll-driven reveal there. Start it a touch earlier on phones (wider
+  // scroll window = slower) and ease it smoothly instead of the desktop's linear
+  // cursor-paced curve. Desktop is unchanged.
+  const irisAuto = window.matchMedia('(max-width: 1024px)').matches;
+  const IRIS_TRIGGER_PROGRESS = isPhoneViewport ? 0.82 : 0.74;
 
   const IRIS_SCROLL_END_PROGRESS = 1;
   const IRIS_INTERACTIVE_RAW = isPhoneViewport ? 0.9 : 0.965;
   const IRIS_PREVIEW_RAW = isPhoneViewport ? IRIS_INTERACTIVE_RAW : null;
   const IRIS_CURSOR_HANDOFF_RAW = 0.995;
-  const easeIrisScroll = gsap.parseEase('none');
+  const easeIrisScroll = gsap.parseEase(irisAuto ? 'power2.inOut' : 'none');
   const easeDarkCursor = gsap.parseEase('power2.inOut');
   const clampIris = gsap.utils.clamp(0, 1);
 
