@@ -2282,7 +2282,7 @@ html.lenis, html.lenis body { height: auto; }
     left: 5vw;
     right: auto;
     top: 50svh; bottom: auto;
-    transform: translateY(calc(var(--hero-circle-size) * -0.62));
+    transform: translateY(calc(var(--hero-circle-size) * -0.55));
     text-align: left;
   }
 
@@ -2290,7 +2290,7 @@ html.lenis, html.lenis body { height: auto; }
     left: 1vw;                           /* Dahech nudged right */
     right: auto;
     top: 50svh; bottom: auto;
-    transform: translateY(calc(var(--hero-circle-size) * 0.05));
+    transform: translateY(calc(var(--hero-circle-size) * 0.12));
     text-align: left;
   }
 
