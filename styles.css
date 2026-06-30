@@ -2367,3 +2367,30 @@ html.lenis, html.lenis body { height: auto; }
    runs on mobile too, matching the desktop flow (ball-grow -> about -> bridge
    -> iris reveal -> horizontal swipe to Contact). */
 
+
+/* ---- Tablet hero (portrait tablets ~641-1024px: Galaxy Tab, iPad) ----
+   Same centred-sphere anchoring as phones so the name/sphere collision holds,
+   with a larger sphere + names suited to the wider tablet canvas. Phones (<=640)
+   and desktop (>=1025) are unaffected. */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .panel--hero {
+    --hero-name-size: clamp(150px, 23vw, 230px);
+    --hero-circle-size: min(64vw, 540px);
+  }
+  .panel--hero .d-line--top {
+    left: 5vw; right: auto;
+    top: 50svh; bottom: auto;
+    transform: translateY(calc(var(--hero-circle-size) * -0.60));
+    text-align: left;
+  }
+  .panel--hero .d-line--bottom {
+    left: auto; right: 5vw;          /* Dahech to the right, desktop-style diagonal */
+    top: 50svh; bottom: auto;
+    transform: translateY(calc(var(--hero-circle-size) * 0.05));
+    text-align: right;
+  }
+  .hero-cta {
+    right: clamp(24px, 5vw, 40px);
+    bottom: max(10svh, calc(env(safe-area-inset-bottom, 0px) + 104px));
+  }
+}
