@@ -244,7 +244,7 @@ class WordStage {
     // are framed tighter on purpose and stay as they were.
     this.camera.position.z =
       this.mode === 'perception' ? 90 :
-      this.mode === 'space' ? 125 :
+      this.mode === 'space' ? 150 :
       150;
 
     this.root3d = new THREE.Group();
@@ -524,7 +524,7 @@ class WordStage {
         // Camera fit: distance to comfortably frame the largest dimension at
         // the perspective FOV (34°). With a tilt we keep some headroom.
         const fovRad = THREE.MathUtils.degToRad(this.camera.fov);
-        const distance = (TARGET / 2) / Math.tan(fovRad / 2) * 1.35;
+        const distance = (TARGET / 2) / Math.tan(fovRad / 2) * 1.6;
         this.camera.position.set(0, 0, distance);
         this.camera.near = Math.max(0.1, distance / 100);
         this.camera.far  = distance * 100;
@@ -545,60 +545,42 @@ class WordStage {
 
   makeSpace() {
     this.core.scale.set(1, 1, 1);
-    this.core.rotation.set(0, 0, 0);
-    this.terrain = new THREE.Group();
-    this.terrain.position.set(0, -3, 0);
-    this.terrain.rotation.set(0.85, 0.12, -0.06);
-    this.terrain.scale.setScalar(0.9);
-    this.core.add(this.terrain);
+    this.core.rotation.set(-0.14, -0.32, 0.05);
+    this.spaceGroup = new THREE.Group();
+    this.core.add(this.spaceGroup);
 
-    const positions = [];
-    const basePoints = [];
-    const addPoint = (x, y, z) => {
-      positions.push(x, y, z);
-      basePoints.push({ x, y, z });
-    };
-    const xCount = 13;
-    const zCount = 9;
-    const width = 104;
-    const depth = 64;
+    const R = 24;
 
-    for (let zi = 0; zi < zCount; zi += 1) {
-      const z = -depth / 2 + (zi / (zCount - 1)) * depth;
-      for (let xi = 0; xi < xCount - 1; xi += 1) {
-        const x1 = -width / 2 + (xi / (xCount - 1)) * width;
-        const x2 = -width / 2 + ((xi + 1) / (xCount - 1)) * width;
-        addPoint(x1, 0, z);
-        addPoint(x2, 0, z);
-      }
-    }
-
-    for (let xi = 0; xi < xCount; xi += 1) {
-      const x = -width / 2 + (xi / (xCount - 1)) * width;
-      for (let zi = 0; zi < zCount - 1; zi += 1) {
-        const z1 = -depth / 2 + (zi / (zCount - 1)) * depth;
-        const z2 = -depth / 2 + ((zi + 1) / (zCount - 1)) * depth;
-        addPoint(x, 0, z1);
-        addPoint(x, 0, z2);
-      }
-    }
-
-    this.spaceGeometry = new THREE.BufferGeometry();
-    this.spaceGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    this.spaceBasePoints = basePoints;
-    this.spaceTerrain = new THREE.LineSegments(
-      this.spaceGeometry,
-      new THREE.LineBasicMaterial({
-        color: 0xf1e8dc,
-        transparent: true,
-        opacity: 0.58,
-        depthWrite: false,
-      }),
+    // Outer geodesic shell — a subdivided icosahedron. Reads as the "geometry of
+    // space": an elegant faceted sphere instead of the old flat undulating grid.
+    const shellMat = new THREE.LineBasicMaterial({
+      color: 0xf1e8dc,
+      transparent: true,
+      opacity: 0.5,
+      depthWrite: false,
+    });
+    this.spaceShell = new THREE.LineSegments(
+      new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(R, 1)),
+      shellMat,
     );
-    this.terrain.add(this.spaceTerrain);
+    this.spaceGroup.add(this.spaceShell);
 
-    this.roundedRect(-44, -22, 88, 44, 4, 20, this.faintMaterial, this.terrain);
-    this.roundedRect(-32, -16, 64, 32, 4, -8, this.secondaryMaterial, this.terrain);
+    // Inner octahedron — a crisp solid core that counter-rotates for depth.
+    this.spaceInner = new THREE.LineSegments(
+      new THREE.EdgesGeometry(new THREE.OctahedronGeometry(R * 0.52, 0)),
+      this.edgeMaterial,
+    );
+    this.spaceGroup.add(this.spaceInner);
+
+    // A faint great-circle ring, tilted, like a spatial axis / orbit around it.
+    const ringPts = [];
+    const ringR = R * 1.16;
+    for (let i = 0; i <= 84; i += 1) {
+      const a = (i / 84) * Math.PI * 2;
+      ringPts.push([Math.cos(a) * ringR, Math.sin(a) * ringR, 0]);
+    }
+    this.spaceRing = this.line(ringPts, this.faintMaterial, this.spaceGroup);
+    this.spaceRing.rotation.set(Math.PI / 2.3, 0, 0.22);
   }
 
   build() {
@@ -687,21 +669,15 @@ class WordStage {
       this.model.rotation.x = this.mouse.y * 0.18 + Math.sin(this.time * 0.6) * 0.025 * this.progress;
     }
 
-    if (this.mode === 'space' && this.spaceGeometry && this.spaceBasePoints) {
-      const attr = this.spaceGeometry.attributes.position;
-      for (let i = 0; i < this.spaceBasePoints.length; i += 1) {
-        const point = this.spaceBasePoints[i];
-        attr.array[i * 3 + 1] = point.y +
-          (Math.sin(point.x * 0.115 + this.time * 1.5) +
-          Math.cos(point.z * 0.14 + this.time * 1.1)) * 2.15 * this.progress;
+    if (this.mode === 'space' && this.spaceGroup) {
+      this.spaceShell.rotation.y += 0.0016 + this.progress * 0.0048;
+      this.spaceShell.rotation.x += 0.0007;
+      if (this.spaceInner) {
+        this.spaceInner.rotation.y -= 0.0040 + this.progress * 0.0040;
+        this.spaceInner.rotation.z += 0.0022;
       }
-      attr.needsUpdate = true;
-      if (this.terrain) {
-        this.terrain.position.set(0, -3, 0);
-        this.terrain.rotation.x = -0.9 + this.mouse.y * 0.1;
-        this.terrain.rotation.y = 0.12 + this.mouse.x * 0.16;
-        this.terrain.rotation.z = -0.06 + Math.sin(this.time * 0.55) * 0.03 * this.progress;
-        this.terrain.scale.setScalar(0.9 + this.progress * 0.08);
+      if (this.spaceRing) {
+        this.spaceRing.rotation.z = 0.22 + Math.sin(this.time * 0.5) * 0.22 * this.progress;
       }
     }
 
