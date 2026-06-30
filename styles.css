@@ -2282,15 +2282,15 @@ html.lenis, html.lenis body { height: auto; }
     left: 5vw;
     right: auto;
     top: 50svh; bottom: auto;
-    transform: translateY(calc(var(--hero-circle-size) * -0.72));
+    transform: translateY(calc(var(--hero-circle-size) * -0.66));
     text-align: left;
   }
 
   .panel--hero .d-line--bottom {
-    left: -2vw;                          /* Dahech further left */
+    left: 1vw;                           /* Dahech nudged right */
     right: auto;
     top: 50svh; bottom: auto;
-    transform: translateY(calc(var(--hero-circle-size) * -0.05));
+    transform: translateY(calc(var(--hero-circle-size) * 0.01));
     text-align: left;
   }
 
@@ -2300,7 +2300,7 @@ html.lenis, html.lenis body { height: auto; }
 
   .hero-cta {
     right: clamp(20px, 6vw, 28px);
-    bottom: max(16svh, calc(env(safe-area-inset-bottom, 0px) + 108px));
+    bottom: max(12svh, calc(env(safe-area-inset-bottom, 0px) + 86px));
     z-index: 20;
     min-height: 52px;
     padding: 0 22px;
