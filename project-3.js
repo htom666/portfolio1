@@ -49,10 +49,12 @@
   const q  = (sel, scope = document) => scope.querySelector(sel);
   const qa = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
 
-  const fromBelow  = { y: 40, autoAlpha: 0, filter: 'blur(6px)' };
-  const fromLeft   = { x: -60, autoAlpha: 0, filter: 'blur(6px)' };
-  const fromRight  = { x: 60, autoAlpha: 0, filter: 'blur(6px)' };
-  const calmIn     = { autoAlpha: 1, x: 0, y: 0, filter: 'blur(0px)' };
+  /* No blur on reveal: the scrubbed scroll left headings/text blurred mid-scroll
+     ("behind a blur"). Keep the slide + fade, drop the filter entirely. */
+  const fromBelow  = { y: 40, autoAlpha: 0 };
+  const fromLeft   = { x: -60, autoAlpha: 0 };
+  const fromRight  = { x: 60, autoAlpha: 0 };
+  const calmIn     = { autoAlpha: 1, x: 0, y: 0 };
 
   const tlConfig = (trigger, containerAnim, start = 'left 75%', end = 'left 25%') => ({
     trigger,
@@ -109,7 +111,7 @@
     const steps  = qa('.f2step',    panel);
 
     gsap.set([title, lede, visual], fromBelow);
-    gsap.set(cards, { y: 60, autoAlpha: 0, scale: 0.97, filter: 'blur(4px)' });
+    gsap.set(cards, { y: 60, autoAlpha: 0, scale: 0.97 });
     gsap.set(steps, { y: 24, autoAlpha: 0 });
 
     const tl = gsap.timeline({
@@ -122,7 +124,7 @@
       .to(visual, calmIn, '-=0.45')
       // cards reveal in narrative order: Overview, Problem, Solution
       .to(cards, {
-        y: 0, autoAlpha: 1, scale: 1, filter: 'blur(0px)',
+        y: 0, autoAlpha: 1, scale: 1,
         stagger: 0.18, duration: 0.95, ease: 'power4.out'
       }, '-=0.3')
       .to(steps, { y: 0, autoAlpha: 1, stagger: 0.08, duration: 0.55 }, '-=0.5');
@@ -146,7 +148,7 @@
     if (personaL) gsap.set(personaL, { ...fromLeft, scale: 0.96 });
     if (personaR) gsap.set(personaR, { ...fromRight, scale: 0.96 });
     if (flowDesc) gsap.set(flowDesc, fromBelow);
-    if (diagram)  gsap.set(diagram,  { autoAlpha: 0, y: 36, scale: 0.96, filter: 'blur(8px)' });
+    if (diagram)  gsap.set(diagram,  { autoAlpha: 0, y: 36, scale: 0.96 });
 
     const tl = gsap.timeline({
       scrollTrigger: tlConfig(panel, containerAnim, 'left 80%', 'left 15%'),
@@ -166,7 +168,7 @@
       .to(flowDesc, calmIn, '-=0.5')
       // diagram resolves last — how the personas navigate the product
       .to(diagram, {
-        autoAlpha: 1, y: 0, scale: 1, filter: 'blur(0px)',
+        autoAlpha: 1, y: 0, scale: 1,
         duration: 1.2, ease: 'power4.out'
       }, '-=0.4');
   };
