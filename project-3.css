@@ -168,7 +168,7 @@ body.p3 {
 .p3-panel { position: relative; z-index: 1; }
 /* Later panels stack above earlier ones so parallax-drifting content
    never gets hidden by the previous section's overflow. */
-.p3-panel.f2 { z-index: 2; }
+.p3-panel.f2 { z-index: 2; justify-content: flex-start; }   /* hug §2 content to its left edge so it meets §1 sooner (closes the §1->§2 gap on wide screens) */
 .p3-panel.f3 { z-index: 3; }
 .p3-panel.f4 { z-index: 4; }
 .p3-panel.f5 { z-index: 5; }
@@ -2009,10 +2009,12 @@ body.p3 {
 .f1__right {
   position: relative;
   height: 720px;
-  /* Only 2 phones (3rd removed) leave §1's right empty, which reads as a big
-     gap when scrolling into §2. Push the pair toward §1's right edge to fill it
-     (stays within the panel — no bleed into §2). */
-  transform: translateX(11vw);
+}
+/* Only on wide screens (where the max-width-centred content leaves a big empty
+   right on §1) push the 2-phone pair toward §1's right edge to close the §1->§2
+   gap. Skipped below 1700px so it never clips the phones at laptop widths. */
+@media (min-width: 1700px) {
+  .f1__right { transform: translateX(13vw); }
 }
 
 /* phone shells */
