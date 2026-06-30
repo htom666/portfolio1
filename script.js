@@ -238,7 +238,14 @@ class WordStage {
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(34, 1, 0.1, 1000);
-    this.camera.position.z = this.mode === 'perception' ? 90 : 125;
+    // About models (blueprint/structure/depth) sit further back so the model has
+    // breathing room in frame — it rotates/floats with the cursor and was being
+    // clipped at the canvas edge when filling the frame. perception/space (bridge)
+    // are framed tighter on purpose and stay as they were.
+    this.camera.position.z =
+      this.mode === 'perception' ? 90 :
+      this.mode === 'space' ? 125 :
+      150;
 
     this.root3d = new THREE.Group();
     this.root3d.position.set(0, 0, 0);

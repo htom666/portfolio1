@@ -1014,24 +1014,6 @@ body.hero-intro-started .hero-sphere-wrap {
   font-style: italic;
 }
 
-/* Always-on signifier: a faint dotted underline so first-time visitors (and
-   touch users, who get no hover) can tell these words are interactive. It fades
-   out during the reveal so it never sits under the 3D model. */
-.word-morph::after {
-  content: "";
-  position: absolute;
-  left: 3%;
-  right: 3%;
-  bottom: -0.04em;
-  border-bottom: 1.6px dotted oklch(0.92 0.035 85 / 0.5);
-  opacity: 1;
-  pointer-events: none;
-  z-index: 4;
-  transition: opacity 360ms ease;
-}
-
-.word-morph.is-hovered::after { opacity: 0; }
-
 .word-morph .word-layer {
   position: relative;
   z-index: 3;
