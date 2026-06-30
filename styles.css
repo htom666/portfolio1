@@ -202,22 +202,6 @@ body.nav-on-dark .avail-dot { background: oklch(0.930 0.004 90); }
    (the close button inside takes over). */
 body.is-menu-open .menu-btn { opacity: 0; pointer-events: none; }
 
-.side-label {
-  position: fixed;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%) rotate(180deg);
-  writing-mode: vertical-rl;
-  z-index: 40;
-  display: flex;
-  gap: 16px;
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  color: var(--ink);
-  user-select: none;
-}
-.side-label .s-1 { font-family: var(--serif); font-size: 15px; color: var(--ink-soft); }
-.side-label .s-2 { color: var(--mute); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; font-size: 10px; }
 
 .year-label {
   position: fixed;
@@ -268,30 +252,6 @@ body.is-menu-open .menu-btn { opacity: 0; pointer-events: none; }
 /* =========================================================
    Marquee band
    ========================================================= */
-.marquee {
-  position: fixed;
-  left: 0; right: 0; bottom: 0;
-  z-index: 30;
-  height: 24px;
-  overflow: hidden;
-  border-top: 1px solid var(--line);
-  background: var(--bg);
-  pointer-events: none;
-}
-.marquee-inner {
-  display: inline-flex;
-  align-items: center;
-  gap: 32px;
-  height: 100%;
-  white-space: nowrap;
-  animation: marquee 42s linear infinite;
-  font-family: var(--sans);
-  font-size: 10.5px;
-  letter-spacing: 0.20em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-}
-.marquee-inner .sep { color: var(--mute); letter-spacing: 0; }
 @keyframes marquee {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -756,7 +716,6 @@ body.selected-works-ready .h-wrap.is-section3-underlay {
 
 .ink-morph { color: var(--mute); }
 .tone-soft { color: var(--ink-soft); }
-.tone-mute { color: var(--mute); }
 
 .d-line {
   display: block;
@@ -1519,7 +1478,6 @@ body.section3-ready .works-list:hover .work-row:hover a { opacity: 1; }
 }
 .socials a:hover::after { transform: scaleX(1); }
 
-.contact-blob { display: none; }
 
 /* =========================================================
    Scroll indicator

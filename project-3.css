@@ -174,17 +174,6 @@ body.p3 { font-family: 'Roboto', system-ui, -apple-system, Segoe UI, sans-serif;
 .f2__title em { font-style: italic; font-weight: 400; color: var(--f1-teal-2); }
 .f2__title .f2__dot { color: var(--f1-pink); font-style: normal; }
 .f2__lede { margin: 30px 0 0; font-size: 14.5px; line-height: 1.7; color: var(--f1-muted); max-width: 420px; font-weight: 400; }
-.f2__visual { margin-top: 40px; position: relative; height: 160px; display: flex; align-items: center; gap: 20px; }
-.f2__halo { position: relative; width: 150px; height: 150px; flex-shrink: 0; border-radius: 50%; border: 1px solid var(--f1-border); }
-.f2__halo::after { content: ""; position: absolute; inset: 14px; border-radius: 50%; background: radial-gradient(closest-side, rgba(32,201,176,.18), rgba(32,201,176,0) 75%); }
-.f2__tile { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 72px; height: 72px; border-radius: 18px; background: linear-gradient(160deg, var(--f1-teal), var(--f1-teal-2)); display: grid; place-items: center; color: #fff; box-shadow: 0 18px 28px -14px rgba(32,201,176,.55); z-index: 2; }
-.f2__tile svg { width: 30px; height: 30px; stroke-width: 2; }
-.f2__statcard { flex: 1; background: var(--f1-surface); border: 1px solid var(--f1-border); border-radius: 16px; padding: 14px 16px 12px; box-shadow: 0 10px 24px -16px rgba(14,31,55,.14); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.f2__statlbl { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--f1-muted); font-weight: 600; }
-.f2__statval { font-size: 24px; font-weight: 600; color: var(--f1-ink); letter-spacing: -.02em; line-height: 1; }
-.f2__statval small { font-size: 14px; color: var(--f1-teal-2); font-weight: 500; margin-left: 1px; }
-.f2__statchart { height: 44px; margin-top: 4px; }
-.f2__statchart svg { width: 100%; height: 100%; display: block; }
 /* RIGHT — 3 cards */
 .f2__cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: stretch; }
 .f2card { background: var(--f1-surface); border: 1px solid var(--f1-border); border-radius: 22px; padding: 22px 20px 22px; box-shadow: var(--f1-shadow-sm); display: flex; flex-direction: column; gap: 14px; }
@@ -431,7 +420,6 @@ body.p3 { font-family: 'Roboto', system-ui, -apple-system, Segoe UI, sans-serif;
 /* BUTTONS */
 .f4btns { display: flex; flex-direction: column; gap: 10px; }
 .f4btns .row { display: flex; flex-direction: column; gap: 4px; }
-.f4btns .lbl { font-size: 9.5px; color: var(--f1-muted); font-weight: 500; }
 .f4btns .b { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 14px; border-radius: 9px; font-size: 12px; font-weight: 600; border: none; cursor: default; }
 .f4btns .b.out { background: transparent; color: #0CB39C; border: 1.5px solid #0CB39C; }
 .f4btns .b.txt { background: none; color: #0CB39C; padding: 0; }
