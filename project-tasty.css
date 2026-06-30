@@ -368,3 +368,15 @@ body.tj::after { content: ""; position: fixed; inset: 0; z-index: 90; pointer-ev
 @media (max-width: 899px) {
   .tj-panel.tjc { padding-bottom: clamp(16px, 2.4vh, 28px) !important; }
 }
+
+/* Scattered nut + almond decorations across inner panels (varied per panel,
+   distinct from the cover's all-peanut field). Sit behind content via the
+   panel's own stacking context; hidden on mobile to keep it clean. */
+.tj-brief, .tj-flow, .tj-sys { isolation: isolate; }
+.tj-deco { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.tj-deco svg { position: absolute; will-change: transform; }
+.tj-deco svg path { fill: currentColor; }
+.tj-deco .pod { color: #C8862F; }
+.tj-deco .alm { color: #9A5218; }
+@keyframes tj-deco-drift { 0%, 100% { translate: 0 0; } 50% { translate: 0 -15px; } }
+@media (max-width: 900px) { .tj-deco { display: none; } }

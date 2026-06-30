@@ -1622,8 +1622,11 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
   masterTl.to('.hero-bh',
     {
       '--hero-lens-softness': 0,
-      '--hero-edge-fade': 1,
-      '--hero-lens-detail-opacity': 0.2,
+      // On phones the growing lens detail/edge layers read as a stray ring inside
+      // the circle as it zooms in, so keep them off there (resting value is 0).
+      // Desktop/tablet keep the gravitational-lens detail as the hole fills.
+      '--hero-edge-fade': isPhoneViewport ? 0 : 1,
+      '--hero-lens-detail-opacity': isPhoneViewport ? 0 : 0.2,
       ease: 'none',
       duration: 162.5,
     }, 0);
