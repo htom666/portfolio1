@@ -3340,8 +3340,8 @@ body.p3 {
   width: clamp(130px, 11vw, 200px);
   height: clamp(90px, 7.5vw, 130px);
   background-color: var(--f1-teal-2);
-  -webkit-mask: url("_frames/Group 7.svg") no-repeat center / contain;
-          mask: url("_frames/Group 7.svg") no-repeat center / contain;
+  -webkit-mask: url("assets/fitness/swirl.svg") no-repeat center / contain;
+          mask: url("assets/fitness/swirl.svg") no-repeat center / contain;
   display: block;
   flex-shrink: 0;
   margin-top: clamp(24px, 3.5vh, 50px);
@@ -4137,8 +4137,8 @@ body.p3 {
   display: block;
   align-self: center;
   background-color: var(--f1-teal-2);
-  -webkit-mask: url("_frames/Group 87 (2).svg") no-repeat center / contain;
-          mask: url("_frames/Group 87 (2).svg") no-repeat center / contain;
+  -webkit-mask: url("assets/fitness/arrow.svg") no-repeat center / contain;
+          mask: url("assets/fitness/arrow.svg") no-repeat center / contain;
 }
 .f5__arrow--2 { transform: scaleY(-1); }
 .f5__intro {
