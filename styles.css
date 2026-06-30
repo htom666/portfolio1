@@ -856,9 +856,12 @@ body.hero-intro-started .hero-sphere-wrap {
   filter: none;
   transform-origin: center;
   /* Soft-feather the rim so the ball reads as a clean black mass with no hard
-     ring as it scales up during the hero -> section 2 zoom. */
-  -webkit-mask-image: radial-gradient(circle, #000 92%, rgba(0,0,0,0) 100%);
-          mask-image: radial-gradient(circle, #000 92%, rgba(0,0,0,0) 100%);
+     ring as it scales up during the hero -> section 2 zoom. `closest-side` sizes
+     the gradient to the DISC radius (half the square's side); without it the
+     gradient defaults to farthest-corner (the diagonal), so the fade lands in the
+     clipped corners and the real circular edge stays a hard cut = the ring. */
+  -webkit-mask-image: radial-gradient(circle closest-side, #000 84%, rgba(0,0,0,0) 99.5%);
+          mask-image: radial-gradient(circle closest-side, #000 84%, rgba(0,0,0,0) 99.5%);
 }
 
 .hero-bh-lens::before {
