@@ -549,48 +549,53 @@ class WordStage {
     this.spaceRoom = new THREE.Group();
     this.core.add(this.spaceRoom);
 
-    // A one-point-perspective wireframe room — "the geometry of space": you're
-    // inside a space, its edges converging to a vanishing point (presence + the
-    // geometry of perceived space, per the sentence). Framed on the z-axis so it
-    // sits centred with margin in the 2.18:1 reveal canvas.
+    // An infinite one-point-perspective corridor — "the geometry of space": a
+    // stream of nested wireframe frames converging to a vanishing point that you
+    // slowly fly through (presence + the geometry of perceived space, per the
+    // sentence). Framed on the z-axis, centred with margin in the 2.18:1 reveal.
     this.camera.fov = 34;
-    this.camera.position.set(0, 0, 185);
+    this.camera.position.set(0, 0, 150);
     this.camera.lookAt(0, 0, 0);
     this.camera.updateProjectionMatrix();
 
-    const hw = 52;
-    const hh = 24;
-    const hd = 60; // room half-depth
-    const room = this.spaceRoom;
-    const seg = (a, b, mat) => this.segment(a, b, mat, room);
+    const hw = 46;
+    const hh = 21;
+    this.corridorN = 8;
+    this.corridorDz = 34;
+    this.corridorStartZ = 44;
+    this.corridorFlow = 0;
+    this.corridorFrames = [];
 
-    // Front frame (near, crisp)
-    seg([-hw, -hh, hd], [hw, -hh, hd], this.edgeMaterial);
-    seg([hw, -hh, hd], [hw, hh, hd], this.edgeMaterial);
-    seg([hw, hh, hd], [-hw, hh, hd], this.edgeMaterial);
-    seg([-hw, hh, hd], [-hw, -hh, hd], this.edgeMaterial);
-    // Back wall (far, smaller in perspective — secondary)
-    seg([-hw, -hh, -hd], [hw, -hh, -hd], this.secondaryMaterial);
-    seg([hw, -hh, -hd], [hw, hh, -hd], this.secondaryMaterial);
-    seg([hw, hh, -hd], [-hw, hh, -hd], this.secondaryMaterial);
-    seg([-hw, hh, -hd], [-hw, -hh, -hd], this.secondaryMaterial);
-    // Four long edges — the converging perspective lines
-    seg([-hw, -hh, hd], [-hw, -hh, -hd], this.secondaryMaterial);
-    seg([hw, -hh, hd], [hw, -hh, -hd], this.secondaryMaterial);
-    seg([hw, hh, hd], [hw, hh, -hd], this.secondaryMaterial);
-    seg([-hw, hh, hd], [-hw, hh, -hd], this.secondaryMaterial);
-    // Floor + ceiling grid lines running into depth (faint)
-    const rails = 4;
-    for (let i = 1; i < rails; i += 1) {
-      const x = -hw + (i / rails) * (hw * 2);
-      seg([x, -hh, hd], [x, -hh, -hd], this.faintMaterial);
-      seg([x, hh, hd], [x, hh, -hd], this.faintMaterial);
+    // Each frame is a unit rectangle; its z (and opacity) are animated in tick().
+    const rectPositions = () => {
+      const c = [[-hw, -hh, 0], [hw, -hh, 0], [hw, hh, 0], [-hw, hh, 0]];
+      const p = [];
+      for (let k = 0; k < 4; k += 1) {
+        const a = c[k];
+        const b = c[(k + 1) % 4];
+        p.push(a[0], a[1], a[2], b[0], b[1], b[2]);
+      }
+      return p;
+    };
+    for (let i = 0; i < this.corridorN; i += 1) {
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute(rectPositions(), 3));
+      const mesh = new THREE.LineSegments(g, new THREE.LineBasicMaterial({
+        color: 0xf1e8dc, transparent: true, opacity: 0.5, depthWrite: false,
+      }));
+      mesh.position.z = this.corridorStartZ - i * this.corridorDz;
+      this.spaceRoom.add(mesh);
+      this.corridorFrames.push(mesh);
     }
-    // Floor cross lines receding to the vanishing point (faint)
-    for (let i = 1; i < rails; i += 1) {
-      const z = hd - (i / rails) * (hd * 2);
-      seg([-hw, -hh, z], [hw, -hh, z], this.faintMaterial);
-    }
+
+    // Four faint corner rails spanning the corridor, giving it solid walls.
+    const zc = this.corridorStartZ;
+    const zf = this.corridorStartZ - (this.corridorN - 1) * this.corridorDz;
+    const seg = (a, b, mat) => this.segment(a, b, mat, this.spaceRoom);
+    seg([-hw, -hh, zc], [-hw, -hh, zf], this.faintMaterial);
+    seg([hw, -hh, zc], [hw, -hh, zf], this.faintMaterial);
+    seg([hw, hh, zc], [hw, hh, zf], this.faintMaterial);
+    seg([-hw, hh, zc], [-hw, hh, zf], this.faintMaterial);
   }
 
   build() {
@@ -679,11 +684,24 @@ class WordStage {
       this.model.rotation.x = this.mouse.y * 0.18 + Math.sin(this.time * 0.6) * 0.025 * this.progress;
     }
 
-    if (this.mode === 'space' && this.spaceRoom) {
-      // A gentle idle sway so the room feels alive; the cursor "look around"
-      // parallax comes from the shared root3d rotation applied above.
-      this.spaceRoom.rotation.y = Math.sin(this.time * 0.32) * 0.05 * this.progress;
-      this.spaceRoom.rotation.x = Math.sin(this.time * 0.24) * 0.02 * this.progress;
+    if (this.mode === 'space' && this.corridorFrames) {
+      // Fly forward through the corridor: frames stream toward the camera and
+      // recycle at the vanishing point. Only advances while revealed.
+      this.corridorFlow += 0.02 * this.progress;
+      const N = this.corridorN;
+      const dz = this.corridorDz;
+      const sz = this.corridorStartZ;
+      for (let i = 0; i < N; i += 1) {
+        const m = (((i - this.corridorFlow) % N) + N) % N; // 0 (near/exit) .. N-1 (far/birth)
+        const frame = this.corridorFrames[i];
+        frame.position.z = sz - m * dz;
+        // Fade in at the far throat and out as it passes the camera, so the
+        // recycle jump is invisible; brightest through the middle of the run.
+        const edge = Math.min(m, (N - 1) - m);
+        frame.material.opacity = Math.max(0.05, Math.min(0.62, edge / 2.3));
+      }
+      // Gentle idle sway; cursor "look around" parallax comes from root3d above.
+      this.spaceRoom.rotation.y = Math.sin(this.time * 0.3) * 0.04 * this.progress;
     }
 
     this.render();
