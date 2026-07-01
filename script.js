@@ -911,21 +911,13 @@ const loaderDone = new Promise((resolve) => {
   // counter clears just before the field starts contracting
   tl.to(countEl, { autoAlpha: 0, y: -12, filter: 'blur(8px)', duration: 0.45, ease: 'power2.in' }, 2.5);
 
-  // Deep-reload cursor path — THE fix for every reload artifact: restore the real
-  // scroll (Works/Contact) NOW, while the curtain still fully covers the screen,
-  // BEFORE the shrink below. Until this, the page stayed clamped at scroll 0 for
-  // the whole loader, so the curtain necked down over the hero and the page only
-  // jumped to the destination AFTER the loader lifted — that late jump is the
-  // "bridge flash", the "black ball", and the "shows Works then Contact" scrub.
-  // The shrink target is the cursor (not the hero ball), so scrolling the hero
-  // off-screen doesn't disturb it. Normal loads keep scroll 0 (hero) → untouched.
-  tl.call(() => {
-    if (!shrinkToReloadCursor()) return;
-    // Keep the cursor hidden after is-loading drops (until the handoff below).
-    document.body.classList.add('loader-active');
-    document.body.classList.remove('is-loading'); // unclamp so the scroll can move
-    applyInitialScroll();                          // jump to Works/Contact behind the curtain
-  }, null, 2.6);
+  // NOTE: an earlier version restored the scroll here (mid-loader) to reveal
+  // Works/Contact behind the curtain. It cleaned up the forward reveal but forced
+  // a re-pin at the wrong moment (ScrollTrigger.refresh at progress 1), which
+  // corrupted the scroll-back and could land sections off-screen (blank page).
+  // Reverted to the simple, stable flow: the scroll is restored AFTER the loader
+  // (applyInitialScroll, once is-loading drops), so every refresh happens at
+  // scroll 0. The bridge reverse stays correct via the .fromTo tweens.
 
   // hand off to the hero as the contraction begins (name + bloom come alive
   // through the off-white that the shrinking circle reveals)
