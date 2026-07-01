@@ -547,25 +547,29 @@ class WordStage {
     this.core.scale.set(1, 1, 1);
     this.core.rotation.set(0, 0, 0);
     this.terrain = new THREE.Group();
-    // low, receding-floor perspective so the grid runs back to a horizon and the
-    // peaks rise off it — a wireframe mountain landscape.
-    this.terrain.position.set(0, -13, 4);
-    this.terrain.rotation.set(-0.95, 0.16, 0);
     this.core.add(this.terrain);
 
-    const nx = 32;
-    const nz = 22;
-    const W = 132;
-    const D = 96;
+    // Raised camera looking down across a flat terrain — a natural landscape POV:
+    // sky at the top, a mountain range, a horizon band, and the grid floor
+    // receding into the foreground (framing tuned against the 2.18:1 reveal canvas).
+    this.camera.fov = 40;
+    this.camera.position.set(0, 33, 82);
+    this.camera.lookAt(0, 2, -30);
+    this.camera.updateProjectionMatrix();
 
-    // A cluster of mountain peaks (gaussian bumps) plus fine per-vertex jaggedness
-    // — sharp ridges instead of the old gentle ripples.
+    const nx = 18;
+    const nz = 11;
+    const W = 150;
+    const D = 120;
+
+    // A spread of mountain peaks (gaussian bumps) plus fine per-vertex jaggedness
+    // for sharp ridges. Heights already include the 0.9 framing scale.
     const peaks = [
-      { x: -46, z: -10, h: 30, s: 15 },
-      { x: -14, z: 8, h: 19, s: 11 },
-      { x: 10, z: -14, h: 26, s: 12 },
-      { x: 34, z: 4, h: 40, s: 16 },
-      { x: 56, z: -6, h: 23, s: 12 },
+      { x: -54, z: -8, h: 21.6, s: 13 },
+      { x: -30, z: 6, h: 30.6, s: 15 },
+      { x: -4, z: -14, h: 18, s: 11 },
+      { x: 20, z: 4, h: 34.2, s: 16 },
+      { x: 46, z: -6, h: 23.4, s: 13 },
     ];
     const hash = (i, j) => {
       const n = Math.sin(i * 127.1 + j * 311.7) * 43758.5453;
@@ -709,10 +713,8 @@ class WordStage {
           Math.sin(point.x * 0.07 + this.time * 1.05) * 0.9 * this.progress;
       }
       attr.needsUpdate = true;
-      if (this.terrain) {
-        this.terrain.rotation.y = 0.16 + this.mouse.x * 0.20;
-        this.terrain.rotation.x = -0.95 + this.mouse.y * 0.08;
-      }
+      // Terrain stays flat (the camera provides the perspective); the cursor
+      // parallax comes from the shared root3d rotation applied above.
     }
 
     this.render();
