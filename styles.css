@@ -80,9 +80,19 @@ em, i { font-style: italic; }
    ========================================================= */
 body.is-loading { overflow: hidden; }
 
-body.is-loading .cursor {
+body.is-loading:not(.loader-cursor-handoff) .cursor {
   opacity: 0 !important;
   visibility: hidden !important;
+}
+/* Deep-reload handoff: the loader circle (solid --hero-core) necks down to the
+   cursor spot, then the real cursor cross-fades in over it. Force the cursor to
+   the SAME solid near-black (kill the difference blend, which would otherwise
+   invert it to white over the dark circle) so the swap is invisible. Dropped
+   once the loader is gone and the cursor reverts to its adaptive self. */
+body.loader-cursor-handoff .cursor {
+  mix-blend-mode: normal !important;
+  background-color: var(--hero-core) !important;
+  border-color: transparent !important;
 }
 
 .loader {

@@ -877,6 +877,7 @@ const loaderDone = new Promise((resolve) => {
       }
       loader.remove();
       document.body.classList.remove('is-loading');
+      document.body.classList.remove('loader-cursor-handoff');
       if (window.ScrollTrigger) ScrollTrigger.refresh();
       resolveLoader();
     }
@@ -904,18 +905,15 @@ const loaderDone = new Promise((resolve) => {
   // counter clears just before the field starts contracting
   tl.to(countEl, { autoAlpha: 0, y: -12, filter: 'blur(8px)', duration: 0.45, ease: 'power2.in' }, 2.5);
 
-  // Deep reload into Works/Contact: the page is still clamped at scroll 0, so the
+  // Deep reload (cursor-shrink path): the page is still clamped at scroll 0, so the
   // shrink below would neck the curtain down over the hero (its black ball = the
   // "second circle"/rectangle users saw). Hide the whole scene now so the shrink
   // reveals the plain cream field; applyInitialScroll un-hides it once the scroll
-  // has landed on Works/Contact (scene out of view). Gated to Works/Contact only
-  // (reload destination past the master pin) so bridge reloads — where the scene
-  // IS the destination — are untouched. ScrollTrigger is set up by this point.
+  // has landed on Works/Contact (scene out of view up top). Every deep-cursor
+  // reload lands on Works/Contact — the reveal-band ones are snapped there by
+  // applyInitialScroll — so un-hiding is always safe. ScrollTrigger is up by now.
   tl.call(() => {
-    if (!shrinkToReloadCursor()) return;
-    const ms = window.ScrollTrigger ? ScrollTrigger.getById('hero-transition') : null;
-    const reloadY = (typeof getReloadScrollY === 'function') ? getReloadScrollY() : null;
-    if (ms && reloadY !== null && reloadY >= ms.end - 8) {
+    if (shrinkToReloadCursor()) {
       document.documentElement.classList.add('reload-cursor-load');
     }
   }, null, 2.72);
@@ -947,6 +945,21 @@ const loaderDone = new Promise((resolve) => {
       setClip();
     },
   }, 2.8);
+
+  // Deep reload only: cross-fade the real cursor IN as the loader circle fades
+  // OUT, at the same spot. The cursor is force-hidden by `body.is-loading` for the
+  // whole loader, so before this it only appeared AFTER the fade — the shrunk
+  // circle vanished, then the cursor popped in ("disappears then appears again").
+  // The cursor is 44px (same as the shrink target) and sits above the loader, so
+  // fading it in over the fading circle keeps a solid dot visible throughout.
+  tl.call(() => {
+    const target = getReloadLoaderCursorTarget();
+    const cursor = target ? document.querySelector('.cursor') : null;
+    if (!cursor || !window.gsap) return;
+    document.body.classList.add('loader-cursor-handoff');
+    gsap.set(cursor, { x: target.x, y: target.y, opacity: 0, scaleX: 1, scaleY: 1, rotation: 0 });
+    gsap.to(cursor, { opacity: 1, duration: 0.18, ease: 'power2.out' });
+  }, null, 4.14);
 
   // Hand off at the exact final circle. A tiny fade avoids a one-frame
   // compositor snap at the clipped edge while the real sphere takes over.
@@ -2556,12 +2569,16 @@ function applyInitialScroll() {
     }
   }
 
-  // Landing EXACTLY on the master-pin release boundary (ms.end == Works start)
-  // leaves the fixed dark hero scene covering the viewport for ~1s — the "black
-  // rectangle" seen when reloading the instant you reach Selected Works. Nudge a
-  // few px past so the pin releases cleanly and the scene scrolls out of view.
-  // Reloads deeper in Works are already past the boundary and untouched.
-  if (ms && y >= ms.end - 8 && y < ms.end + 24) {
+  // "It thinks I'm still in the bridge." The iris reveals Selected Works well
+  // before the master pin ends (mask starts opening ~progress 0.79, Works is
+  // visibly there by ~0.91) — so the whole band from there to ms.end LOOKS like
+  // Works but its scroll value still scrubs the dark bridge/iris state. Reloading
+  // in that band restores into the pin and flashes the bridge. Whenever the
+  // deep-reload cursor path is active (or an explicit #works) and the restore
+  // would land at/inside the pin boundary, snap to clean fully-revealed Works
+  // just past ms.end. Contact and deeper Works are already past → untouched.
+  const deepCursorReload = (typeof getReloadLoaderCursorTarget === 'function') && !!getReloadLoaderCursorTarget();
+  if (ms && (deepCursorReload || hash === '#works') && y < ms.end + 24) {
     y = Math.round(ms.end + 18);
   }
 
