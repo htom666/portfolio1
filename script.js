@@ -802,7 +802,7 @@ const loaderDone = new Promise((resolve) => {
 
   gsap.set(loader, { autoAlpha: 1, pointerEvents: 'auto' });
   setClip();
-  if (countEl) gsap.set(countEl, { autoAlpha: 0, y: 18 });
+  if (countEl) gsap.set(countEl, { autoAlpha: 0, y: 26, filter: 'blur(10px)' });
 
   const count = { value: 0 };
   if (pct) pct.textContent = '0';
@@ -828,8 +828,8 @@ const loaderDone = new Promise((resolve) => {
     }
   });
 
-  // counter settles in
-  tl.to(countEl, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 0.1);
+  // counter materialises in: blur-to-focus + fade + gentle rise
+  tl.to(countEl, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 1.1, ease: 'power2.out' }, 0.1);
 
   // count 0 -> 100
   tl.to(count, {
@@ -841,7 +841,7 @@ const loaderDone = new Promise((resolve) => {
   }, 0.15);
 
   // counter clears just before the field starts contracting
-  tl.to(countEl, { autoAlpha: 0, y: -12, duration: 0.4, ease: 'power2.in' }, 2.5);
+  tl.to(countEl, { autoAlpha: 0, y: -12, filter: 'blur(8px)', duration: 0.45, ease: 'power2.in' }, 2.5);
 
   // hand off to the hero as the contraction begins (name + bloom come alive
   // through the off-white that the shrinking circle reveals)
