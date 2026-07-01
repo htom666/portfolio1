@@ -808,17 +808,18 @@ const loaderDone = new Promise((resolve) => {
 
   // Rolling-odometer readout: three digit columns (hundreds, tens, units) whose
   // strips translate vertically (by whole rows) as the value counts, so both
-  // digits physically tick like a mechanical counter. The hundreds slot is
-  // reserved from the start (blank for 0-99, "1" at 100) so the tens/units never
-  // shift when 100 lands. Offsets are in em (= CSS row height) so they stay
-  // aligned through font-load/resize. Falls back to plain text.
+  // digits physically tick like a mechanical counter. The digits sit FLUSH-LEFT
+  // for 0-99 (the hundreds column is collapsed to width 0); over the final counts
+  // the hundreds "1" rolls up AND its column widens in, so the tens/units slide
+  // over just once at the very end — a gentle carry, not a pop.
   let odoStrips = null;
+  let odoHundredsCol = null;
   if (pct) {
     try {
       pct.textContent = '';
-      const makeCol = (cells) => {
+      const makeCol = (cells, cls) => {
         const col = document.createElement('span');
-        col.className = 'odo__col';
+        col.className = 'odo__col' + (cls ? ' ' + cls : '');
         const strip = document.createElement('span');
         strip.className = 'odo__strip';
         cells.forEach((t) => {
@@ -829,13 +830,14 @@ const loaderDone = new Promise((resolve) => {
         });
         col.appendChild(strip);
         pct.appendChild(col);
-        return strip;
+        return { col, strip };
       };
       const digitCells = () => { const a = []; for (let n = 0; n <= 10; n += 1) a.push(String(n % 10)); return a; };
-      const h = makeCol([' ', '1']);
+      const h = makeCol([' ', '1'], 'odo__col--h');
       const t = makeCol(digitCells());
       const u = makeCol(digitCells());
-      odoStrips = [h, t, u];
+      odoHundredsCol = h.col;
+      odoStrips = [h.strip, t.strip, u.strip];
     } catch (_) { odoStrips = null; }
   }
   const ROW_EM = 0.9; // matches .odo__cell height
@@ -843,14 +845,16 @@ const loaderDone = new Promise((resolve) => {
     if (odoStrips) {
       const val = Math.max(0, Math.min(100, v));
       const units = val % 10;
-      // Each wheel holds its digit and only rolls over during the last unit before
-      // its carry (so 7 reads "07"; hundreds only rolls in near 100).
+      // Each wheel holds its digit and only rolls over during its carry (so 7
+      // reads "07"). The hundreds rolls + widens in gradually over the last few
+      // counts (rem 97->100) so the carry slides gently instead of snapping.
       const tens = Math.floor(val / 10) + (units > 9 ? units - 9 : 0);
       const rem = val % 100;
-      const hundreds = Math.floor(val / 100) + (rem > 99 ? rem - 99 : 0);
+      const hundreds = Math.floor(val / 100) + (rem > 97 ? (rem - 97) / 3 : 0);
       odoStrips[0].style.transform = `translateY(${-hundreds * ROW_EM}em)`;
       odoStrips[1].style.transform = `translateY(${-tens * ROW_EM}em)`;
       odoStrips[2].style.transform = `translateY(${-units * ROW_EM}em)`;
+      if (odoHundredsCol) odoHundredsCol.style.width = hundreds.toFixed(3) + 'ch';
     } else if (pct) {
       pct.textContent = String(Math.round(v));
     }

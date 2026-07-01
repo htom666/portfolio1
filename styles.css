@@ -130,6 +130,9 @@ body.is-loading .cursor {
    baseline at the digit (so the "%" aligns), while a wider box + negative margin
    give the italic glyphs room so they aren't cropped, without loosening spacing. */
 .odo__col { display: inline-block; width: 1.3ch; height: 0.9em; overflow: hidden; margin: 0 -0.15ch; }
+/* Hundreds column: collapsed to width 0 for 0-99 (digits sit flush-left), widened
+   by JS as the "1" rolls in over the final counts — a gentle one-time carry. */
+.odo__col--h { width: 0; margin: 0; }
 .odo__strip { display: block; will-change: transform; }
 .odo__cell { display: block; height: 0.9em; line-height: 0.9; text-align: center; }
 
