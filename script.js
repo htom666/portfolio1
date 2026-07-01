@@ -805,7 +805,57 @@ const loaderDone = new Promise((resolve) => {
   if (countEl) gsap.set(countEl, { autoAlpha: 0, y: 26, filter: 'blur(10px)' });
 
   const count = { value: 0 };
-  if (pct) pct.textContent = '0';
+
+  // Rolling-odometer readout: three digit columns (hundreds, tens, units) whose
+  // strips translate vertically (by whole rows) as the value counts, so both
+  // digits physically tick like a mechanical counter. The hundreds slot is
+  // reserved from the start (blank for 0-99, "1" at 100) so the tens/units never
+  // shift when 100 lands. Offsets are in em (= CSS row height) so they stay
+  // aligned through font-load/resize. Falls back to plain text.
+  let odoStrips = null;
+  if (pct) {
+    try {
+      pct.textContent = '';
+      const makeCol = (cells) => {
+        const col = document.createElement('span');
+        col.className = 'odo__col';
+        const strip = document.createElement('span');
+        strip.className = 'odo__strip';
+        cells.forEach((t) => {
+          const cell = document.createElement('span');
+          cell.className = 'odo__cell';
+          cell.textContent = t;
+          strip.appendChild(cell);
+        });
+        col.appendChild(strip);
+        pct.appendChild(col);
+        return strip;
+      };
+      const digitCells = () => { const a = []; for (let n = 0; n <= 10; n += 1) a.push(String(n % 10)); return a; };
+      const h = makeCol([' ', '1']);
+      const t = makeCol(digitCells());
+      const u = makeCol(digitCells());
+      odoStrips = [h, t, u];
+    } catch (_) { odoStrips = null; }
+  }
+  const ROW_EM = 0.9; // matches .odo__cell height
+  const setPct = (v) => {
+    if (odoStrips) {
+      const val = Math.max(0, Math.min(100, v));
+      const units = val % 10;
+      // Each wheel holds its digit and only rolls over during the last unit before
+      // its carry (so 7 reads "07"; hundreds only rolls in near 100).
+      const tens = Math.floor(val / 10) + (units > 9 ? units - 9 : 0);
+      const rem = val % 100;
+      const hundreds = Math.floor(val / 100) + (rem > 99 ? rem - 99 : 0);
+      odoStrips[0].style.transform = `translateY(${-hundreds * ROW_EM}em)`;
+      odoStrips[1].style.transform = `translateY(${-tens * ROW_EM}em)`;
+      odoStrips[2].style.transform = `translateY(${-units * ROW_EM}em)`;
+    } else if (pct) {
+      pct.textContent = String(Math.round(v));
+    }
+  };
+  setPct(0);
 
   const tl = gsap.timeline({
     onComplete: () => {
@@ -836,8 +886,8 @@ const loaderDone = new Promise((resolve) => {
   // between them, then a lingering ease up to 100. (~2.4s total, so the downstream
   // beats below are unchanged.)
   const countTl = gsap.timeline({
-    onUpdate: () => { if (pct) pct.textContent = String(Math.round(count.value)); },
-    onComplete: () => { if (pct) pct.textContent = '100'; },
+    onUpdate: () => setPct(count.value),
+    onComplete: () => setPct(100),
   });
   countTl
     .to(count, { value: 34, duration: 0.4, ease: 'power2.out' })
