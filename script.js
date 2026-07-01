@@ -879,14 +879,12 @@ const loaderDone = new Promise((resolve) => {
       document.body.classList.remove('is-loading');
       document.body.classList.remove('loader-active');
       document.body.classList.remove('loader-cursor-handoff');
-      // A deep reload already restored the scroll (and refreshed at scroll 0) via
-      // applyInitialScroll(). Refreshing AGAIN here — now parked in Works at
-      // progress 1 — makes invalidateOnRefresh re-read the master timeline's .to()
-      // tween start values from the END state, which corrupts the reverse iris
-      // when you scroll back to the bridge (text vanishes, then it "booms" in).
-      // Only refresh when the restore hasn't run yet (normal load: still at
-      // scroll 0, so the refresh is harmless).
-      if (window.ScrollTrigger && !initialScrollApplied) ScrollTrigger.refresh();
+      // Always refresh after the loader so the pins are recomputed on the settled
+      // layout (fonts loaded, images in). Skipping this for deep reloads left the
+      // pins computed on a mid-load layout and never corrected — Works/Contact
+      // could land off-screen ("white page, only a sliver of Let's"). The bridge
+      // reverse is kept correct by the .fromTo tweens, not by skipping this.
+      if (window.ScrollTrigger) ScrollTrigger.refresh();
       resolveLoader();
     }
   });
