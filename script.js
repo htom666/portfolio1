@@ -806,42 +806,54 @@ const loaderDone = new Promise((resolve) => {
 
   const count = { value: 0 };
 
-  // Rolling-odometer readout: two zero-padded digit columns whose strips
-  // translate vertically (by whole rows) as the value counts up, so the number
-  // rolls like a mechanical counter. Offsets are in em (= the CSS row height) so
-  // they stay aligned through font-load and resize. Falls back to plain text.
+  // Rolling-odometer readout: three digit columns (hundreds, tens, units) whose
+  // strips translate vertically (by whole rows) as the value counts up, so the
+  // number rolls like a mechanical counter. 0-99 show two digits; the hundreds
+  // column stays collapsed (width 0) until the 99->100 rollover, when its "1"
+  // rolls + widens in — a clean carry instead of a popped-in digit. Offsets are
+  // in em (= the CSS row height) so they stay aligned through font-load/resize.
   let odoStrips = null;
+  let odoHundredsCol = null;
   if (pct) {
     try {
       pct.textContent = '';
-      odoStrips = [];
-      for (let d = 0; d < 2; d += 1) {
+      const makeCol = (cells, extraClass) => {
         const col = document.createElement('span');
-        col.className = 'odo__col';
+        col.className = 'odo__col' + (extraClass || '');
         const strip = document.createElement('span');
         strip.className = 'odo__strip';
-        for (let n = 0; n <= 10; n += 1) {
+        cells.forEach((t) => {
           const cell = document.createElement('span');
           cell.className = 'odo__cell';
-          cell.textContent = String(n % 10);
+          cell.textContent = t;
           strip.appendChild(cell);
-        }
+        });
         col.appendChild(strip);
         pct.appendChild(col);
-        odoStrips.push(strip);
-      }
+        return { col, strip };
+      };
+      const digitCells = () => { const a = []; for (let n = 0; n <= 10; n += 1) a.push(String(n % 10)); return a; };
+      const h = makeCol([' ', '1'], ' odo__col--h'); // blank, then 1
+      const t = makeCol(digitCells());
+      const u = makeCol(digitCells());
+      odoHundredsCol = h.col;
+      odoStrips = [h.strip, t.strip, u.strip];
     } catch (_) { odoStrips = null; }
   }
   const ROW_EM = 0.9; // matches .odo__cell height
   const setPct = (v) => {
     if (odoStrips) {
-      const val = Math.max(0, Math.min(99.999, v));
+      const val = Math.max(0, Math.min(100, v));
       const units = val % 10;
-      // Tens holds its digit and only rolls over during the last unit before the
-      // decade (so 7 reads "07", not a half-rolled "17").
+      // Each wheel holds its digit and only rolls over during the last unit before
+      // its carry (so 7 reads "07", not a half-rolled "17"; hundreds only near 100).
       const tens = Math.floor(val / 10) + (units > 9 ? units - 9 : 0);
-      odoStrips[0].style.transform = `translateY(${-tens * ROW_EM}em)`;
-      odoStrips[1].style.transform = `translateY(${-units * ROW_EM}em)`;
+      const rem = val % 100;
+      const hundreds = Math.floor(val / 100) + (rem > 99 ? rem - 99 : 0);
+      odoStrips[0].style.transform = `translateY(${-hundreds * ROW_EM}em)`;
+      odoStrips[1].style.transform = `translateY(${-tens * ROW_EM}em)`;
+      odoStrips[2].style.transform = `translateY(${-units * ROW_EM}em)`;
+      if (odoHundredsCol) odoHundredsCol.style.width = hundreds.toFixed(3) + 'ch';
     } else if (pct) {
       pct.textContent = String(Math.round(v));
     }
@@ -872,17 +884,19 @@ const loaderDone = new Promise((resolve) => {
   // counter settles in
   tl.to(countEl, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 0.1);
 
-  // count 0 -> 100
+  // count 0 -> 100 — slower + a gentle, near-linear ease so the roll reads as a
+  // smooth mechanical count rather than a fast blur. The 3-wheel odometer draws
+  // the final "100" itself (no text swap).
   tl.to(count, {
     value: 100,
-    duration: 2.4,
-    ease: 'power2.inOut',
+    duration: 3.0,
+    ease: 'power1.inOut',
     onUpdate: () => setPct(count.value),
-    onComplete: () => { if (pct) pct.textContent = '100'; },
+    onComplete: () => setPct(100),
   }, 0.15);
 
   // counter clears just before the field starts contracting
-  tl.to(countEl, { autoAlpha: 0, y: -12, duration: 0.4, ease: 'power2.in' }, 2.5);
+  tl.to(countEl, { autoAlpha: 0, y: -12, duration: 0.4, ease: 'power2.in' }, 3.1);
 
   // hand off to the hero as the contraction begins (name + bloom come alive
   // through the off-white that the shrinking circle reveals)
@@ -910,7 +924,7 @@ const loaderDone = new Promise((resolve) => {
       }
       setClip();
     },
-  }, 2.8);
+  }, 3.4);
 
   // Hand off at the exact final circle. A tiny fade avoids a one-frame
   // compositor snap at the clipped edge while the real sphere takes over.
@@ -919,7 +933,7 @@ const loaderDone = new Promise((resolve) => {
     duration: 0.14,
     ease: 'power2.out',
     pointerEvents: 'none',
-  }, 4.18);
+  }, 4.78);
 
 });
 
