@@ -877,6 +877,7 @@ const loaderDone = new Promise((resolve) => {
       }
       loader.remove();
       document.body.classList.remove('is-loading');
+      document.body.classList.remove('loader-active');
       document.body.classList.remove('loader-cursor-handoff');
       if (window.ScrollTrigger) ScrollTrigger.refresh();
       resolveLoader();
@@ -905,18 +906,21 @@ const loaderDone = new Promise((resolve) => {
   // counter clears just before the field starts contracting
   tl.to(countEl, { autoAlpha: 0, y: -12, filter: 'blur(8px)', duration: 0.45, ease: 'power2.in' }, 2.5);
 
-  // Deep reload (cursor-shrink path): the page is still clamped at scroll 0, so the
-  // shrink below would neck the curtain down over the hero (its black ball = the
-  // "second circle"/rectangle users saw). Hide the whole scene now so the shrink
-  // reveals the plain cream field; applyInitialScroll un-hides it once the scroll
-  // has landed on Works/Contact (scene out of view up top). Every deep-cursor
-  // reload lands on Works/Contact — the reveal-band ones are snapped there by
-  // applyInitialScroll — so un-hiding is always safe. ScrollTrigger is up by now.
+  // Deep-reload cursor path — THE fix for every reload artifact: restore the real
+  // scroll (Works/Contact) NOW, while the curtain still fully covers the screen,
+  // BEFORE the shrink below. Until this, the page stayed clamped at scroll 0 for
+  // the whole loader, so the curtain necked down over the hero and the page only
+  // jumped to the destination AFTER the loader lifted — that late jump is the
+  // "bridge flash", the "black ball", and the "shows Works then Contact" scrub.
+  // The shrink target is the cursor (not the hero ball), so scrolling the hero
+  // off-screen doesn't disturb it. Normal loads keep scroll 0 (hero) → untouched.
   tl.call(() => {
-    if (shrinkToReloadCursor()) {
-      document.documentElement.classList.add('reload-cursor-load');
-    }
-  }, null, 2.72);
+    if (!shrinkToReloadCursor()) return;
+    // Keep the cursor hidden after is-loading drops (until the handoff below).
+    document.body.classList.add('loader-active');
+    document.body.classList.remove('is-loading'); // unclamp so the scroll can move
+    applyInitialScroll();                          // jump to Works/Contact behind the curtain
+  }, null, 2.6);
 
   // hand off to the hero as the contraction begins (name + bloom come alive
   // through the off-white that the shrinking circle reveals)
@@ -972,11 +976,13 @@ const loaderDone = new Promise((resolve) => {
 
 });
 
-// Safety: never let the loader trap the page
+// Safety: never let the loader trap the page (or the cursor hidden)
 setTimeout(() => {
   const l = document.getElementById('loader');
   if (l) l.remove();
   document.body.classList.remove('is-loading');
+  document.body.classList.remove('loader-active');
+  document.body.classList.remove('loader-cursor-handoff');
 }, 8000);
 
 /* ---------- 1. Smooth-scroll ---------- */
@@ -2590,12 +2596,6 @@ function applyInitialScroll() {
   if (window.ScrollTrigger) ScrollTrigger.update();
   requestAnimationFrame(() => {
     document.documentElement.classList.remove('is-reload-restoring');
-    // Scroll has landed on Works/Contact (past the pin boundary, scene off-screen
-    // up top), so un-hiding the deep-reload scene mask is now safe — one more RAF
-    // to be sure the pin release has painted.
-    requestAnimationFrame(() => {
-      document.documentElement.classList.remove('reload-cursor-load');
-    });
   });
   if (isProjectReturnToWorks) {
     settleProjectReturnLanding();
