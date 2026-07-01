@@ -804,6 +804,14 @@ const loaderDone = new Promise((resolve) => {
     r: isDeepReloadLoader ? viewportCoverRadius() : coverRadius(),
   };
   const setClip = () => {
+    // Deep reload never shrinks — keep a full-rectangle cover (clip-path: none) so
+    // it ALWAYS fills the viewport regardless of size/resize. A sized circle could
+    // fall short of the edges if the viewport differs from load time ("half-black
+    // screen"). Normal loads use the circle so the shrink-to-hero-ball can play.
+    if (isDeepReloadLoader) {
+      gsap.set(loader, { clipPath: 'none', webkitClipPath: 'none' });
+      return;
+    }
     const c = `circle(${clipState.r}px at ${clipState.x}px ${clipState.y}px)`;
     gsap.set(loader, { clipPath: c, webkitClipPath: c });
   };
