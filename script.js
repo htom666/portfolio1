@@ -802,11 +802,6 @@ const loaderDone = new Promise((resolve) => {
 
   gsap.set(loader, { autoAlpha: 1, pointerEvents: 'auto' });
   setClip();
-  // Deep reload: the curtain necks down to the cursor and uncovers the top of the
-  // page — which is still the hero (scroll hasn't been restored yet). Hide the
-  // hero/about/bridge scene so nothing shows through; applyInitialScroll drops
-  // this class once the scroll has jumped to the works/contact target.
-  if (shrinkToReloadCursor()) document.documentElement.classList.add('reload-cursor-load');
   if (countEl) gsap.set(countEl, { autoAlpha: 0, y: 26, filter: 'blur(10px)' });
 
   const count = { value: 0 };
@@ -2553,10 +2548,6 @@ function applyInitialScroll() {
   if (window.ScrollTrigger) ScrollTrigger.update();
   requestAnimationFrame(() => {
     document.documentElement.classList.remove('is-reload-restoring');
-    // Scroll is now at the works/contact target (hero is off-screen up top), so
-    // it's safe to un-hide the hero scene that was masked during the deep-reload
-    // curtain shrink.
-    document.documentElement.classList.remove('reload-cursor-load');
   });
   if (isProjectReturnToWorks) {
     settleProjectReturnLanding();
