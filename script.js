@@ -831,14 +831,21 @@ const loaderDone = new Promise((resolve) => {
   // counter materialises in: blur-to-focus + fade + gentle rise
   tl.to(countEl, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 1.1, ease: 'power2.out' }, 0.1);
 
-  // count 0 -> 100
-  tl.to(count, {
-    value: 100,
-    duration: 2.4,
-    ease: 'power2.inOut',
+  // count 0 -> 100 — not a robotic ramp. Real loading moves in bursts with little
+  // stalls and a slow crawl into the finish, so step it: quick jumps, tiny holds
+  // between them, then a lingering ease up to 100. (~2.4s total, so the downstream
+  // beats below are unchanged.)
+  const countTl = gsap.timeline({
     onUpdate: () => { if (pct) pct.textContent = String(Math.round(count.value)); },
     onComplete: () => { if (pct) pct.textContent = '100'; },
-  }, 0.15);
+  });
+  countTl
+    .to(count, { value: 34, duration: 0.4, ease: 'power2.out' })
+    .to(count, { value: 57, duration: 0.45, ease: 'power1.inOut' }, '+=0.12')
+    .to(count, { value: 79, duration: 0.4, ease: 'power2.inOut' }, '+=0.14')
+    .to(count, { value: 92, duration: 0.4, ease: 'power2.out' })
+    .to(count, { value: 100, duration: 0.52, ease: 'power2.out' }, '+=0.07');
+  tl.add(countTl, 0.15);
 
   // counter clears just before the field starts contracting
   tl.to(countEl, { autoAlpha: 0, y: -12, filter: 'blur(8px)', duration: 0.45, ease: 'power2.in' }, 2.5);
