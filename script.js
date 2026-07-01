@@ -1571,6 +1571,9 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     });
 
     if (isVisuallyHandedOff) {
+      // Works is fully in — let the .is-section3-handoff-complete class drop the
+      // scene to z-index 0 (behind/under Works so Works is interactive).
+      if (transitionScene) transitionScene.style.zIndex = '';
       irisPlayed = true;
       setSection3Underlay(false, self);
       setSection3ClickThrough(true);
@@ -1589,6 +1592,12 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     }
 
     if (raw > 0) {
+      // Bridge/iris range: the mask must be ABOVE Works (z-index 1) so its grow is
+      // VISIBLE. On a reload into Works/Contact the .is-section3-handoff-complete
+      // class (scene z-index 0) can linger into the scroll-back, leaving the mask
+      // growing BEHIND Works (invisible — "cursor-grows-into-the-bridge is gone").
+      // Force the scene above Works for the whole bridge range; released above/below.
+      if (transitionScene) transitionScene.style.zIndex = '6';
       if (isBeforeExitCursor) {
         irisPlayed = false;
         setSection3Underlay(false, self);
@@ -1627,6 +1636,9 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       return;
     }
 
+    // Past the bridge (toward About/hero): release the forced z-index; the scene's
+    // own z-index (3) is above Works again here.
+    if (transitionScene) transitionScene.style.zIndex = '';
     irisPlayed = false;
     setSection3HandoffComplete(false);
     setSelectedWorksPreviewVisibleReady(false, 'scroll iris reset');
