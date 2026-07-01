@@ -790,10 +790,18 @@ const loaderDone = new Promise((resolve) => {
     return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, r: Math.max(rect.width, rect.height) / 2 };
   };
   const shrinkToReloadCursor = () => Boolean(getReloadLoaderCursorTarget());
+  // Deep reload (landing in Works/Contact): the page is clamped at scroll 0 for
+  // the whole loader, so shrinking the curtain here would uncover the HERO (first
+  // section) — the "first section + black rectangle flash". Instead, for a deep
+  // reload we DON'T shrink or fade during the loader: the curtain stays a full
+  // black cover, the scroll jumps to Works/Contact behind it (applyInitialScroll,
+  // after is-loading drops), and only THEN does the curtain fade — so the hero is
+  // never revealed. Normal loads keep the shrink-to-hero-ball intro.
+  const isDeepReloadLoader = shrinkToReloadCursor();
   const clipState = {
     x: window.innerWidth / 2,
     y: window.innerHeight / 2,
-    r: shrinkToReloadCursor() ? viewportCoverRadius() : coverRadius(),
+    r: isDeepReloadLoader ? viewportCoverRadius() : coverRadius(),
   };
   const setClip = () => {
     const c = `circle(${clipState.r}px at ${clipState.x}px ${clipState.y}px)`;
@@ -863,28 +871,17 @@ const loaderDone = new Promise((resolve) => {
 
   const tl = gsap.timeline({
     onComplete: () => {
-      const finalCursorTarget = getReloadLoaderCursorTarget();
-      const cursor = finalCursorTarget ? document.querySelector('.cursor') : null;
-      if (cursor && window.gsap) {
-        gsap.set(cursor, {
-          x: finalCursorTarget.x,
-          y: finalCursorTarget.y,
-          opacity: 1,
-          scaleX: 1,
-          scaleY: 1,
-          rotation: 0,
-        });
-      }
-      loader.remove();
       document.body.classList.remove('is-loading');
       document.body.classList.remove('loader-active');
       document.body.classList.remove('loader-cursor-handoff');
-      // Always refresh after the loader so the pins are recomputed on the settled
-      // layout (fonts loaded, images in). Skipping this for deep reloads left the
-      // pins computed on a mid-load layout and never corrected — Works/Contact
-      // could land off-screen ("white page, only a sliver of Let's"). The bridge
-      // reverse is kept correct by the .fromTo tweens, not by skipping this.
+      // Refresh after the loader so pins are recomputed on the settled layout.
+      // is-loading is already dropped but the scroll is still 0 (progress 0), so
+      // this is safe — no re-pin at progress 1.
       if (window.ScrollTrigger) ScrollTrigger.refresh();
+      // Normal load: remove the curtain now (the shrink already revealed the hero).
+      // Deep reload: KEEP the curtain covering — applyInitialScroll jumps to
+      // Works/Contact behind it, then fades it, so the hero is never uncovered.
+      if (!isDeepReloadLoader) loader.remove();
       resolveLoader();
     }
   });
@@ -919,57 +916,30 @@ const loaderDone = new Promise((resolve) => {
   // (applyInitialScroll, once is-loading drops), so every refresh happens at
   // scroll 0. The bridge reverse stays correct via the .fromTo tweens.
 
-  // hand off to the hero as the contraction begins (name + bloom come alive
-  // through the off-white that the shrinking circle reveals)
-  // the dark field necks down into the hero sphere — one smooth circular morph
-  tl.to(clipState, {
-    x: () => sphereTarget().x,
-    y: () => sphereTarget().y,
-    r: () => sphereTarget().r,
-    duration: 1.4,
-    ease: 'expo.inOut',
-    onUpdate: () => {
-      const liveTarget = getReloadLoaderCursorTarget();
-      if (liveTarget) {
-        clipState.x = liveTarget.x;
-        clipState.y = liveTarget.y;
-      }
-      setClip();
-    },
-    onComplete: () => {
-      const liveTarget = getReloadLoaderCursorTarget();
-      if (liveTarget) {
-        clipState.x = liveTarget.x;
-        clipState.y = liveTarget.y;
-        clipState.r = liveTarget.r;
-      }
-      setClip();
-    },
-  }, 2.8);
+  // Normal load only: neck the dark field down into the hero sphere (one smooth
+  // circular morph), then fade off. Deep reloads SKIP this — the curtain stays a
+  // full cover and is faded later by applyInitialScroll, after the scroll has
+  // jumped to Works/Contact, so the hero is never uncovered.
+  if (!isDeepReloadLoader) {
+    tl.to(clipState, {
+      x: () => sphereTarget().x,
+      y: () => sphereTarget().y,
+      r: () => sphereTarget().r,
+      duration: 1.4,
+      ease: 'expo.inOut',
+      onUpdate: () => { setClip(); },
+      onComplete: () => { setClip(); },
+    }, 2.8);
 
-  // Deep reload only: cross-fade the real cursor IN as the loader circle fades
-  // OUT, at the same spot. The cursor is force-hidden by `body.is-loading` for the
-  // whole loader, so before this it only appeared AFTER the fade — the shrunk
-  // circle vanished, then the cursor popped in ("disappears then appears again").
-  // The cursor is 44px (same as the shrink target) and sits above the loader, so
-  // fading it in over the fading circle keeps a solid dot visible throughout.
-  tl.call(() => {
-    const target = getReloadLoaderCursorTarget();
-    const cursor = target ? document.querySelector('.cursor') : null;
-    if (!cursor || !window.gsap) return;
-    document.body.classList.add('loader-cursor-handoff');
-    gsap.set(cursor, { x: target.x, y: target.y, opacity: 0, scaleX: 1, scaleY: 1, rotation: 0 });
-    gsap.to(cursor, { opacity: 1, duration: 0.18, ease: 'power2.out' });
-  }, null, 4.14);
-
-  // Hand off at the exact final circle. A tiny fade avoids a one-frame
-  // compositor snap at the clipped edge while the real sphere takes over.
-  tl.to(loader, {
-    autoAlpha: 0,
-    duration: 0.14,
-    ease: 'power2.out',
-    pointerEvents: 'none',
-  }, 4.18);
+    // Hand off at the exact final circle. A tiny fade avoids a one-frame
+    // compositor snap at the clipped edge while the real sphere takes over.
+    tl.to(loader, {
+      autoAlpha: 0,
+      duration: 0.14,
+      ease: 'power2.out',
+      pointerEvents: 'none',
+    }, 4.18);
+  }
 
 });
 
@@ -2609,6 +2579,33 @@ function applyInitialScroll() {
     window.scrollTo(0, y);
   }
   if (window.ScrollTrigger) ScrollTrigger.update();
+
+  // Deep-reload curtain hand-off: on a deep reload the loader held a FULL black
+  // cover through the scroll jump above (it was NOT removed in onComplete). Now
+  // that Works/Contact is settled behind it, fade the cover out — revealing the
+  // destination directly, never the hero. Place the cursor at its resting spot
+  // (forced solid via loader-cursor-handoff so the difference-blend can't flash
+  // it white over the fading black).
+  const heldLoader = document.getElementById('loader');
+  if (heldLoader && window.gsap) {
+    heldLoader.style.pointerEvents = 'none';
+    const cur = (typeof getReloadLoaderCursorTarget === 'function') ? getReloadLoaderCursorTarget() : null;
+    const cursorEl = document.querySelector('.cursor');
+    if (cur && cursorEl) {
+      document.body.classList.add('loader-cursor-handoff');
+      gsap.set(cursorEl, { x: cur.x, y: cur.y, opacity: 1, scaleX: 1, scaleY: 1, rotation: 0 });
+    }
+    gsap.to(heldLoader, {
+      autoAlpha: 0,
+      duration: 0.45,
+      ease: 'power2.out',
+      onComplete: () => {
+        heldLoader.remove();
+        document.body.classList.remove('loader-cursor-handoff');
+      },
+    });
+  }
+
   requestAnimationFrame(() => {
     document.documentElement.classList.remove('is-reload-restoring');
   });
@@ -2618,16 +2615,32 @@ function applyInitialScroll() {
 }
 
 // Must run AFTER the loader removes `is-loading` (body overflow:hidden during the
-// loader clamps any scrollTo to 0). Wait for that class to drop, then position.
+// loader clamps any scrollTo to 0) AND after the web fonts have loaded — the pins
+// are measured from content height, so refreshing/positioning before Fraunces &
+// Inter swap in computes the wrong pin distances and lands Works/Contact on a
+// compressed layout (heading off-screen, blank page). Wait for both, then run.
 function runInitialScrollWhenReady() {
+  // Gate on fonts so the layout (and therefore the pins) is settled first. On a
+  // deep reload the curtain is still covering, so this extra wait isn't visible.
+  const afterFonts = (cb) => {
+    if (document.fonts && document.fonts.ready) {
+      let done = false;
+      const run = () => { if (!done) { done = true; cb(); } };
+      document.fonts.ready.then(run);
+      setTimeout(run, 1500); // never wait forever on fonts
+    } else {
+      cb();
+    }
+  };
+  const go = () => afterFonts(() => requestAnimationFrame(() => requestAnimationFrame(applyInitialScroll)));
   if (!document.body.classList.contains('is-loading')) {
-    requestAnimationFrame(() => requestAnimationFrame(applyInitialScroll));
+    go();
     return;
   }
   const obs = new MutationObserver(() => {
     if (!document.body.classList.contains('is-loading')) {
       obs.disconnect();
-      requestAnimationFrame(() => requestAnimationFrame(applyInitialScroll));
+      go();
     }
   });
   obs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
