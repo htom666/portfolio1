@@ -1579,6 +1579,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       // Works is fully in — let the .is-section3-handoff-complete class drop the
       // scene to z-index 0 (behind/under Works so Works is interactive).
       if (transitionScene) transitionScene.style.zIndex = '';
+      { const sp = getTransitionPinSpacer(); if (sp) sp.style.zIndex = ''; }
       irisPlayed = true;
       setSection3Underlay(false, self);
       setSection3ClickThrough(true);
@@ -1603,6 +1604,13 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       // growing BEHIND Works (invisible — "cursor-grows-into-the-bridge is gone").
       // Force the scene above Works for the whole bridge range; released above/below.
       if (transitionScene) transitionScene.style.zIndex = '6';
+      // CRITICAL: the scene's z-index only counts INSIDE its pin-spacer's stacking
+      // context, so it beats Works (z-index 1) only if the SPACER is also above
+      // Works. After a CONTACT reload ScrollTrigger leaves the scene's pin-spacer at
+      // z-index 0 (below Works) — so the mask grows but stays buried and the iris is
+      // invisible on scroll-back (a Works reload leaves the spacer at 3, which is why
+      // that case already works). Lift the spacer for the whole iris range.
+      { const sp = getTransitionPinSpacer(); if (sp) sp.style.zIndex = '6'; }
       if (isBeforeExitCursor) {
         irisPlayed = false;
         setSection3Underlay(false, self);
@@ -1644,6 +1652,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     // Past the bridge (toward About/hero): release the forced z-index; the scene's
     // own z-index (3) is above Works again here.
     if (transitionScene) transitionScene.style.zIndex = '';
+    { const sp = getTransitionPinSpacer(); if (sp) sp.style.zIndex = ''; }
     irisPlayed = false;
     setSection3HandoffComplete(false);
     setSelectedWorksPreviewVisibleReady(false, 'scroll iris reset');
