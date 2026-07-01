@@ -244,7 +244,7 @@ class WordStage {
     // are framed tighter on purpose and stay as they were.
     this.camera.position.z =
       this.mode === 'perception' ? 90 :
-      this.mode === 'space' ? 150 :
+      this.mode === 'space' ? 128 :
       150;
 
     this.root3d = new THREE.Group();
@@ -545,42 +545,74 @@ class WordStage {
 
   makeSpace() {
     this.core.scale.set(1, 1, 1);
-    this.core.rotation.set(-0.14, -0.32, 0.05);
-    this.spaceGroup = new THREE.Group();
-    this.core.add(this.spaceGroup);
+    this.core.rotation.set(0, 0, 0);
+    this.terrain = new THREE.Group();
+    // low, receding-floor perspective so the grid runs back to a horizon and the
+    // peaks rise off it — a wireframe mountain landscape.
+    this.terrain.position.set(0, -13, 4);
+    this.terrain.rotation.set(-0.95, 0.16, 0);
+    this.core.add(this.terrain);
 
-    const R = 24;
+    const nx = 32;
+    const nz = 22;
+    const W = 132;
+    const D = 96;
 
-    // Outer geodesic shell — a subdivided icosahedron. Reads as the "geometry of
-    // space": an elegant faceted sphere instead of the old flat undulating grid.
-    const shellMat = new THREE.LineBasicMaterial({
-      color: 0xf1e8dc,
-      transparent: true,
-      opacity: 0.5,
-      depthWrite: false,
-    });
-    this.spaceShell = new THREE.LineSegments(
-      new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(R, 1)),
-      shellMat,
-    );
-    this.spaceGroup.add(this.spaceShell);
+    // A cluster of mountain peaks (gaussian bumps) plus fine per-vertex jaggedness
+    // — sharp ridges instead of the old gentle ripples.
+    const peaks = [
+      { x: -46, z: -10, h: 30, s: 15 },
+      { x: -14, z: 8, h: 19, s: 11 },
+      { x: 10, z: -14, h: 26, s: 12 },
+      { x: 34, z: 4, h: 40, s: 16 },
+      { x: 56, z: -6, h: 23, s: 12 },
+    ];
+    const hash = (i, j) => {
+      const n = Math.sin(i * 127.1 + j * 311.7) * 43758.5453;
+      return n - Math.floor(n);
+    };
+    const elevation = (x, z, i, j) => {
+      let h = 0;
+      for (const p of peaks) {
+        const dx = x - p.x;
+        const dz = z - p.z;
+        h += p.h * Math.exp(-(dx * dx + dz * dz) / (2 * p.s * p.s));
+      }
+      h += (hash(i, j) - 0.5) * 7 * Math.min(1, h / 6); // jaggedness grows with height
+      return Math.max(0, h);
+    };
 
-    // Inner octahedron — a crisp solid core that counter-rotates for depth.
-    this.spaceInner = new THREE.LineSegments(
-      new THREE.EdgesGeometry(new THREE.OctahedronGeometry(R * 0.52, 0)),
-      this.edgeMaterial,
-    );
-    this.spaceGroup.add(this.spaceInner);
-
-    // A faint great-circle ring, tilted, like a spatial axis / orbit around it.
-    const ringPts = [];
-    const ringR = R * 1.16;
-    for (let i = 0; i <= 84; i += 1) {
-      const a = (i / 84) * Math.PI * 2;
-      ringPts.push([Math.cos(a) * ringR, Math.sin(a) * ringR, 0]);
+    const grid = [];
+    for (let zi = 0; zi < nz; zi += 1) {
+      grid[zi] = [];
+      for (let xi = 0; xi < nx; xi += 1) {
+        const x = -W / 2 + (xi / (nx - 1)) * W;
+        const z = -D / 2 + (zi / (nz - 1)) * D;
+        grid[zi][xi] = [x, elevation(x, z, xi, zi), z];
+      }
     }
-    this.spaceRing = this.line(ringPts, this.faintMaterial, this.spaceGroup);
-    this.spaceRing.rotation.set(Math.PI / 2.3, 0, 0.22);
+
+    const positions = [];
+    const basePoints = [];
+    const push = (p) => {
+      positions.push(p[0], p[1], p[2]);
+      basePoints.push({ x: p[0], y: p[1], z: p[2] });
+    };
+    for (let zi = 0; zi < nz; zi += 1) {
+      for (let xi = 0; xi < nx - 1; xi += 1) { push(grid[zi][xi]); push(grid[zi][xi + 1]); }
+    }
+    for (let xi = 0; xi < nx; xi += 1) {
+      for (let zi = 0; zi < nz - 1; zi += 1) { push(grid[zi][xi]); push(grid[zi + 1][xi]); }
+    }
+
+    this.spaceGeometry = new THREE.BufferGeometry();
+    this.spaceGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    this.spaceBasePoints = basePoints;
+    this.spaceTerrain = new THREE.LineSegments(
+      this.spaceGeometry,
+      new THREE.LineBasicMaterial({ color: 0xf1e8dc, transparent: true, opacity: 0.62, depthWrite: false }),
+    );
+    this.terrain.add(this.spaceTerrain);
   }
 
   build() {
@@ -669,15 +701,17 @@ class WordStage {
       this.model.rotation.x = this.mouse.y * 0.18 + Math.sin(this.time * 0.6) * 0.025 * this.progress;
     }
 
-    if (this.mode === 'space' && this.spaceGroup) {
-      this.spaceShell.rotation.y += 0.0016 + this.progress * 0.0048;
-      this.spaceShell.rotation.x += 0.0007;
-      if (this.spaceInner) {
-        this.spaceInner.rotation.y -= 0.0040 + this.progress * 0.0040;
-        this.spaceInner.rotation.z += 0.0022;
+    if (this.mode === 'space' && this.spaceGeometry && this.spaceBasePoints) {
+      const attr = this.spaceGeometry.attributes.position;
+      for (let i = 0; i < this.spaceBasePoints.length; i += 1) {
+        const point = this.spaceBasePoints[i];
+        attr.array[i * 3 + 1] = point.y +
+          Math.sin(point.x * 0.07 + this.time * 1.05) * 0.9 * this.progress;
       }
-      if (this.spaceRing) {
-        this.spaceRing.rotation.z = 0.22 + Math.sin(this.time * 0.5) * 0.22 * this.progress;
+      attr.needsUpdate = true;
+      if (this.terrain) {
+        this.terrain.rotation.y = 0.16 + this.mouse.x * 0.20;
+        this.terrain.rotation.x = -0.95 + this.mouse.y * 0.08;
       }
     }
 
