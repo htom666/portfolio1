@@ -130,9 +130,6 @@ body.is-loading .cursor {
 /* Clip only vertically (to the one-row window); let the italic glyphs overflow
    sideways instead of being cropped by a tight box. */
 .odo__col { display: inline-block; width: 1ch; height: 0.9em; overflow: visible; clip-path: inset(0 -0.6em 0 -0.6em); }
-/* Hundreds column: collapsed to width 0 for 0-99 (no left indent), clipping its
-   own width so nothing shows until the "1" rolls + widens in at 100. */
-.odo__col--h { width: 0; overflow: hidden; clip-path: none; }
 .odo__strip { display: block; will-change: transform; }
 .odo__cell { display: block; height: 0.9em; line-height: 0.9; text-align: center; }
 

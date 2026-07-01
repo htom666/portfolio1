@@ -813,13 +813,12 @@ const loaderDone = new Promise((resolve) => {
   // rolls + widens in — a clean carry instead of a popped-in digit. Offsets are
   // in em (= the CSS row height) so they stay aligned through font-load/resize.
   let odoStrips = null;
-  let odoHundredsCol = null;
   if (pct) {
     try {
       pct.textContent = '';
-      const makeCol = (cells, extraClass) => {
+      const makeCol = (cells) => {
         const col = document.createElement('span');
-        col.className = 'odo__col' + (extraClass || '');
+        col.className = 'odo__col';
         const strip = document.createElement('span');
         strip.className = 'odo__strip';
         cells.forEach((t) => {
@@ -830,14 +829,16 @@ const loaderDone = new Promise((resolve) => {
         });
         col.appendChild(strip);
         pct.appendChild(col);
-        return { col, strip };
+        return strip;
       };
       const digitCells = () => { const a = []; for (let n = 0; n <= 10; n += 1) a.push(String(n % 10)); return a; };
-      const h = makeCol([' ', '1'], ' odo__col--h'); // blank, then 1
+      // Hundreds slot is ALWAYS present (blank for 0-99, "1" at 100) so the number
+      // right-aligns in a fixed 3-digit field — the tens/units never shift when the
+      // "1" appears; it just fills the reserved space.
+      const h = makeCol([' ', '1']);
       const t = makeCol(digitCells());
       const u = makeCol(digitCells());
-      odoHundredsCol = h.col;
-      odoStrips = [h.strip, t.strip, u.strip];
+      odoStrips = [h, t, u];
     } catch (_) { odoStrips = null; }
   }
   const ROW_EM = 0.9; // matches .odo__cell height
@@ -853,7 +854,6 @@ const loaderDone = new Promise((resolve) => {
       odoStrips[0].style.transform = `translateY(${-hundreds * ROW_EM}em)`;
       odoStrips[1].style.transform = `translateY(${-tens * ROW_EM}em)`;
       odoStrips[2].style.transform = `translateY(${-units * ROW_EM}em)`;
-      if (odoHundredsCol) odoHundredsCol.style.width = hundreds.toFixed(3) + 'ch';
     } else if (pct) {
       pct.textContent = String(Math.round(v));
     }
