@@ -2578,7 +2578,20 @@ function applyInitialScroll() {
   } else {
     window.scrollTo(0, y);
   }
-  if (window.ScrollTrigger) ScrollTrigger.update();
+  if (window.ScrollTrigger) {
+    ScrollTrigger.update();
+    // The pinned timelines are SMOOTH-scrubbed (scrub: 1.1 / 1), so after this
+    // jump they lerp toward the target over ~1s — passing through the bridge
+    // state on the way. Behind the curtain that's invisible, but it caused a
+    // "half-black bridge blink" as the cover faded. Snap each scrubbed timeline
+    // straight to its target progress so the reveal shows the settled section.
+    ['hero-transition', 'horizontal-scroll'].forEach((id) => {
+      const st = ScrollTrigger.getById(id);
+      if (st && st.animation && typeof st.animation.progress === 'function') {
+        st.animation.progress(st.progress);
+      }
+    });
+  }
 
   // Deep-reload curtain hand-off: on a deep reload the loader held a FULL black
   // cover through the scroll jump above (it was NOT removed in onComplete). Now
