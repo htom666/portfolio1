@@ -1869,8 +1869,8 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
   if (wrap && track && hasHorizontalDistance()) {
     const horizontalMultiplier = isPhoneViewport
       ? 1.08
-      : (window.matchMedia('(max-width: 1024px)').matches ? 1.65 : 1.55);
-    const selectedWorksHoldUnits = isPhoneViewport ? 0.2 : 0.42;
+      : (window.matchMedia('(max-width: 1024px)').matches ? 1.35 : 1.25);
+    const selectedWorksHoldUnits = isPhoneViewport ? 0.2 : 0.18;
     const selectedWorksMoveUnits = 1;
     const selectedWorksHoldRatio = selectedWorksHoldUnits / (selectedWorksHoldUnits + selectedWorksMoveUnits);
     const getHorizontalMoveDistance = () => getDistance() * horizontalMultiplier;
