@@ -26,6 +26,12 @@ document.addEventListener('pointermove', rememberCursorForReload, { passive: tru
 document.addEventListener('mousemove', rememberCursorForReload, { passive: true });
 
 const getReloadLoaderCursorTarget = () => {
+  // Reloads now do a CLEAN load to the top (normal hero intro) — the section
+  // restore + animated reveal was the source of every reload glitch (bridge
+  // blink, half-black cover, broken iris), so it is disabled. Returning null here
+  // makes every reload take the ordinary shrink-to-hero-ball loader path.
+  return null;
+  // eslint-disable-next-line no-unreachable
   if (isProjectReturnToWorks || initialSectionHash || !isReloadNavigation()) return null;
   try {
     if (sessionStorage.getItem(INDEX_RELOAD_PATH_KEY) !== location.pathname) return null;
@@ -2467,6 +2473,10 @@ function isReloadNavigation() {
 }
 
 function getReloadScrollY() {
+  // Reloads land at the top now (clean hero intro) — section restore disabled.
+  // Project-return (#works) and hash links still position via the branch below;
+  // only the reload-scroll restore is switched off.
+  if (isReloadNavigation() && !isProjectReturnToWorks && !initialSectionHash) return null;
   if (isProjectReturnToWorks || initialSectionHash || !isReloadNavigation()) return null;
   try {
     if (sessionStorage.getItem(INDEX_RELOAD_PATH_KEY) !== location.pathname) return null;
