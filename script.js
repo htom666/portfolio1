@@ -26,12 +26,6 @@ document.addEventListener('pointermove', rememberCursorForReload, { passive: tru
 document.addEventListener('mousemove', rememberCursorForReload, { passive: true });
 
 const getReloadLoaderCursorTarget = () => {
-  // Reloads now do a CLEAN load to the top (normal hero intro) — the section
-  // restore + animated reveal was the source of every reload glitch (bridge
-  // blink, half-black cover, broken iris), so it is disabled. Returning null here
-  // makes every reload take the ordinary shrink-to-hero-ball loader path.
-  return null;
-  // eslint-disable-next-line no-unreachable
   if (isProjectReturnToWorks || initialSectionHash || !isReloadNavigation()) return null;
   try {
     if (sessionStorage.getItem(INDEX_RELOAD_PATH_KEY) !== location.pathname) return null;
@@ -2473,10 +2467,6 @@ function isReloadNavigation() {
 }
 
 function getReloadScrollY() {
-  // Reloads land at the top now (clean hero intro) — section restore disabled.
-  // Project-return (#works) and hash links still position via the branch below;
-  // only the reload-scroll restore is switched off.
-  if (isReloadNavigation() && !isProjectReturnToWorks && !initialSectionHash) return null;
   if (isProjectReturnToWorks || initialSectionHash || !isReloadNavigation()) return null;
   try {
     if (sessionStorage.getItem(INDEX_RELOAD_PATH_KEY) !== location.pathname) return null;
@@ -2596,27 +2586,26 @@ function applyInitialScroll() {
   } else {
     window.scrollTo(0, y);
   }
-  if (window.ScrollTrigger) {
-    ScrollTrigger.update();
-    // The pinned timelines are SMOOTH-scrubbed (scrub: 1.1 / 1), so after this
-    // jump they lerp toward the target over ~1s — passing through the bridge
-    // state on the way. Behind the curtain that's invisible, but it caused a
-    // "half-black bridge blink" as the cover faded. Snap each scrubbed timeline
-    // straight to its target progress so the reveal shows the settled section.
+  // Force the SMOOTH-scrubbed pinned timelines (scrub 1.1/1) straight to their
+  // scroll target. After a jump they otherwise lerp there over ~1s, passing
+  // through the dark bridge state — the "half-black bridge blink" seen as the
+  // cover fades. A single set gets overridden by the scrub on the next tick, so
+  // we re-pin EVERY FRAME through the whole reveal below.
+  const pinScrubbed = () => {
+    if (!window.ScrollTrigger) return;
     ['hero-transition', 'horizontal-scroll'].forEach((id) => {
       const st = ScrollTrigger.getById(id);
       if (st && st.animation && typeof st.animation.progress === 'function') {
         st.animation.progress(st.progress);
       }
     });
-  }
+  };
+  if (window.ScrollTrigger) { ScrollTrigger.update(); pinScrubbed(); }
 
-  // Deep-reload curtain hand-off: on a deep reload the loader held a FULL black
-  // cover through the scroll jump above (it was NOT removed in onComplete). Now
-  // that Works/Contact is settled behind it, fade the cover out — revealing the
-  // destination directly, never the hero. Place the cursor at its resting spot
-  // (forced solid via loader-cursor-handoff so the difference-blend can't flash
-  // it white over the fading black).
+  // Deep-reload curtain hand-off: the loader held a FULL black cover through the
+  // scroll jump. Hold it a few frames (pinning the timelines so the scrub settles
+  // behind it), then fade — still pinning each frame all the way through the fade
+  // so no bridge/hero state can leak. Reveals the settled section directly.
   const heldLoader = document.getElementById('loader');
   if (heldLoader && window.gsap) {
     heldLoader.style.pointerEvents = 'none';
@@ -2626,15 +2615,26 @@ function applyInitialScroll() {
       document.body.classList.add('loader-cursor-handoff');
       gsap.set(cursorEl, { x: cur.x, y: cur.y, opacity: 1, scaleX: 1, scaleY: 1, rotation: 0 });
     }
-    gsap.to(heldLoader, {
-      autoAlpha: 0,
-      duration: 0.45,
-      ease: 'power2.out',
-      onComplete: () => {
-        heldLoader.remove();
-        document.body.classList.remove('loader-cursor-handoff');
-      },
-    });
+    let frame = 0;
+    let fading = false;
+    const reveal = () => {
+      pinScrubbed();
+      frame += 1;
+      if (!fading && frame >= 6) {
+        fading = true;
+        gsap.to(heldLoader, {
+          autoAlpha: 0,
+          duration: 0.45,
+          ease: 'power2.out',
+          onComplete: () => {
+            heldLoader.remove();
+            document.body.classList.remove('loader-cursor-handoff');
+          },
+        });
+      }
+      if (frame < 42) requestAnimationFrame(reveal);
+    };
+    requestAnimationFrame(reveal);
   }
 
   requestAnimationFrame(() => {
