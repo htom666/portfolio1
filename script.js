@@ -1148,8 +1148,18 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       }
     } catch (_) {}
   }
-  let mouseX = Number.isFinite(initialProjectReturnOrigin?.x) ? initialProjectReturnOrigin.x : window.innerWidth / 2;
-  let mouseY = Number.isFinite(initialProjectReturnOrigin?.y) ? initialProjectReturnOrigin.y : window.innerHeight / 2;
+  // Deep reload into Works/Contact: seed the mouse-tracking with the stored cursor
+  // position from before the reload. The iris/mask and cursor follow mouseX/mouseY;
+  // without this they default to screen-centre (the mouse hasn't moved yet), so
+  // scrolling back up to the bridge grew the reveal from the middle while the real
+  // cursor sat elsewhere — the "cross stays put, then a circle booms in" scuff.
+  const reloadCursorOrigin = (typeof getReloadLoaderCursorTarget === 'function') ? getReloadLoaderCursorTarget() : null;
+  let mouseX = Number.isFinite(initialProjectReturnOrigin?.x) ? initialProjectReturnOrigin.x
+             : Number.isFinite(reloadCursorOrigin?.x) ? reloadCursorOrigin.x
+             : window.innerWidth / 2;
+  let mouseY = Number.isFinite(initialProjectReturnOrigin?.y) ? initialProjectReturnOrigin.y
+             : Number.isFinite(reloadCursorOrigin?.y) ? reloadCursorOrigin.y
+             : window.innerHeight / 2;
   let section3ClickThroughLogged = false;
   let section3UnderlayLogged = false;
   let workHandoffCompleteLogged = false;
