@@ -40,10 +40,21 @@
             } catch (_) {}
           }
         }
+        // White-iris reload: if this reload lands in the dark middle band (second
+        // section / bridge, ~[2.4,5.2]·vh), flag it BEFORE first paint so the
+        // loader renders light (no dark flash). Mirrors getReloadWhiteIrisTarget().
+        if (isReload && !fromProjectReturn && !window.location.hash &&
+            window.sessionStorage.getItem('portfolioIndexReloadPath') === window.location.pathname) {
+          var wiY = Number(window.sessionStorage.getItem('portfolioIndexReloadScrollY'));
+          var wiVh = window.innerHeight;
+          if (isFinite(wiY) && wiY >= wiVh * 2.4 && wiY < wiVh * 5.2) {
+            document.documentElement.classList.add('reload-white-iris');
+          }
+        }
       } catch (_) {}
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=100" />
+  <link rel="stylesheet" href="styles.css?v=101" />
 </head>
 <body class="is-loading">
 
@@ -257,6 +268,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   <script src="hero-sphere.js?v=2"></script>
-  <script src="script.js?v=134"></script>
+  <script src="script.js?v=135"></script>
 </body>
 </html>

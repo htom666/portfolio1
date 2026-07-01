@@ -51,6 +51,35 @@ const getReloadLoaderCursorTarget = () => {
     return null;
   }
 };
+// WHITE-IRIS reload: when the reload lands in the DARK middle band — the second
+// section + bridge, which render fully black (~progress 0.4–0.87 ≈ [2.4, 5.2]·vh,
+// i.e. below the deep Works/Contact threshold and above the cream hero) — the
+// loader is inverted to a LIGHT cover that necks DOWN into a light iris at the
+// cursor, so the shrink reads against the black section. (A dark cover there is
+// invisible, dark-on-dark.) Returns the cursor point to collapse toward, or null.
+const getReloadWhiteIrisTarget = () => {
+  if (isProjectReturnToWorks || initialSectionHash || !isReloadNavigation()) return null;
+  try {
+    if (sessionStorage.getItem(INDEX_RELOAD_PATH_KEY) !== location.pathname) return null;
+    const reloadY = Number(sessionStorage.getItem(INDEX_RELOAD_SCROLL_KEY));
+    const vh = window.innerHeight;
+    if (!Number.isFinite(reloadY) || reloadY < vh * 2.4 || reloadY >= vh * 5.2) return null;
+    const raw = sessionStorage.getItem(INDEX_RELOAD_CURSOR_KEY);
+    const stored = raw ? JSON.parse(raw) : null;
+    const liveX = lastKnownCursorForReload.live ? lastKnownCursorForReload.x : NaN;
+    const liveY = lastKnownCursorForReload.live ? lastKnownCursorForReload.y : NaN;
+    const x = Number.isFinite(liveX) ? liveX : Number.isFinite(stored?.xPct) ? stored.xPct * window.innerWidth : Number(stored?.x);
+    const y = Number.isFinite(liveY) ? liveY : Number.isFinite(stored?.yPct) ? stored.yPct * window.innerHeight : Number(stored?.y);
+    return {
+      x: Number.isFinite(x) ? x : window.innerWidth / 2,
+      y: Number.isFinite(y) ? y : window.innerHeight / 2,
+      r: Number.isFinite(stored?.r) ? stored.r : 22,
+    };
+  } catch (_) {
+    return null;
+  }
+};
+
 let storedProjectReturn = false;
 try {
   storedProjectReturn = sessionStorage.getItem('portfolioProjectReturn') === '1';
@@ -790,6 +819,12 @@ const loaderDone = new Promise((resolve) => {
     return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, r: Math.max(rect.width, rect.height) / 2 };
   };
   const shrinkToReloadCursor = () => Boolean(getReloadLoaderCursorTarget());
+  // Dark middle-section reload → invert the loader to a light cover that necks
+  // down into a light iris (handled in applyInitialScroll). It reuses the deep
+  // held-cover path (full cover, restore scroll behind it, reveal after), so the
+  // shrink uncovers the real black section instead of the hero.
+  const isWhiteIrisReload = Boolean(getReloadWhiteIrisTarget());
+  if (isWhiteIrisReload) document.documentElement.classList.add('reload-white-iris');
   // Deep reload (landing in Works/Contact): the page is clamped at scroll 0 for
   // the whole loader, so shrinking the curtain here would uncover the HERO (first
   // section) — the "first section + black rectangle flash". Instead, for a deep
@@ -797,7 +832,7 @@ const loaderDone = new Promise((resolve) => {
   // black cover, the scroll jumps to Works/Contact behind it (applyInitialScroll,
   // after is-loading drops), and only THEN does the curtain fade — so the hero is
   // never revealed. Normal loads keep the shrink-to-hero-ball intro.
-  const isDeepReloadLoader = shrinkToReloadCursor();
+  const isDeepReloadLoader = shrinkToReloadCursor() || isWhiteIrisReload;
   const clipState = {
     x: window.innerWidth / 2,
     y: window.innerHeight / 2,
@@ -2673,28 +2708,52 @@ function applyInitialScroll() {
   const heldLoader = document.getElementById('loader');
   if (heldLoader && window.gsap) {
     heldLoader.style.pointerEvents = 'none';
-    const cur = (typeof getReloadLoaderCursorTarget === 'function') ? getReloadLoaderCursorTarget() : null;
+    const whiteIris = (typeof getReloadWhiteIrisTarget === 'function') ? getReloadWhiteIrisTarget() : null;
+    const cur = whiteIris || ((typeof getReloadLoaderCursorTarget === 'function') ? getReloadLoaderCursorTarget() : null);
     const cursorEl = document.querySelector('.cursor');
     if (cur && cursorEl) {
       document.body.classList.add('loader-cursor-handoff');
       gsap.set(cursorEl, { x: cur.x, y: cur.y, opacity: 1, scaleX: 1, scaleY: 1, rotation: 0 });
     }
+    const finishReveal = () => {
+      heldLoader.remove();
+      document.body.classList.remove('loader-cursor-handoff');
+    };
     let frame = 0;
-    let fading = false;
+    let started = false;
     const reveal = () => {
       pinScrubbed();
       frame += 1;
-      if (!fading && frame >= 6) {
-        fading = true;
-        gsap.to(heldLoader, {
-          autoAlpha: 0,
-          duration: 0.45,
-          ease: 'power2.out',
-          onComplete: () => {
-            heldLoader.remove();
-            document.body.classList.remove('loader-cursor-handoff');
-          },
-        });
+      if (!started && frame >= 6) {
+        started = true;
+        if (whiteIris) {
+          // Dark second-section/bridge reload: the light cover necks DOWN into a
+          // light iris at the cursor, uncovering the black section with a shrinking
+          // light circle (a dark fade there would be invisible). pinScrubbed each
+          // frame keeps the settled section behind it from drifting.
+          const startR = Math.ceil(Math.hypot(window.innerWidth, window.innerHeight)) + 8;
+          const clip = { r: startR };
+          const applyClip = () => {
+            const c = `circle(${clip.r}px at ${whiteIris.x}px ${whiteIris.y}px)`;
+            gsap.set(heldLoader, { clipPath: c, webkitClipPath: c });
+          };
+          applyClip();
+          gsap.to(clip, {
+            r: 0,
+            duration: 0.95,
+            ease: 'power3.inOut',
+            onUpdate: () => { applyClip(); pinScrubbed(); },
+            onComplete: finishReveal,
+          });
+        } else {
+          // Works/Contact deep reload: flat fade (their bg isn't dark).
+          gsap.to(heldLoader, {
+            autoAlpha: 0,
+            duration: 0.45,
+            ease: 'power2.out',
+            onComplete: finishReveal,
+          });
+        }
       }
       if (frame < 42) requestAnimationFrame(reveal);
     };

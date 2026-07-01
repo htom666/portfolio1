@@ -136,6 +136,13 @@ body.loader-cursor-handoff .cursor {
   opacity: 0.5;
 }
 
+/* White-iris reload (dark second-section / bridge): invert the loader to a LIGHT
+   cover with a DARK counter, so when it necks down into a light iris the shrink
+   reads against the black section. Set on <html> before first paint by the inline
+   head script (no dark flash) and mirrored in script.js for the reveal. */
+html.reload-white-iris .loader { background: var(--bg); }
+html.reload-white-iris .loader__count { color: var(--ink); }
+
 /* Rolling-odometer digit columns: each is a one-row window; a strip of 0-9(-0)
    translates vertically so the digit ticks. overflow:hidden keeps the column's
    baseline at the digit (so the "%" aligns), while a wider box + negative margin
