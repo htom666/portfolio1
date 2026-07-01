@@ -2620,32 +2620,31 @@ function applyInitialScroll() {
   } else {
     window.scrollTo(0, y);
   }
-  // WARM THE STACKED-PIN SEAM (ms.end === hs.start). On a Contact reload the
-  // scroll-back has to cross that seam (Works -> Bridge). In a COLD pin state
-  // (reloaded straight past both pins, never scrubbed forward through them) the
-  // first backward crossing makes ScrollTrigger remap the scroll ~1400px in one
-  // frame — master progress snaps 1 -> ~0.75, skipping the iris, so the "cursor
-  // grows into the bridge" never plays. Establish the pin transition NOW, behind
-  // the still-covering loader: sweep the scroll from just inside the master pin,
-  // across the seam into the horizontal pin, and back to the real landing. That
-  // forces ST to process the pin engage/disengage both ways so the user's real
-  // crossing is warm and the iris scrubs open smoothly.
-  // Gate to reloads that actually land PAST the seam (Contact / deep Works) — the
-  // only case that must cross it on scroll-back. That only happens behind the
-  // full deep-reload cover, so the sweep is invisible; clean loads (y=0) and the
-  // works-band landing (y = ms.end - 4, already inside the pin) are skipped so the
-  // sweep can never flash on an uncovered load.
+  // WARM THE PINS by REPLAYING THE FORWARD PASS. Normal browsing works because
+  // you scroll forward THROUGH the whole choreography (hero -> bridge -> Works ->
+  // Contact), which makes ScrollTrigger enter/engage every pin in order and cache
+  // its pinned positions. A reload that jumps straight to Contact skips that pass,
+  // so the pins are COLD: the first scroll-back across the master/horizontal seam
+  // (ms.end === hs.start) makes ST remap the scroll ~1400px in one frame — master
+  // progress snaps 1 -> ~0.75, skipping the iris, so "the cursor grows into the
+  // bridge" never plays. Fix: step the scroll from 0 up to the landing in order,
+  // updating ST at each step, so every pin's forward enter/update fires exactly as
+  // if the user had scrolled there — then land at y warm. All behind the full
+  // deep-reload cover (gated to y > ms.end, which only happens on a covered deep
+  // reload), so it's invisible; clean loads (y=0) and the works-band landing
+  // (y = ms.end - 4, already inside the pin) are skipped.
   if (window.ScrollTrigger && ms && y > ms.end + 8) {
-    const seamWarmPts = [ms.end - 60, ms.end + 60, ms.end - 60, y];
-    seamWarmPts.forEach((yy) => {
-      if (yy == null) return;
+    const jump = (yy) => {
       if (typeof lenis !== 'undefined' && lenis && typeof lenis.scrollTo === 'function') {
         lenis.scrollTo(yy, { immediate: true, force: true });
       } else {
         window.scrollTo(0, yy);
       }
       ScrollTrigger.update();
-    });
+    };
+    const steps = 30;
+    for (let i = 1; i <= steps; i += 1) jump(Math.round((y * i) / steps));
+    jump(y); // settle exactly on the landing
   }
   // Force the SMOOTH-scrubbed pinned timelines (scrub 1.1/1) straight to their
   // scroll target. After a jump they otherwise lerp there over ~1s, passing
