@@ -549,27 +549,26 @@ class WordStage {
     this.terrain = new THREE.Group();
     this.core.add(this.terrain);
 
-    // Raised camera looking down across a flat terrain — a natural landscape POV:
-    // sky at the top, a mountain range, a horizon band, and the grid floor
-    // receding into the foreground (framing tuned against the 2.18:1 reveal canvas).
-    this.camera.fov = 40;
-    this.camera.position.set(0, 33, 82);
-    this.camera.lookAt(0, 2, -30);
+    // Raised camera pulled back, looking down across a flat terrain — a small,
+    // contained landscape: sky at top, smooth rolling hills, a horizon, and the
+    // grid floor receding into the foreground (framing tuned against the 2.18:1
+    // reveal canvas so it sits centred with margin rather than filling the frame).
+    this.camera.fov = 38;
+    this.camera.position.set(0, 43, 135);
+    this.camera.lookAt(0, -2, -22);
     this.camera.updateProjectionMatrix();
 
-    const nx = 18;
-    const nz = 11;
-    const W = 150;
-    const D = 120;
+    const nx = 15;
+    const nz = 9;
+    const W = 138;
+    const D = 118;
 
-    // A spread of mountain peaks (gaussian bumps) plus fine per-vertex jaggedness
-    // for sharp ridges. Heights already include the 0.9 framing scale.
+    // A few wide, gentle mounds (large sigma) with only light jaggedness — smooth
+    // rolling hills, not sharp spikes. Heights include the 0.92 framing scale.
     const peaks = [
-      { x: -54, z: -8, h: 21.6, s: 13 },
-      { x: -30, z: 6, h: 30.6, s: 15 },
-      { x: -4, z: -14, h: 18, s: 11 },
-      { x: 20, z: 4, h: 34.2, s: 16 },
-      { x: 46, z: -6, h: 23.4, s: 13 },
+      { x: -40, z: -6, h: 18.4, s: 22 },
+      { x: -2, z: -16, h: 25.8, s: 24 },
+      { x: 38, z: -2, h: 20.2, s: 22 },
     ];
     const hash = (i, j) => {
       const n = Math.sin(i * 127.1 + j * 311.7) * 43758.5453;
@@ -582,7 +581,7 @@ class WordStage {
         const dz = z - p.z;
         h += p.h * Math.exp(-(dx * dx + dz * dz) / (2 * p.s * p.s));
       }
-      h += (hash(i, j) - 0.5) * 7 * Math.min(1, h / 6); // jaggedness grows with height
+      h += (hash(i, j) - 0.5) * 2.2 * Math.min(1, h / 8); // light jaggedness only
       return Math.max(0, h);
     };
 
@@ -710,7 +709,7 @@ class WordStage {
       for (let i = 0; i < this.spaceBasePoints.length; i += 1) {
         const point = this.spaceBasePoints[i];
         attr.array[i * 3 + 1] = point.y +
-          Math.sin(point.x * 0.07 + this.time * 1.05) * 0.9 * this.progress;
+          Math.sin(point.x * 0.05 + this.time * 0.85) * 0.55 * this.progress;
       }
       attr.needsUpdate = true;
       // Terrain stays flat (the camera provides the perspective); the cursor
