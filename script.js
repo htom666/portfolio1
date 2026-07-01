@@ -879,7 +879,14 @@ const loaderDone = new Promise((resolve) => {
       document.body.classList.remove('is-loading');
       document.body.classList.remove('loader-active');
       document.body.classList.remove('loader-cursor-handoff');
-      if (window.ScrollTrigger) ScrollTrigger.refresh();
+      // A deep reload already restored the scroll (and refreshed at scroll 0) via
+      // applyInitialScroll(). Refreshing AGAIN here — now parked in Works at
+      // progress 1 — makes invalidateOnRefresh re-read the master timeline's .to()
+      // tween start values from the END state, which corrupts the reverse iris
+      // when you scroll back to the bridge (text vanishes, then it "booms" in).
+      // Only refresh when the restore hasn't run yet (normal load: still at
+      // scroll 0, so the refresh is harmless).
+      if (window.ScrollTrigger && !initialScrollApplied) ScrollTrigger.refresh();
       resolveLoader();
     }
   });
@@ -1821,13 +1828,21 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     // bridge so the thought-shift reads as intentional.
     masterTl.to(section2Bridge,
       { autoAlpha: 1, ease: 'power2.out', duration: 26 }, section2BridgeInAt);
-    masterTl.to('.section2-bridge__title',
-      { autoAlpha: 1, y: 0, ease: 'power3.out', duration: 28 }, section2BridgeInAt);
+    // fromTo (not to) with explicit starts (matching the CSS: opacity 0, y 8) so
+    // the text renders correctly when the playhead is JUMPED here — e.g. a reload
+    // in Selected Works lands at progress 1 without these positions ever playing,
+    // and a plain .to() then can't reconstruct its start on the scrub back, so the
+    // bridge text stayed invisible ("text disappears, then boom bridge").
+    masterTl.fromTo('.section2-bridge__title',
+      { autoAlpha: 0, y: 8 },
+      { autoAlpha: 1, y: 0, ease: 'power3.out', duration: 28, immediateRender: false }, section2BridgeInAt);
     // Body waits longer so "A little more" lands and lingers first.
-    masterTl.to('.section2-bridge__body',
-      { autoAlpha: 1, y: 0, ease: 'power3.out', duration: 24 }, section2BridgeBodyAt);
-    masterTl.to('.section2-bridge__title, .section2-bridge__body',
-      { autoAlpha: 0, y: -8, ease: 'power2.in', duration: 22 }, section2BridgeOutAt);
+    masterTl.fromTo('.section2-bridge__body',
+      { autoAlpha: 0, y: 8 },
+      { autoAlpha: 1, y: 0, ease: 'power3.out', duration: 24, immediateRender: false }, section2BridgeBodyAt);
+    masterTl.fromTo('.section2-bridge__title, .section2-bridge__body',
+      { autoAlpha: 1, y: 0 },
+      { autoAlpha: 0, y: -8, ease: 'power2.in', duration: 22, immediateRender: false }, section2BridgeOutAt);
     masterTl.to(section2Bridge,
       { autoAlpha: 0, ease: 'power1.out', duration: 22 }, section2BridgeOutAt);
   }
