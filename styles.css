@@ -284,6 +284,12 @@ body.is-menu-open .menu-btn { opacity: 0; pointer-events: none; }
 /* =========================================================
    HERO -> SECTION 2 SCENE
    ========================================================= */
+/* Deep reload into Works/Contact: the scroll is clamped at 0 while the loader
+   runs, so the curtain would neck down over the hero (its black ball). Hide the
+   whole hero/about/bridge scene so the shrink reveals the plain cream field
+   instead. The class is only added when the reload destination is Works/Contact,
+   and dropped once the scroll has landed there (scene already out of view). */
+html.reload-cursor-load .heroToSection2Scene { visibility: hidden; }
 
 .heroToSection2Scene {
   position: relative;

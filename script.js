@@ -904,6 +904,22 @@ const loaderDone = new Promise((resolve) => {
   // counter clears just before the field starts contracting
   tl.to(countEl, { autoAlpha: 0, y: -12, filter: 'blur(8px)', duration: 0.45, ease: 'power2.in' }, 2.5);
 
+  // Deep reload into Works/Contact: the page is still clamped at scroll 0, so the
+  // shrink below would neck the curtain down over the hero (its black ball = the
+  // "second circle"/rectangle users saw). Hide the whole scene now so the shrink
+  // reveals the plain cream field; applyInitialScroll un-hides it once the scroll
+  // has landed on Works/Contact (scene out of view). Gated to Works/Contact only
+  // (reload destination past the master pin) so bridge reloads — where the scene
+  // IS the destination — are untouched. ScrollTrigger is set up by this point.
+  tl.call(() => {
+    if (!shrinkToReloadCursor()) return;
+    const ms = window.ScrollTrigger ? ScrollTrigger.getById('hero-transition') : null;
+    const reloadY = (typeof getReloadScrollY === 'function') ? getReloadScrollY() : null;
+    if (ms && reloadY !== null && reloadY >= ms.end - 8) {
+      document.documentElement.classList.add('reload-cursor-load');
+    }
+  }, null, 2.72);
+
   // hand off to the hero as the contraction begins (name + bloom come alive
   // through the off-white that the shrinking circle reveals)
   // the dark field necks down into the hero sphere — one smooth circular morph
@@ -2525,11 +2541,11 @@ function applyInitialScroll() {
   let y = 0;
   const hash = isProjectReturnToWorks ? '#works' : initialSectionHash;
   const reloadY = getReloadScrollY();
+  const ms = window.ScrollTrigger ? ScrollTrigger.getById('hero-transition') : null;
+  const hs = window.ScrollTrigger ? ScrollTrigger.getById('horizontal-scroll') : null;
   if (reloadY !== null) {
     y = reloadY;
   } else if (hash === '#works' || hash === '#contact') {
-    const ms = window.ScrollTrigger ? ScrollTrigger.getById('hero-transition') : null;
-    const hs = window.ScrollTrigger ? ScrollTrigger.getById('horizontal-scroll') : null;
     if (hs || ms) {
       if (hash === '#works') y = hs ? hs.start : ms.end;
       else                   y = hs ? hs.end - 4 : ms.end + window.innerHeight;
@@ -2540,6 +2556,15 @@ function applyInitialScroll() {
     }
   }
 
+  // Landing EXACTLY on the master-pin release boundary (ms.end == Works start)
+  // leaves the fixed dark hero scene covering the viewport for ~1s — the "black
+  // rectangle" seen when reloading the instant you reach Selected Works. Nudge a
+  // few px past so the pin releases cleanly and the scene scrolls out of view.
+  // Reloads deeper in Works are already past the boundary and untouched.
+  if (ms && y >= ms.end - 8 && y < ms.end + 24) {
+    y = Math.round(ms.end + 18);
+  }
+
   if (typeof lenis !== 'undefined' && lenis && typeof lenis.scrollTo === 'function') {
     lenis.scrollTo(y, { immediate: true, force: true });
   } else {
@@ -2548,6 +2573,12 @@ function applyInitialScroll() {
   if (window.ScrollTrigger) ScrollTrigger.update();
   requestAnimationFrame(() => {
     document.documentElement.classList.remove('is-reload-restoring');
+    // Scroll has landed on Works/Contact (past the pin boundary, scene off-screen
+    // up top), so un-hiding the deep-reload scene mask is now safe — one more RAF
+    // to be sure the pin release has painted.
+    requestAnimationFrame(() => {
+      document.documentElement.classList.remove('reload-cursor-load');
+    });
   });
   if (isProjectReturnToWorks) {
     settleProjectReturnLanding();
