@@ -546,76 +546,51 @@ class WordStage {
   makeSpace() {
     this.core.scale.set(1, 1, 1);
     this.core.rotation.set(0, 0, 0);
-    this.terrain = new THREE.Group();
-    this.core.add(this.terrain);
+    this.spaceRoom = new THREE.Group();
+    this.core.add(this.spaceRoom);
 
-    // Raised camera pulled back, looking down across a flat terrain — a small,
-    // contained landscape: sky at top, smooth rolling hills, a horizon, and the
-    // grid floor receding into the foreground (framing tuned against the 2.18:1
-    // reveal canvas so it sits centred with margin rather than filling the frame).
-    this.camera.fov = 38;
-    this.camera.position.set(0, 43, 135);
-    this.camera.lookAt(0, -2, -22);
+    // A one-point-perspective wireframe room — "the geometry of space": you're
+    // inside a space, its edges converging to a vanishing point (presence + the
+    // geometry of perceived space, per the sentence). Framed on the z-axis so it
+    // sits centred with margin in the 2.18:1 reveal canvas.
+    this.camera.fov = 34;
+    this.camera.position.set(0, 0, 185);
+    this.camera.lookAt(0, 0, 0);
     this.camera.updateProjectionMatrix();
 
-    const nx = 15;
-    const nz = 9;
-    const W = 138;
-    const D = 118;
+    const hw = 52;
+    const hh = 24;
+    const hd = 60; // room half-depth
+    const room = this.spaceRoom;
+    const seg = (a, b, mat) => this.segment(a, b, mat, room);
 
-    // A few wide, gentle mounds (large sigma) with only light jaggedness — smooth
-    // rolling hills, not sharp spikes. Heights include the 0.92 framing scale.
-    const peaks = [
-      { x: -40, z: -6, h: 18.4, s: 22 },
-      { x: -2, z: -16, h: 25.8, s: 24 },
-      { x: 38, z: -2, h: 20.2, s: 22 },
-    ];
-    const hash = (i, j) => {
-      const n = Math.sin(i * 127.1 + j * 311.7) * 43758.5453;
-      return n - Math.floor(n);
-    };
-    const elevation = (x, z, i, j) => {
-      let h = 0;
-      for (const p of peaks) {
-        const dx = x - p.x;
-        const dz = z - p.z;
-        h += p.h * Math.exp(-(dx * dx + dz * dz) / (2 * p.s * p.s));
-      }
-      h += (hash(i, j) - 0.5) * 2.2 * Math.min(1, h / 8); // light jaggedness only
-      return Math.max(0, h);
-    };
-
-    const grid = [];
-    for (let zi = 0; zi < nz; zi += 1) {
-      grid[zi] = [];
-      for (let xi = 0; xi < nx; xi += 1) {
-        const x = -W / 2 + (xi / (nx - 1)) * W;
-        const z = -D / 2 + (zi / (nz - 1)) * D;
-        grid[zi][xi] = [x, elevation(x, z, xi, zi), z];
-      }
+    // Front frame (near, crisp)
+    seg([-hw, -hh, hd], [hw, -hh, hd], this.edgeMaterial);
+    seg([hw, -hh, hd], [hw, hh, hd], this.edgeMaterial);
+    seg([hw, hh, hd], [-hw, hh, hd], this.edgeMaterial);
+    seg([-hw, hh, hd], [-hw, -hh, hd], this.edgeMaterial);
+    // Back wall (far, smaller in perspective — secondary)
+    seg([-hw, -hh, -hd], [hw, -hh, -hd], this.secondaryMaterial);
+    seg([hw, -hh, -hd], [hw, hh, -hd], this.secondaryMaterial);
+    seg([hw, hh, -hd], [-hw, hh, -hd], this.secondaryMaterial);
+    seg([-hw, hh, -hd], [-hw, -hh, -hd], this.secondaryMaterial);
+    // Four long edges — the converging perspective lines
+    seg([-hw, -hh, hd], [-hw, -hh, -hd], this.secondaryMaterial);
+    seg([hw, -hh, hd], [hw, -hh, -hd], this.secondaryMaterial);
+    seg([hw, hh, hd], [hw, hh, -hd], this.secondaryMaterial);
+    seg([-hw, hh, hd], [-hw, hh, -hd], this.secondaryMaterial);
+    // Floor + ceiling grid lines running into depth (faint)
+    const rails = 4;
+    for (let i = 1; i < rails; i += 1) {
+      const x = -hw + (i / rails) * (hw * 2);
+      seg([x, -hh, hd], [x, -hh, -hd], this.faintMaterial);
+      seg([x, hh, hd], [x, hh, -hd], this.faintMaterial);
     }
-
-    const positions = [];
-    const basePoints = [];
-    const push = (p) => {
-      positions.push(p[0], p[1], p[2]);
-      basePoints.push({ x: p[0], y: p[1], z: p[2] });
-    };
-    for (let zi = 0; zi < nz; zi += 1) {
-      for (let xi = 0; xi < nx - 1; xi += 1) { push(grid[zi][xi]); push(grid[zi][xi + 1]); }
+    // Floor cross lines receding to the vanishing point (faint)
+    for (let i = 1; i < rails; i += 1) {
+      const z = hd - (i / rails) * (hd * 2);
+      seg([-hw, -hh, z], [hw, -hh, z], this.faintMaterial);
     }
-    for (let xi = 0; xi < nx; xi += 1) {
-      for (let zi = 0; zi < nz - 1; zi += 1) { push(grid[zi][xi]); push(grid[zi + 1][xi]); }
-    }
-
-    this.spaceGeometry = new THREE.BufferGeometry();
-    this.spaceGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    this.spaceBasePoints = basePoints;
-    this.spaceTerrain = new THREE.LineSegments(
-      this.spaceGeometry,
-      new THREE.LineBasicMaterial({ color: 0xf1e8dc, transparent: true, opacity: 0.62, depthWrite: false }),
-    );
-    this.terrain.add(this.spaceTerrain);
   }
 
   build() {
@@ -704,16 +679,11 @@ class WordStage {
       this.model.rotation.x = this.mouse.y * 0.18 + Math.sin(this.time * 0.6) * 0.025 * this.progress;
     }
 
-    if (this.mode === 'space' && this.spaceGeometry && this.spaceBasePoints) {
-      const attr = this.spaceGeometry.attributes.position;
-      for (let i = 0; i < this.spaceBasePoints.length; i += 1) {
-        const point = this.spaceBasePoints[i];
-        attr.array[i * 3 + 1] = point.y +
-          Math.sin(point.x * 0.05 + this.time * 0.85) * 0.55 * this.progress;
-      }
-      attr.needsUpdate = true;
-      // Terrain stays flat (the camera provides the perspective); the cursor
+    if (this.mode === 'space' && this.spaceRoom) {
+      // A gentle idle sway so the room feels alive; the cursor "look around"
       // parallax comes from the shared root3d rotation applied above.
+      this.spaceRoom.rotation.y = Math.sin(this.time * 0.32) * 0.05 * this.progress;
+      this.spaceRoom.rotation.x = Math.sin(this.time * 0.24) * 0.02 * this.progress;
     }
 
     this.render();
