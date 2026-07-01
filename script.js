@@ -802,6 +802,11 @@ const loaderDone = new Promise((resolve) => {
 
   gsap.set(loader, { autoAlpha: 1, pointerEvents: 'auto' });
   setClip();
+  // Deep reload: the curtain necks down to the cursor and uncovers the top of the
+  // page — which is still the hero (scroll hasn't been restored yet). Hide the
+  // hero/about/bridge scene so nothing shows through; applyInitialScroll drops
+  // this class once the scroll has jumped to the works/contact target.
+  if (shrinkToReloadCursor()) document.documentElement.classList.add('reload-cursor-load');
   if (countEl) gsap.set(countEl, { autoAlpha: 0, y: 26, filter: 'blur(10px)' });
 
   const count = { value: 0 };
@@ -1993,6 +1998,18 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
         heroRevealed = true;
         document.body.classList.add('hero-intro-started');
 
+        // Deep reload (curtain shrank to the cursor, not the hero): the hero is
+        // off-screen up top, so DON'T play the bloom/name intro — that animation
+        // firing at scroll 0 is the "black flickering ball". Snap the hero to its
+        // resting state instead, so it's correct if the user scrolls back up.
+        if (getReloadLoaderCursorTarget()) {
+          if (blackLines.length) gsap.set(blackLines, { autoAlpha: 1, y: 0 });
+          if (maskLines.length)  gsap.set(maskLines,  { autoAlpha: 1, y: 0 });
+          if (extras.length)     gsap.set(extras,     { autoAlpha: 1, y: 0 });
+          if (maskName) maskName.style.clipPath = ''; // resting radius from stylesheet
+          return;
+        }
+
         const introTl = gsap.timeline();
         // The black name and the clipped white name are the same reveal, so
         // animate both copies in lockstep instead of letting one chase the other.
@@ -2536,6 +2553,10 @@ function applyInitialScroll() {
   if (window.ScrollTrigger) ScrollTrigger.update();
   requestAnimationFrame(() => {
     document.documentElement.classList.remove('is-reload-restoring');
+    // Scroll is now at the works/contact target (hero is off-screen up top), so
+    // it's safe to un-hide the hero scene that was masked during the deep-reload
+    // curtain shrink.
+    document.documentElement.classList.remove('reload-cursor-load');
   });
   if (isProjectReturnToWorks) {
     settleProjectReturnLanding();

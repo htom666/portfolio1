@@ -284,6 +284,11 @@ body.is-menu-open .menu-btn { opacity: 0; pointer-events: none; }
 /* =========================================================
    HERO -> SECTION 2 SCENE
    ========================================================= */
+/* Deep reload: keep the hero/about/bridge scene invisible while the loader
+   curtain necks down to the cursor, so it can't be uncovered at the top before
+   the scroll jumps to works/contact. Class is dropped once the scroll lands. */
+html.reload-cursor-load .heroToSection2Scene { visibility: hidden; }
+
 .heroToSection2Scene {
   position: relative;
   height: 100vh;
