@@ -805,7 +805,48 @@ const loaderDone = new Promise((resolve) => {
   if (countEl) gsap.set(countEl, { autoAlpha: 0, y: 18 });
 
   const count = { value: 0 };
-  if (pct) pct.textContent = '0';
+
+  // Rolling-odometer readout: two zero-padded digit columns whose strips
+  // translate vertically (by whole rows) as the value counts up, so the number
+  // rolls like a mechanical counter. Offsets are in em (= the CSS row height) so
+  // they stay aligned through font-load and resize. Falls back to plain text.
+  let odoStrips = null;
+  if (pct) {
+    try {
+      pct.textContent = '';
+      odoStrips = [];
+      for (let d = 0; d < 2; d += 1) {
+        const col = document.createElement('span');
+        col.className = 'odo__col';
+        const strip = document.createElement('span');
+        strip.className = 'odo__strip';
+        for (let n = 0; n <= 10; n += 1) {
+          const cell = document.createElement('span');
+          cell.className = 'odo__cell';
+          cell.textContent = String(n % 10);
+          strip.appendChild(cell);
+        }
+        col.appendChild(strip);
+        pct.appendChild(col);
+        odoStrips.push(strip);
+      }
+    } catch (_) { odoStrips = null; }
+  }
+  const ROW_EM = 0.9; // matches .odo__cell height
+  const setPct = (v) => {
+    if (odoStrips) {
+      const val = Math.max(0, Math.min(99.999, v));
+      const units = val % 10;
+      // Tens holds its digit and only rolls over during the last unit before the
+      // decade (so 7 reads "07", not a half-rolled "17").
+      const tens = Math.floor(val / 10) + (units > 9 ? units - 9 : 0);
+      odoStrips[0].style.transform = `translateY(${-tens * ROW_EM}em)`;
+      odoStrips[1].style.transform = `translateY(${-units * ROW_EM}em)`;
+    } else if (pct) {
+      pct.textContent = String(Math.round(v));
+    }
+  };
+  setPct(0);
 
   const tl = gsap.timeline({
     onComplete: () => {
@@ -836,7 +877,7 @@ const loaderDone = new Promise((resolve) => {
     value: 100,
     duration: 2.4,
     ease: 'power2.inOut',
-    onUpdate: () => { if (pct) pct.textContent = String(Math.round(count.value)); },
+    onUpdate: () => setPct(count.value),
     onComplete: () => { if (pct) pct.textContent = '100'; },
   }, 0.15);
 

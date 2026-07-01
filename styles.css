@@ -124,6 +124,13 @@ body.is-loading .cursor {
   opacity: 0.5;
 }
 
+/* Rolling-odometer digits: each column is a one-row window; a strip of 0-9(-0)
+   translates vertically, so the number rolls continuously as it counts. */
+.loader__num { display: inline-flex; }
+.odo__col { display: inline-block; width: 1ch; height: 0.9em; overflow: hidden; }
+.odo__strip { display: block; will-change: transform; }
+.odo__cell { display: block; height: 0.9em; line-height: 0.9; text-align: center; }
+
 html.from-project-return body {
   background: var(--bg);
 }
