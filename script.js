@@ -1015,6 +1015,11 @@ if (window.ScrollTrigger) {
 // is intentionally shared between desktop and mobile. Phone-specific timing is
 // tuned via isPhoneViewport below.
 let horizontalTween;
+// Bridge from the master-pin closure out to applyInitialScroll(): re-applies the
+// scroll-derived scene/handoff state after a reload jump so the fixed
+// wheel-swallowing "bridge" underlay can't linger and freeze the page. Assigned
+// once the master pin + renderScrollDrivenIris exist below.
+let settleReloadSceneState = null;
 if (!reduceMotion && window.gsap && window.ScrollTrigger) {
   gsap.registerPlugin(ScrollTrigger);
 
@@ -1648,6 +1653,14 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     setSection3InvertActive(false);
     setBridgeSelectable(isBridgeInteractivePhase, isBridgeInteractivePhase);
     setDarkSectionCursor(isDarkReadableSection, isDarkReadableSection ? darkCursorOpacity : null);
+  };
+
+  // Expose the scroll-derived scene/handoff renderer to the reload path so it can
+  // re-settle the scene state after a jump (kills the fixed wheel-swallowing
+  // "bridge" underlay that otherwise freezes the page — see applyInitialScroll).
+  settleReloadSceneState = () => {
+    const st = window.ScrollTrigger ? ScrollTrigger.getById('hero-transition') : null;
+    if (st) renderScrollDrivenIris(st);
   };
 
   let projectReturnIrisSynced = false;
@@ -2584,13 +2597,22 @@ function applyInitialScroll() {
   // before the master pin ends (mask starts opening ~progress 0.79, Works is
   // visibly there by ~0.91) — so the whole band from there to ms.end LOOKS like
   // Works but its scroll value still scrubs the dark bridge/iris state. Reloading
-  // in that band restores into the pin and flashes the bridge. Whenever the
-  // deep-reload cursor path is active (or an explicit #works) and the restore
-  // would land at/inside the pin boundary, snap to clean fully-revealed Works
-  // just past ms.end. Contact and deeper Works are already past → untouched.
+  // in that band restores into the pin and flashes the bridge (pinScrubbed below
+  // snaps the timeline past that flash). Snap those reloads to clean Works.
+  //
+  // CRITICAL: land JUST INSIDE the master pin (ms.end - 4), NOT past it. At
+  // ms.end-4 the master progress is ~0.999 → the iris is fully handed off (mask
+  // hidden, Works clean and interactive) — same visual as landing past ms.end.
+  // BUT ms.end coincides with the horizontal pin's start (hs.start): landing PAST
+  // it means the first scroll-back has to cross that stacked-pin boundary, where
+  // Lenis's smooth scroll skips ~1400px in one frame — the master progress snaps
+  // 1→0.75 and the reverse iris HARD-CUTS instead of growing ("cursor grows into
+  // the bridge" is gone). Landing inside keeps the whole scroll-back within the
+  // master pin, so the iris scrubs open smoothly. Contact is inherently past the
+  // boundary and stays at its stored position.
   const deepCursorReload = (typeof getReloadLoaderCursorTarget === 'function') && !!getReloadLoaderCursorTarget();
   if (ms && (deepCursorReload || hash === '#works') && y < ms.end + 24) {
-    y = Math.round(ms.end + 18);
+    y = Math.round(ms.end - 4);
   }
 
   if (typeof lenis !== 'undefined' && lenis && typeof lenis.scrollTo === 'function') {
@@ -2613,6 +2635,27 @@ function applyInitialScroll() {
     });
   };
   if (window.ScrollTrigger) { ScrollTrigger.update(); pinScrubbed(); }
+
+  // RELOAD SCROLL-FREEZE GUARD. After the jump above, the master pin's progress
+  // can settle at ~0.99 instead of exactly 1, so its last onUpdate lands in the
+  // "bridge" branch — which leaves .heroToSection2Scene as a FIXED, full-viewport,
+  // pointer-events:auto underlay (is-section3-underlay) sitting on top of Works /
+  // Contact. That fixed overflow:hidden layer SWALLOWS every wheel event, so the
+  // page is frozen and the reverse-iris ("cursor grows into the bridge") can never
+  // play because you can't scroll back at all. Re-run ONLY the scroll-derived
+  // scene/handoff renderer (not a full ScrollTrigger.refresh — that re-invalidates
+  // the .to tweens and blanks About/bridge) for a short burst so the scene settles
+  // to match the real final progress (past the iris -> z-index 0, non-fixed,
+  // interactive). Idempotent and correct for any landing (a genuine bridge reload
+  // just re-applies the bridge state, which scrolls fine).
+  if (typeof settleReloadSceneState === 'function') {
+    let settleFrames = 0;
+    const settle = () => {
+      settleReloadSceneState();
+      if (++settleFrames < 32) requestAnimationFrame(settle);
+    };
+    settle();
+  }
 
   // Deep-reload curtain hand-off: the loader held a FULL black cover through the
   // scroll jump. Hold it a few frames (pinning the timelines so the scrub settles
