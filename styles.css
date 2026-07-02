@@ -142,6 +142,9 @@ body.loader-cursor-handoff .cursor {
    head script (no dark flash) and mirrored in script.js for the reveal. */
 html.reload-white-iris .loader { background: var(--bg); }
 html.reload-white-iris .loader__count { color: var(--ink); }
+/* Hide the custom cursor for the whole white-iris collapse — nothing on screen
+   but the smooth light shrink (no dot of any colour). */
+body.white-iris-reveal .cursor { opacity: 0 !important; }
 
 /* Rolling-odometer digit columns: each is a one-row window; a strip of 0-9(-0)
    translates vertically so the digit ticks. overflow:hidden keeps the column's

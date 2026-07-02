@@ -2709,55 +2709,62 @@ function applyInitialScroll() {
   if (heldLoader && window.gsap) {
     heldLoader.style.pointerEvents = 'none';
     const whiteIris = (typeof getReloadWhiteIrisTarget === 'function') ? getReloadWhiteIrisTarget() : null;
-    const cur = whiteIris || ((typeof getReloadLoaderCursorTarget === 'function') ? getReloadLoaderCursorTarget() : null);
-    const cursorEl = document.querySelector('.cursor');
-    if (cur && cursorEl) {
-      document.body.classList.add('loader-cursor-handoff');
-      gsap.set(cursorEl, { x: cur.x, y: cur.y, opacity: 1, scaleX: 1, scaleY: 1, rotation: 0 });
-    }
     const finishReveal = () => {
       heldLoader.remove();
       document.body.classList.remove('loader-cursor-handoff');
+      document.body.classList.remove('white-iris-reveal');
     };
-    let frame = 0;
-    let started = false;
-    const reveal = () => {
-      pinScrubbed();
-      frame += 1;
-      if (!started && frame >= 6) {
-        started = true;
-        if (whiteIris) {
-          // Dark second-section/bridge reload: the light cover necks DOWN into a
-          // light iris at the cursor, uncovering the black section with a shrinking
-          // light circle (a dark fade there would be invisible). pinScrubbed each
-          // frame keeps the settled section behind it from drifting.
-          const startR = Math.ceil(Math.hypot(window.innerWidth, window.innerHeight)) + 8;
-          const clip = { r: startR };
-          const applyClip = () => {
-            const c = `circle(${clip.r}px at ${whiteIris.x}px ${whiteIris.y}px)`;
-            gsap.set(heldLoader, { clipPath: c, webkitClipPath: c });
-          };
-          applyClip();
-          gsap.to(clip, {
-            r: 0,
-            duration: 0.95,
-            ease: 'power3.inOut',
-            onUpdate: () => { applyClip(); pinScrubbed(); },
-            onComplete: finishReveal,
-          });
-        } else {
-          // Works/Contact deep reload: flat fade (their bg isn't dark).
-          gsap.to(heldLoader, {
-            autoAlpha: 0,
-            duration: 0.45,
-            ease: 'power2.out',
-            onComplete: finishReveal,
-          });
-        }
+
+    if (whiteIris) {
+      // Keep the cursor hidden for the whole collapse — the shrink is the ONLY
+      // thing on screen (no dot of any colour). Restored on finishReveal.
+      document.body.classList.add('white-iris-reveal');
+      // Dark second-section/bridge reload: a PURE, smooth light-iris collapse toward
+      // the cursor point — NOTHING else. No loader-cursor-handoff (that forced a
+      // solid dark cursor dot at the center = the "black iris that turns white" as
+      // its difference-blend kicked in), and NO per-frame ScrollTrigger work inside
+      // the tween (that stuttered). Pin the settled section behind the cover for a
+      // few frames first, then run one clean clip-path circle shrink and hand off.
+      let f = 0;
+      const runShrink = () => {
+        const startR = Math.ceil(Math.hypot(window.innerWidth, window.innerHeight)) + 8;
+        const clip = { r: startR };
+        const applyClip = () => {
+          const c = `circle(${clip.r}px at ${whiteIris.x}px ${whiteIris.y}px)`;
+          gsap.set(heldLoader, { clipPath: c, webkitClipPath: c });
+        };
+        applyClip();
+        gsap.to(clip, {
+          r: 0,
+          duration: 1.0,
+          ease: 'power2.inOut',
+          onUpdate: applyClip,
+          onComplete: finishReveal,
+        });
+      };
+      const hold = () => { pinScrubbed(); if (++f < 6) requestAnimationFrame(hold); else runShrink(); };
+      requestAnimationFrame(hold);
+    } else {
+      // Works/Contact deep reload: cursor handoff + flat fade (their bg isn't dark).
+      const cur = (typeof getReloadLoaderCursorTarget === 'function') ? getReloadLoaderCursorTarget() : null;
+      const cursorEl = document.querySelector('.cursor');
+      if (cur && cursorEl) {
+        document.body.classList.add('loader-cursor-handoff');
+        gsap.set(cursorEl, { x: cur.x, y: cur.y, opacity: 1, scaleX: 1, scaleY: 1, rotation: 0 });
       }
-      if (frame < 42) requestAnimationFrame(reveal);
-    };
-    requestAnimationFrame(reveal);
+      let frame = 0;
+      let fading = false;
+      const reveal = () => {
+        pinScrubbed();
+        frame += 1;
+        if (!fading && frame >= 6) {
+          fading = true;
+          gsap.to(heldLoader, { autoAlpha: 0, duration: 0.45, ease: 'power2.out', onComplete: finishReveal });
+        }
+        if (frame < 42) requestAnimationFrame(reveal);
+      };
+      requestAnimationFrame(reveal);
+    }
   }
 
   requestAnimationFrame(() => {
