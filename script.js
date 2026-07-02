@@ -1035,14 +1035,10 @@ let settleReloadSceneState = null;
 if (!reduceMotion && window.gsap && window.ScrollTrigger) {
   gsap.registerPlugin(ScrollTrigger);
 
-  // --- Mobile: make pinned scroll behave on touch ---
-  // Phones fire scroll events while the address bar shows/hides, which resizes
-  // the viewport and makes pinned ScrollTriggers recalculate mid-scroll — this
-  // was the "possessed" jumping / snap-back-to-top the desktop choreography had
-  // on phones. normalizeScroll() proxies touch scrolling through GSAP (using
-  // transform-based pinning), and ignoreMobileResize stops the address-bar
-  // resize from forcing refreshes. This is what makes the desktop flow usable
-  // on touch.
+  // Mobile: the address bar showing/hiding resizes the viewport and makes pinned
+  // triggers recalc mid-scroll (the old "possessed" jumping). normalizeScroll
+  // proxies touch through GSAP and ignoreMobileResize ignores that resize — this
+  // is what makes the pinned flow usable on touch.
   if (isMobile) {
     ScrollTrigger.config({ ignoreMobileResize: true });
     ScrollTrigger.normalizeScroll(true);
@@ -1513,15 +1509,9 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     const isPreviewReady = isPhoneViewport
       ? raw >= IRIS_PREVIEW_RAW
       : self.progress >= selectedWorksPreviewVisibleProgress;
-    // The bridge IS the big black iris mask (with its text) that shrinks to
-    // reveal the white Selected Works. While that mask still dominates the
-    // screen the cursor sits over black, so its difference-blend already reads
-    // white — leave it alone. Only force the solid dark cursor once Selected
-    // Works has visually arrived (preview gate: mask shrunk small enough to
-    // clear the project rows) and before the work/preview cursor states take
-    // over at interactive. Previously this fired at `raw > 0`, flipping the
-    // cursor dark the instant the iris began shrinking — i.e. while the user
-    // was still looking at the dark bridge.
+    // Only flip the cursor dark once Works has actually arrived (preview gate), not
+    // the moment the iris starts shrinking — over the black bridge the difference
+    // blend already reads white, so leave it be until then.
     document.body.classList.toggle('cursor-works-incoming', isPreviewReady && !isInteractive);
     const isVisuallyHandedOff = raw >= IRIS_CURSOR_HANDOFF_RAW;
     const darkCursorFade = clampIris((self.progress - 0.405) / 0.12);
@@ -2562,23 +2552,11 @@ function applyInitialScroll() {
     }
   }
 
-  // "It thinks I'm still in the bridge." The iris reveals Selected Works well
-  // before the master pin ends (mask starts opening ~progress 0.79, Works is
-  // visibly there by ~0.91) — so the whole band from there to ms.end LOOKS like
-  // Works but its scroll value still scrubs the dark bridge/iris state. Reloading
-  // in that band restores into the pin and flashes the bridge (pinScrubbed below
-  // snaps the timeline past that flash). Snap those reloads to clean Works.
-  //
-  // CRITICAL: land JUST INSIDE the master pin (ms.end - 4), NOT past it. At
-  // ms.end-4 the master progress is ~0.999 → the iris is fully handed off (mask
-  // hidden, Works clean and interactive) — same visual as landing past ms.end.
-  // BUT ms.end coincides with the horizontal pin's start (hs.start): landing PAST
-  // it means the first scroll-back has to cross that stacked-pin boundary, where
-  // Lenis's smooth scroll skips ~1400px in one frame — the master progress snaps
-  // 1→0.75 and the reverse iris HARD-CUTS instead of growing ("cursor grows into
-  // the bridge" is gone). Landing inside keeps the whole scroll-back within the
-  // master pin, so the iris scrubs open smoothly. Contact is inherently past the
-  // boundary and stays at its stored position.
+  // Works-band reloads land JUST INSIDE the master pin (ms.end - 4), not past it.
+  // Same look (iris handed off, Works clean) but scrolling back stays inside the
+  // pin. Land past ms.end and the first scroll-back crosses the master/horizontal
+  // seam cold — Lenis skips ~1400px there and the reverse iris hard-cuts. Contact
+  // is past the seam by nature, so it keeps its stored position.
   const deepCursorReload = (typeof getReloadLoaderCursorTarget === 'function') && !!getReloadLoaderCursorTarget();
   if (ms && (deepCursorReload || hash === '#works') && y < ms.end + 24) {
     y = Math.round(ms.end - 4);
@@ -2589,11 +2567,9 @@ function applyInitialScroll() {
   } else {
     window.scrollTo(0, y);
   }
-  // Force the SMOOTH-scrubbed pinned timelines (scrub 1.1/1) straight to their
-  // scroll target. After a jump they otherwise lerp there over ~1s, passing
-  // through the dark bridge state — the "half-black bridge blink" seen as the
-  // cover fades. A single set gets overridden by the scrub on the next tick, so
-  // we re-pin EVERY FRAME through the whole reveal below.
+  // Snap the scrubbed pins to their target. Otherwise scrub 1.1 lerps there over
+  // ~1s and flashes the dark bridge as the cover fades — so we re-pin every frame
+  // through the reveal below.
   const pinScrubbed = () => {
     if (!window.ScrollTrigger) return;
     ['hero-transition', 'horizontal-scroll'].forEach((id) => {
@@ -2605,18 +2581,10 @@ function applyInitialScroll() {
   };
   if (window.ScrollTrigger) { ScrollTrigger.update(); pinScrubbed(); }
 
-  // RELOAD SCROLL-FREEZE GUARD. After the jump above, the master pin's progress
-  // can settle at ~0.99 instead of exactly 1, so its last onUpdate lands in the
-  // "bridge" branch — which leaves .heroToSection2Scene as a FIXED, full-viewport,
-  // pointer-events:auto underlay (is-section3-underlay) sitting on top of Works /
-  // Contact. That fixed overflow:hidden layer SWALLOWS every wheel event, so the
-  // page is frozen and the reverse-iris ("cursor grows into the bridge") can never
-  // play because you can't scroll back at all. Re-run ONLY the scroll-derived
-  // scene/handoff renderer (not a full ScrollTrigger.refresh — that re-invalidates
-  // the .to tweens and blanks About/bridge) for a short burst so the scene settles
-  // to match the real final progress (past the iris -> z-index 0, non-fixed,
-  // interactive). Idempotent and correct for any landing (a genuine bridge reload
-  // just re-applies the bridge state, which scrolls fine).
+  // The jump can settle the master at ~0.99, which leaves the scene as a fixed,
+  // wheel-eating underlay on top of Works/Contact — page frozen. Re-run just the
+  // scroll-derived scene renderer for a few frames to settle it. (A full
+  // ScrollTrigger.refresh would blank About/bridge, so don't.)
   if (typeof settleReloadSceneState === 'function') {
     let settleFrames = 0;
     const settle = () => {
@@ -2643,14 +2611,10 @@ function applyInitialScroll() {
     };
 
     if (whiteIris) {
-      // Cursor stays hidden the whole time via html.reload-white-iris (set before
-      // first paint); nothing on screen but the smooth light collapse.
-      // Dark second-section/bridge reload: a PURE, smooth light-iris collapse toward
-      // the cursor point — NOTHING else. No loader-cursor-handoff (that forced a
-      // solid dark cursor dot at the center = the "black iris that turns white" as
-      // its difference-blend kicked in), and NO per-frame ScrollTrigger work inside
-      // the tween (that stuttered). Pin the settled section behind the cover for a
-      // few frames first, then run one clean clip-path circle shrink and hand off.
+      // Dark-section reload: cursor stays hidden the whole time (html.reload-white-iris),
+      // so it's nothing but a clean clip-path collapse toward the cursor — no dot, and
+      // no per-frame ScrollTrigger work in the tween (both of those looked broken).
+      // Pin the settled section for a few frames behind the cover, then shrink.
       let f = 0;
       const runShrink = () => {
         const startR = Math.ceil(Math.hypot(window.innerWidth, window.innerHeight)) + 8;
