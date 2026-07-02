@@ -3853,7 +3853,15 @@ if (!reduceMotion && !isMobile && window.gsap) {
     targetX = w.x; targetY = w.y;
   }, { passive: true });
 
+  // Render on demand. The old loop drew the (usually invisible) plane every
+  // frame forever — a constant WebGL draw that ran the whole time the page was
+  // open, not just while hovering a project, which is exactly the kind of thing
+  // a weak GPU chokes on in Selected Works. Now we only draw while a preview is
+  // actually visible or fading; when idle the tick is just a cheap early-out.
+  renderer.render(scene, camera); // one clear so the canvas starts transparent
   const tick = () => {
+    requestAnimationFrame(tick);
+    if (!isHovering && uniforms.uAlpha.value <= 0.001) return;
     curX += (targetX - curX) * FOLLOW_LERP;
     curY += (targetY - curY) * FOLLOW_LERP;
     plane.position.x = curX;
@@ -3865,7 +3873,6 @@ if (!reduceMotion && !isMobile && window.gsap) {
       THREE.MathUtils.clamp(-dy, -OFFSET_CLAMP, OFFSET_CLAMP) * OFFSET_TO_LOCAL,
     );
     renderer.render(scene, camera);
-    requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
 

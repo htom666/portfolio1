@@ -269,7 +269,6 @@ body.is-menu-open .menu-btn { opacity: 0; pointer-events: none; }
   text-transform: uppercase;
   color: var(--ink);
   background: var(--bg);
-  backdrop-filter: blur(4px);
 }
 .avail-badge em { font-style: normal; color: var(--mute); margin: 0 2px; }
 .avail-dot {
