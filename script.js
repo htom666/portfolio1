@@ -51,9 +51,9 @@ const getReloadLoaderCursorTarget = () => {
     return null;
   }
 };
-// WHITE-IRIS reload: when the reload lands in the DARK middle band — the second
+// WHITE-IRIS reload: when the reload lands in the DARK middle band, the second
 // section + bridge, which render fully black (~progress 0.4–0.87 ≈ [2.4, 5.2]·vh,
-// i.e. below the deep Works/Contact threshold and above the cream hero) — the
+// i.e. below the deep Works/Contact threshold and above the cream hero), the
 // loader is inverted to a LIGHT cover that necks DOWN into a light iris at the
 // cursor, so the shrink reads against the black section. (A dark cover there is
 // invisible, dark-on-dark.) Returns the cursor point to collapse toward, or null.
@@ -258,7 +258,7 @@ class WordStage {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(34, 1, 0.1, 1000);
     // About models (blueprint/structure/depth) sit further back so the model has
-    // breathing room in frame — it rotates/floats with the cursor and was being
+    // breathing room in frame, it rotates/floats with the cursor and was being
     // clipped at the canvas edge when filling the frame. perception/space (bridge)
     // are framed tighter on purpose and stay as they were.
     this.camera.position.z =
@@ -297,7 +297,7 @@ class WordStage {
     this.root.addEventListener('mouseenter', () => { this.userHovering = true; this.enter(); });
     this.root.addEventListener('mousemove', (event) => this.move(event));
     this.root.addEventListener('mouseleave', () => { this.userHovering = false; this.leave(); });
-    // Touch has no hover, so tap to reveal for a beat — lets phone users explore.
+    // Touch has no hover, so tap to reveal for a beat, lets phone users explore.
     this.root.addEventListener('pointerup', (event) => {
       if (event.pointerType === 'touch') this.peek(2800);
     });
@@ -442,7 +442,7 @@ class WordStage {
       return `${url}${joiner}v=${encodeURIComponent(this.modelVersion)}`;
     });
 
-    // Lighting — Lambert needs lights to render anything but black.
+    // Lighting, Lambert needs lights to render anything but black.
     const ambient = new THREE.AmbientLight(0xffffff, 0.55);
     const hemi    = new THREE.HemisphereLight(0xfff5e0, 0x1a1a1a, 0.55);
     const key     = new THREE.DirectionalLight(0xffffff, 0.95);
@@ -459,7 +459,7 @@ class WordStage {
         const root = new THREE.Group();
         gltf.scene.updateMatrixWorld(true);
 
-        // Solid fill — readable face form. Cream Lambert for soft shading
+        // Solid fill, readable face form. Cream Lambert for soft shading
         // against the dark page background.
         const fillMat = new THREE.MeshLambertMaterial({
           color: 0xf1e8dc,
@@ -468,7 +468,7 @@ class WordStage {
           side: THREE.DoubleSide,
           depthWrite: true,
         });
-        // Wireframe overlay — denser than before (1° threshold = effectively
+        // Wireframe overlay, denser than before (1° threshold = effectively
         // every triangle edge). Faint cream lines layered on top of the fill.
         const wireMat = new THREE.LineBasicMaterial({
           color: 0xfff5e0,
@@ -501,7 +501,7 @@ class WordStage {
         });
 
         if (!root.children.length) {
-          console.warn('[PERCEPTION MODEL] no mesh geometry in GLTF — nothing to render.');
+          console.warn('[PERCEPTION MODEL] no mesh geometry in GLTF, nothing to render.');
           return;
         }
 
@@ -518,12 +518,12 @@ class WordStage {
 
         // Apply scale first, then translate by -center * scale so the
         // geometric center lands at world origin. (Group.scale doesn't scale
-        // its own position — only its children — so the offset must be
+        // its own position, only its children, so the offset must be
         // pre-multiplied by scale to land correctly.)
         root.scale.setScalar(scale);
         root.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
 
-        // Visual offset — face models bias high because the cranium dominates
+        // Visual offset, face models bias high because the cranium dominates
         // the bbox top. Nudge the whole root down a hair so eyes/nose land
         // closer to the canvas vertical center. Anchored to TARGET so it
         // doesn't drift when models change.
@@ -559,7 +559,7 @@ class WordStage {
     this.spaceRoom = new THREE.Group();
     this.core.add(this.spaceRoom);
 
-    // An infinite one-point-perspective corridor — "the geometry of space": a
+    // An infinite one-point-perspective corridor, "the geometry of space": a
     // stream of nested wireframe frames converging to a vanishing point that you
     // slowly fly through (presence + the geometry of perceived space, per the
     // sentence). Framed on the z-axis, centred with margin in the 2.18:1 reveal.
@@ -784,7 +784,7 @@ const loaderDone = new Promise((resolve) => {
 
   // Clean minimal preloader: a big light percentage counts up on a near-black
   // field; then the dark field necks DOWN through a circular clip until it is
-  // exactly the hero's dark sphere — the curtain becomes the circle, continuous
+  // exactly the hero's dark sphere, the curtain becomes the circle, continuous
   // dark mass the whole way, so there's no jump.
   const coverRadius = () => {
     const x = window.innerWidth / 2, y = window.innerHeight / 2;
@@ -808,10 +808,10 @@ const loaderDone = new Promise((resolve) => {
   if (isWhiteIrisReload) document.documentElement.classList.add('reload-white-iris');
   // Deep reload (landing in Works/Contact): the page is clamped at scroll 0 for
   // the whole loader, so shrinking the curtain here would uncover the HERO (first
-  // section) — the "first section + black rectangle flash". Instead, for a deep
+  // section), the "first section + black rectangle flash". Instead, for a deep
   // reload we DON'T shrink or fade during the loader: the curtain stays a full
   // black cover, the scroll jumps to Works/Contact behind it (applyInitialScroll,
-  // after is-loading drops), and only THEN does the curtain fade — so the hero is
+  // after is-loading drops), and only THEN does the curtain fade, so the hero is
   // never revealed. Normal loads keep the shrink-to-hero-ball intro.
   const isDeepReloadLoader = shrinkToReloadCursor() || isWhiteIrisReload;
   const clipState = {
@@ -820,7 +820,7 @@ const loaderDone = new Promise((resolve) => {
     r: isDeepReloadLoader ? viewportCoverRadius() : coverRadius(),
   };
   const setClip = () => {
-    // Deep reload never shrinks — keep a full-rectangle cover (clip-path: none) so
+    // Deep reload never shrinks, keep a full-rectangle cover (clip-path: none) so
     // it ALWAYS fills the viewport regardless of size/resize. A sized circle could
     // fall short of the edges if the viewport differs from load time ("half-black
     // screen"). Normal loads use the circle so the shrink-to-hero-ball can play.
@@ -843,7 +843,7 @@ const loaderDone = new Promise((resolve) => {
   // digits physically tick like a mechanical counter. The digits sit FLUSH-LEFT
   // for 0-99 (the hundreds column is collapsed to width 0); over the final counts
   // the hundreds "1" rolls up AND its column widens in, so the tens/units slide
-  // over just once at the very end — a gentle carry, not a pop.
+  // over just once at the very end, a gentle carry, not a pop.
   let odoStrips = null;
   let odoHundredsCol = null;
   if (pct) {
@@ -900,10 +900,10 @@ const loaderDone = new Promise((resolve) => {
       document.body.classList.remove('loader-cursor-handoff');
       // Refresh after the loader so pins are recomputed on the settled layout.
       // is-loading is already dropped but the scroll is still 0 (progress 0), so
-      // this is safe — no re-pin at progress 1.
+      // this is safe, no re-pin at progress 1.
       if (window.ScrollTrigger) ScrollTrigger.refresh();
       // Normal load: remove the curtain now (the shrink already revealed the hero).
-      // Deep reload: KEEP the curtain covering — applyInitialScroll jumps to
+      // Deep reload: KEEP the curtain covering, applyInitialScroll jumps to
       // Works/Contact behind it, then fades it, so the hero is never uncovered.
       if (!isDeepReloadLoader) loader.remove();
       resolveLoader();
@@ -913,7 +913,7 @@ const loaderDone = new Promise((resolve) => {
   // counter materialises in: blur-to-focus + fade + gentle rise
   tl.to(countEl, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 1.1, ease: 'power2.out' }, 0.1);
 
-  // count 0 -> 100 — not a robotic ramp. Real loading moves in bursts with little
+  // count 0 -> 100, not a robotic ramp. Real loading moves in bursts with little
   // stalls and a slow crawl into the finish, so step it: quick jumps, tiny holds
   // between them, then a lingering ease up to 100. (~2.4s total, so the downstream
   // beats below are unchanged.)
@@ -941,7 +941,7 @@ const loaderDone = new Promise((resolve) => {
   // scroll 0. The bridge reverse stays correct via the .fromTo tweens.
 
   // Normal load only: neck the dark field down into the hero sphere (one smooth
-  // circular morph), then fade off. Deep reloads SKIP this — the curtain stays a
+  // circular morph), then fade off. Deep reloads SKIP this, the curtain stays a
   // full cover and is faded later by applyInitialScroll, after the scroll has
   // jumped to Works/Contact, so the hero is never uncovered.
   if (!isDeepReloadLoader) {
@@ -979,7 +979,7 @@ setTimeout(() => {
 /* ---------- 1. Smooth-scroll ---------- */
 let lenis;
 // Lenis on touch (smoothTouch:false) doesn't reliably emit scroll events, which
-// left ScrollTrigger un-updated on phones — the hero pin never released and the
+// left ScrollTrigger un-updated on phones, the hero pin never released and the
 // works/about sections never revealed. Use native scroll on mobile; ScrollTrigger
 // drives off the native scroll listener there.
 const canUseLenis = !reduceMotion && window.Lenis && !isMobile;
@@ -1037,7 +1037,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
 
   // Mobile: the address bar showing/hiding resizes the viewport and makes pinned
   // triggers recalc mid-scroll (the old "possessed" jumping). normalizeScroll
-  // proxies touch through GSAP and ignoreMobileResize ignores that resize — this
+  // proxies touch through GSAP and ignoreMobileResize ignores that resize, this
   // is what makes the pinned flow usable on touch.
   if (isMobile) {
     ScrollTrigger.config({ ignoreMobileResize: true });
@@ -1119,7 +1119,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
   const selectedWorksReadyProgress = 0.51 + 0.49 * section3ShrinkPhaseStart;
   const shrinkMouseFollowProgress = 0.51 + 0.49 * shrinkMouseFollowPhaseStart;
   const bridgeInteractiveProgress = 0.66;
-  // Preview *visibility* gate — fires when the black mask is small enough that
+  // Preview *visibility* gate, fires when the black mask is small enough that
   // it no longer covers the project rows (mask scale ≈ 0.05 at this point).
   // Earlier than full handoff so the preview feels available as soon as
   // Selected Works visually arrives, but late enough that the preview never
@@ -1140,7 +1140,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
   // position from before the reload. The iris/mask and cursor follow mouseX/mouseY;
   // without this they default to screen-centre (the mouse hasn't moved yet), so
   // scrolling back up to the bridge grew the reveal from the middle while the real
-  // cursor sat elsewhere — the "cross stays put, then a circle booms in" scuff.
+  // cursor sat elsewhere, the "cross stays put, then a circle booms in" scuff.
   const reloadCursorOrigin = (typeof getReloadLoaderCursorTarget === 'function') ? getReloadLoaderCursorTarget() : null;
   let mouseX = Number.isFinite(initialProjectReturnOrigin?.x) ? initialProjectReturnOrigin.x
              : Number.isFinite(reloadCursorOrigin?.x) ? reloadCursorOrigin.x
@@ -1313,7 +1313,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     transitionScene?.classList.toggle('is-section3-handoff-complete', complete);
     setTransitionBlockersInactive(complete);
     setSection2ContentPointer(!complete);
-    // Safety net only — actual gating is done in onUpdate against the dedicated
+    // Safety net only, actual gating is done in onUpdate against the dedicated
     // mask-clear threshold so the preview becomes available much earlier than
     // full handoff (which is at master progress 0.995).
     if (complete) setSelectedWorksPreviewVisibleReady(true, 'handoff complete');
@@ -1510,7 +1510,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       ? raw >= IRIS_PREVIEW_RAW
       : self.progress >= selectedWorksPreviewVisibleProgress;
     // Only flip the cursor dark once Works has actually arrived (preview gate), not
-    // the moment the iris starts shrinking — over the black bridge the difference
+    // the moment the iris starts shrinking, over the black bridge the difference
     // blend already reads white, so leave it be until then.
     document.body.classList.toggle('cursor-works-incoming', isPreviewReady && !isInteractive);
     const isVisuallyHandedOff = raw >= IRIS_CURSOR_HANDOFF_RAW;
@@ -1526,7 +1526,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     });
 
     if (isVisuallyHandedOff) {
-      // Works is fully in — let the .is-section3-handoff-complete class drop the
+      // Works is fully in, let the .is-section3-handoff-complete class drop the
       // scene to z-index 0 (behind/under Works so Works is interactive).
       if (transitionScene) transitionScene.style.zIndex = '';
       { const sp = getTransitionPinSpacer(); if (sp) sp.style.zIndex = ''; }
@@ -1551,13 +1551,13 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       // Bridge/iris range: the mask must be ABOVE Works (z-index 1) so its grow is
       // VISIBLE. On a reload into Works/Contact the .is-section3-handoff-complete
       // class (scene z-index 0) can linger into the scroll-back, leaving the mask
-      // growing BEHIND Works (invisible — "cursor-grows-into-the-bridge is gone").
+      // growing BEHIND Works (invisible, "cursor-grows-into-the-bridge is gone").
       // Force the scene above Works for the whole bridge range; released above/below.
       if (transitionScene) transitionScene.style.zIndex = '6';
       // CRITICAL: the scene's z-index only counts INSIDE its pin-spacer's stacking
       // context, so it beats Works (z-index 1) only if the SPACER is also above
       // Works. After a CONTACT reload ScrollTrigger leaves the scene's pin-spacer at
-      // z-index 0 (below Works) — so the mask grows but stays buried and the iris is
+      // z-index 0 (below Works), so the mask grows but stays buried and the iris is
       // invisible on scroll-back (a Works reload leaves the spacer at 3, which is why
       // that case already works). Lift the spacer for the whole iris range.
       { const sp = getTransitionPinSpacer(); if (sp) sp.style.zIndex = '6'; }
@@ -1616,7 +1616,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
 
   // Expose the scroll-derived scene/handoff renderer to the reload path so it can
   // re-settle the scene state after a jump (kills the fixed wheel-swallowing
-  // "bridge" underlay that otherwise freezes the page — see applyInitialScroll).
+  // "bridge" underlay that otherwise freezes the page, see applyInitialScroll).
   settleReloadSceneState = () => {
     const st = window.ScrollTrigger ? ScrollTrigger.getById('hero-transition') : null;
     if (st) renderScrollDrivenIris(st);
@@ -1688,7 +1688,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
         } else {
           deactivateExitCursor();
         }
-          // Crossed back through the iris reverse threshold — reset to start.
+          // Crossed back through the iris reverse threshold, reset to start.
         renderScrollDrivenIris(self);
       },
 
@@ -1781,7 +1781,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     masterTl.to(section2Bridge,
       { autoAlpha: 1, ease: 'power2.out', duration: 26 }, section2BridgeInAt);
     // fromTo (not to) with explicit starts (matching the CSS: opacity 0, y 8) so
-    // the text renders correctly when the playhead is JUMPED here — e.g. a reload
+    // the text renders correctly when the playhead is JUMPED here, e.g. a reload
     // in Selected Works lands at progress 1 without these positions ever playing,
     // and a plain .to() then can't reconstruct its start on the scrub back, so the
     // bridge text stayed invisible ("text disappears, then boom bridge").
@@ -1800,7 +1800,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
   }
 
   // One-time auto "peek" of the interactive word-morphs as About and the Bridge
-  // first scroll into view, so visitors discover them without hovering — and so
+  // first scroll into view, so visitors discover them without hovering, and so
   // touch users, who have no hover at all, see the effect at least once. Guarded
   // so it plays only the first time the playhead crosses (scrubbing back/forth
   // won't replay it); a real hover/tap mid-peek takes over cleanly.
@@ -2006,7 +2006,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
         document.body.classList.add('hero-intro-started');
 
         // Deep reload (curtain shrank to the cursor, not the hero): the hero is
-        // off-screen up top, so DON'T play the bloom/name intro — that animation
+        // off-screen up top, so DON'T play the bloom/name intro, that animation
         // firing at scroll 0 is the "black flickering ball". Snap the hero to its
         // resting state instead, so it's correct if the user scrolls back up.
         if (getReloadLoaderCursorTarget()) {
@@ -2053,7 +2053,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
         }
       };
 
-      // Fire on the loader handoff, but never depend on it alone — if the loader
+      // Fire on the loader handoff, but never depend on it alone, if the loader
       // intro is delayed (e.g. tab loaded unfocused) the reveal still plays.
       loaderDone.then(revealHero);
       setTimeout(() => {
@@ -2135,7 +2135,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       };
 
       // Static hero state. The pinned zoom-to-black timeline used to live here
-      // but it pinned the hero scene and hid the about/works on phones — removed.
+      // but it pinned the hero scene and hid the about/works on phones, removed.
       // The hero is now a plain 100svh section the user scrolls past.
       gsap.set(heroOverlayLayer, { autoAlpha: 1 });
       gsap.set(heroVeil, { autoAlpha: 0 });
@@ -2154,7 +2154,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     setupMobileHeroZoom();
 
     /* ---- Mobile scroll reveals (IntersectionObserver) ----
-       Reliable, native rise+fade as each piece enters the viewport — mimics the
+       Reliable, native rise+fade as each piece enters the viewport, mimics the
        desktop reveals without depending on ScrollTrigger/Lenis (which were flaky
        on touch). Inline styles beat any CSS reveal states (e.g. the bridge). */
     const revealGroups = [
@@ -2183,8 +2183,8 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       el.style.transform = 'none';
     };
     // Native scroll-driven reveal: when an element rises into the lower part of
-    // the viewport, it fades/rises in. Plain scroll events — no ScrollTrigger,
-    // no IntersectionObserver timing quirks — so it can't silently fail.
+    // the viewport, it fades/rises in. Plain scroll events, no ScrollTrigger,
+    // no IntersectionObserver timing quirks, so it can't silently fail.
     const checkReveal = () => {
       const vh = window.innerHeight || 800;
       for (const el of revealEls) {
@@ -2203,7 +2203,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     window.addEventListener('load', () => setTimeout(() => revealEls.forEach(showEl), 12000));
 
     /* ---- Hero pin + "ball grows" (desktop-style overlap) ----
-       The hero is held at the top for one viewport via a transform (a JS pin —
+       The hero is held at the top for one viewport via a transform (a JS pin -
        sticky was unreliable here), the sphere scales up and the name fades, and
        the dark About (z-index 2) slides UP over the growing black hole. */
     const heroLayerM  = document.querySelector('.heroOverlayLayer');
@@ -2240,7 +2240,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
    Runs once the loader is done (so the ScrollTriggers exist and the page is
    covered while we move). Resolves an incoming #works/#contact to a real
    scroll position instead of a broken native anchor jump, and otherwise
-   guarantees we start at the hero — fixing the "refresh jumps to section 2"
+   guarantees we start at the hero, fixing the "refresh jumps to section 2"
    and "back to Selected Works corrupts the horizontal scroll" bugs. */
 let initialScrollApplied = false;
 let projectReturnRevealPlayed = false;
@@ -2555,7 +2555,7 @@ function applyInitialScroll() {
   // Works-band reloads land JUST INSIDE the master pin (ms.end - 4), not past it.
   // Same look (iris handed off, Works clean) but scrolling back stays inside the
   // pin. Land past ms.end and the first scroll-back crosses the master/horizontal
-  // seam cold — Lenis skips ~1400px there and the reverse iris hard-cuts. Contact
+  // seam cold, Lenis skips ~1400px there and the reverse iris hard-cuts. Contact
   // is past the seam by nature, so it keeps its stored position.
   const deepCursorReload = (typeof getReloadLoaderCursorTarget === 'function') && !!getReloadLoaderCursorTarget();
   if (ms && (deepCursorReload || hash === '#works') && y < ms.end + 24) {
@@ -2568,7 +2568,7 @@ function applyInitialScroll() {
     window.scrollTo(0, y);
   }
   // Snap the scrubbed pins to their target. Otherwise scrub 1.1 lerps there over
-  // ~1s and flashes the dark bridge as the cover fades — so we re-pin every frame
+  // ~1s and flashes the dark bridge as the cover fades, so we re-pin every frame
   // through the reveal below.
   const pinScrubbed = () => {
     if (!window.ScrollTrigger) return;
@@ -2582,7 +2582,7 @@ function applyInitialScroll() {
   if (window.ScrollTrigger) { ScrollTrigger.update(); pinScrubbed(); }
 
   // The jump can settle the master at ~0.99, which leaves the scene as a fixed,
-  // wheel-eating underlay on top of Works/Contact — page frozen. Re-run just the
+  // wheel-eating underlay on top of Works/Contact, page frozen. Re-run just the
   // scroll-derived scene renderer for a few frames to settle it. (A full
   // ScrollTrigger.refresh would blank About/bridge, so don't.)
   if (typeof settleReloadSceneState === 'function') {
@@ -2596,7 +2596,7 @@ function applyInitialScroll() {
 
   // Deep-reload curtain hand-off: the loader held a FULL black cover through the
   // scroll jump. Hold it a few frames (pinning the timelines so the scrub settles
-  // behind it), then fade — still pinning each frame all the way through the fade
+  // behind it), then fade, still pinning each frame all the way through the fade
   // so no bridge/hero state can leak. Reveals the settled section directly.
   const heldLoader = document.getElementById('loader');
   if (heldLoader && window.gsap) {
@@ -2605,14 +2605,14 @@ function applyInitialScroll() {
     const finishReveal = () => {
       heldLoader.remove();
       document.body.classList.remove('loader-cursor-handoff');
-      // Release the cursor only now the reveal is done — it was hidden by
+      // Release the cursor only now the reveal is done, it was hidden by
       // html.reload-white-iris continuously since first paint (no mid-blink).
       document.documentElement.classList.remove('reload-white-iris');
     };
 
     if (whiteIris) {
       // Dark-section reload: cursor stays hidden the whole time (html.reload-white-iris),
-      // so it's nothing but a clean clip-path collapse toward the cursor — no dot, and
+      // so it's nothing but a clean clip-path collapse toward the cursor, no dot, and
       // no per-frame ScrollTrigger work in the tween (both of those looked broken).
       // Pin the settled section for a few frames behind the cover, then shrink.
       let f = 0;
@@ -2666,7 +2666,7 @@ function applyInitialScroll() {
 }
 
 // Must run AFTER the loader removes `is-loading` (body overflow:hidden during the
-// loader clamps any scrollTo to 0) AND after the web fonts have loaded — the pins
+// loader clamps any scrollTo to 0) AND after the web fonts have loaded, the pins
 // are measured from content height, so refreshing/positioning before Fraunces &
 // Inter swap in computes the wrong pin distances and lands Works/Contact on a
 // compressed layout (heading off-screen, blank page). Wait for both, then run.
@@ -2728,7 +2728,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
   });
 }
 
-/* ---------- 3. Site menu — full-screen circular reveal ---------- */
+/* ---------- 3. Site menu, full-screen circular reveal ---------- */
 (() => {
   const menuBtn = document.querySelector('.menu-btn');
   const menu = document.getElementById('site-menu');
@@ -2763,7 +2763,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
   // Source priority is driven by the SECTION first, not by element presence.
   // The hero sphere (#hero-sphere-wrap) exists in the DOM everywhere; after
   // the masterTl zoom it's huge and partially intersects the viewport even
-  // when the user is in Selected Works — so a naive "is it in viewport?"
+  // when the user is in Selected Works, so a naive "is it in viewport?"
   // check made it win in every section. Use detectSection() to gate.
   const CURSOR_SELECTOR = '.cursor';
   const getMenuRevealOrigin = (event) => {
@@ -2784,7 +2784,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
           };
         }
       }
-      // Cursor missing or zero-sized — fall through to hamburger fallback.
+      // Cursor missing or zero-sized, fall through to hamburger fallback.
     }
 
     // 2) Hero → sphere center, but ONLY when the section is actually hero.
@@ -2912,7 +2912,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
 
     }
 
-    // Overlay element introspection — confirm we have ONE menu overlay
+    // Overlay element introspection, confirm we have ONE menu overlay
     const allMenuOverlays = document.querySelectorAll('.site-menu, [id="site-menu"], [class*="menu-overlay"]');
 
     // Active GSAP tweens on this overlay
@@ -2922,13 +2922,13 @@ if (!reduceMotion && !isMobile && window.gsap) {
     const r = getCoverRadius(origin.x, origin.y);
     const fromDark = document.body.classList.contains('nav-on-dark');
 
-    // Cursor inversion — applied for Selected Works and Contact, where the
+    // Cursor inversion, applied for Selected Works and Contact, where the
     // page background is light(ish) but the menu overlay is BLACK, and the
     // cursor itself is also black so it'd disappear against the menu. The
     // class flips the cursor cream and bumps it above the menu so it's
     // visible as the reveal source. Section 2 / bridge already use the
     // cream "is-light" menu, so the black cursor is visible there without
-    // inversion. Hero uses the sphere itself as the source — no cursor.
+    // inversion. Hero uses the sphere itself as the source, no cursor.
     const invertCursor = section === 'selected-works' || section === 'contact';
     if (invertCursor) {
       const cursorEl = document.querySelector('.cursor');
@@ -2956,7 +2956,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
     if (meta) gsap.set(meta, { autoAlpha: 0, y: 16 });
     if (closeBtn) gsap.set(closeBtn, { autoAlpha: 0 });
 
-    // Now make the overlay visible — the clip is already a tiny circle at
+    // Now make the overlay visible, the clip is already a tiny circle at
     // the source, so the user sees a small dot, not a full flash.
     document.body.classList.add('is-menu-open');
     menu.classList.add('is-open');
@@ -2970,7 +2970,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
     const state = { r: origin.startR };
     let _sampleCount = 0;
     openTl = gsap.timeline();
-    // Spring-approximating ease — `expo.out` matches the FlowingMenu
+    // Spring-approximating ease, `expo.out` matches the FlowingMenu
     // standard spring (stiffness 80 / damping 22 / mass 1.0): quick visible
     // start, soft deceleration, no overshoot, no rubbery cartoon feel.
     openTl.to(state, {
@@ -3099,7 +3099,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
     switch (key) {
       case 'hero': return 0;
       case 'about': {
-        // Section 2 visible — about progress ~0.55 of master.
+        // Section 2 visible, about progress ~0.55 of master.
         if (ms) return ms.start + (ms.end - ms.start) * 0.55;
         const y = elTop('.section2ContentLayer');
         return y != null ? y : window.innerHeight * 1.5;
@@ -3170,7 +3170,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
       });
     };
 
-    // Page is fully hidden behind the open menu — scroll INSTANTLY so the
+    // Page is fully hidden behind the open menu, scroll INSTANTLY so the
     // user never sees the page travel through sections.
     if (typeof lenis !== 'undefined' && lenis && typeof lenis.scrollTo === 'function') {
       // Start lenis briefly so scrollTo can drive the position, then we'll
@@ -3221,7 +3221,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
   const pillEl = aboutWrap.querySelector('.pill');
 
   // Walk .prose and wrap text-node words in inline-block spans. Treat
-  // .word-morph as atomic — it already contains its own canvas/layer setup.
+  // .word-morph as atomic, it already contains its own canvas/layer setup.
   const wordTargets = [];
   if (eyebrowEl) wordTargets.push(eyebrowEl);
 
@@ -3251,7 +3251,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
           child.replaceWith(frag);
         } else if (child.nodeType === Node.ELEMENT_NODE) {
           if (child.classList && child.classList.contains('word-morph')) {
-            // Atomic — push as one target. Already an inline-ish wrapper.
+            // Atomic, push as one target. Already an inline-ish wrapper.
             child.style.willChange = 'transform, opacity';
             wordTargets.push(child);
           } else {
@@ -3468,7 +3468,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
 (() => {
   if (!window.gsap) return;
   // Hide Selected Works until the iris/"preview ready" handoff fires.
-  // mobile — leaving Selected Works permanently invisible. On mobile the plain
+  // mobile, leaving Selected Works permanently invisible. On mobile the plain
   const titleSpans = document.querySelectorAll('.panel--works .works-title .d-line > span');
   const rows = document.querySelectorAll('.panel--works .works-list .work-row');
   const pill = document.querySelector('.panel--works .pill--center');
@@ -3531,7 +3531,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
   if (window.gsap?.ticker) gsap.ticker.add(syncReadyState);
 })();
 
-/* ---------- 4. Selected Works hover preview — Codrops/EffectShell-style WebGL ---------- */
+/* ---------- 4. Selected Works hover preview, Codrops/EffectShell-style WebGL ---------- */
 (() => {
   if (!window.THREE) return;
   if (isMobile || window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
@@ -3583,7 +3583,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
   transparentTexture.needsUpdate = true;
   uniforms.uTexture.value = transparentTexture;
 
-  // ONE plane mesh — sized to PLANE_W x PLANE_H in world units (= pixels).
+  // ONE plane mesh, sized to PLANE_W x PLANE_H in world units (= pixels).
   const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
   const material = new THREE.ShaderMaterial({
     transparent: true,
@@ -3681,7 +3681,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
   }, { passive: true });
 
   // Render on demand. The old loop drew the (usually invisible) plane every
-  // frame forever — a constant WebGL draw that ran the whole time the page was
+  // frame forever, a constant WebGL draw that ran the whole time the page was
   // open, not just while hovering a project, which is exactly the kind of thing
   // a weak GPU chokes on in Selected Works. Now we only draw while a preview is
   // actually visible or fading; when idle the tick is just a cheap early-out.

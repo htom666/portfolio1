@@ -142,7 +142,7 @@ body.loader-cursor-handoff .cursor {
    head script (no dark flash) and mirrored in script.js for the reveal. */
 html.reload-white-iris .loader { background: var(--bg); }
 html.reload-white-iris .loader__count { color: var(--ink); }
-/* Hide the custom cursor for the ENTIRE white-iris reload — from first paint
+/* Hide the custom cursor for the ENTIRE white-iris reload, from first paint
    (this class is set by the head script before the loader renders) all the way
    through the collapse, released only when the reveal finishes (script.js drops
    the class). Continuous, so there's no gap where a black cursor can blink in
@@ -155,7 +155,7 @@ html.reload-white-iris .cursor { opacity: 0 !important; }
    give the italic glyphs room so they aren't cropped, without loosening spacing. */
 .odo__col { display: inline-block; width: 1.3ch; height: 0.9em; overflow: hidden; margin: 0 -0.15ch; }
 /* Hundreds column: collapsed to width 0 for 0-99 (digits sit flush-left), widened
-   by JS as the "1" rolls in over the final counts — a gentle one-time carry. */
+   by JS as the "1" rolls in over the final counts, a gentle one-time carry. */
 .odo__col--h { width: 0; margin: 0; }
 .odo__strip { display: block; will-change: transform; }
 .odo__cell { display: block; height: 0.9em; line-height: 0.9; text-align: center; }
@@ -532,7 +532,7 @@ body.cursor-on-dark .cursor {
   border-color: transparent;
 }
 
-/* Selected Works circle cursor: solid dark, no difference-blend — both while
+/* Selected Works circle cursor: solid dark, no difference-blend, both while
    the iris is revealing Works (cursor-works-incoming) AND once it has fully
    arrived (cursor-state-work). The difference-blend "mask" made the plain
    circle flip white whenever it passed over a dark element inside Works; this
@@ -1407,7 +1407,7 @@ body.section3-ready .work-row.is-previewed .work-arrow {
   color: oklch(0.875 0.004 90);
 }
 
-/* Only the hovered/previewed row reacts — the other rows are left completely
+/* Only the hovered/previewed row reacts, the other rows are left completely
    untouched (no dimming). The hovered row's text lights up (rules above) because
    the dark preview image sits behind it. */
 
@@ -1945,7 +1945,7 @@ html.lenis, html.lenis body { height: auto; }
   }
 
   /* Center on the VISIBLE viewport (50svh) like the liked version, not the full
-     100vh panel — on a real phone the address bar makes svh < vh, so margin:auto
+     100vh panel, on a real phone the address bar makes svh < vh, so margin:auto
      centering dropped the sphere below the visible centre. Negative-margin
      centering is transform-safe so the masterTl's scale tween still works. */
   .hero-sphere-wrap {
@@ -2364,7 +2364,7 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 
-/* (Removed) "Phone flow hard stop" — it forced Works/Contact into a vertical
+/* (Removed) "Phone flow hard stop", it forced Works/Contact into a vertical
    stack on phones, which disabled the horizontal pin. The horizontal track now
    runs on mobile too, matching the desktop flow (ball-grow -> about -> bridge
    -> iris reveal -> horizontal swipe to Contact). */
