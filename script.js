@@ -109,10 +109,6 @@ if (initialSectionHash) {
   try { history.replaceState(null, '', location.pathname + location.search); } catch (_) {}
 }
 
-// Per-frame / per-mousemove logging is off by default. Toggle to true while debugging.
-const DEBUG = false;
-const debugLog = (...args) => console.debug(...args);
-
 const installConsoleSignature = () => {
   if (window.__hatemConsoleSignature) return;
   window.__hatemConsoleSignature = true;
@@ -228,13 +224,7 @@ const setCursorState = (state = 'default') => {
   currentCursorState = state;
   cursorStateClasses.forEach((className) => document.body.classList.remove(className));
   document.body.classList.add(`cursor-state-${state}`);
-  if (DEBUG) {
-    const cursorRect = document.querySelector('.cursor')?.getBoundingClientRect();
-    DEBUG && debugLog('[CURSOR] state', state, {
-      activeController: state === 'transition' ? 'transition-mask' : 'cursor-dot',
-      size: cursorRect ? Math.round(Math.max(cursorRect.width, cursorRect.height)) : null,
-    });
-  }
+
   window.dispatchEvent(new CustomEvent('cursorstatechange', { detail: { state } }));
 };
 setCursorState('default');
@@ -510,10 +500,6 @@ class WordStage {
           root.add(lines);
         });
 
-        DEBUG && debugLog('[PERCEPTION MODEL] loaded');
-        DEBUG && debugLog('[PERCEPTION MODEL] mesh count', meshCount);
-        DEBUG && debugLog('[PERCEPTION MODEL] materials', matNames);
-
         if (!root.children.length) {
           console.warn('[PERCEPTION MODEL] no mesh geometry in GLTF — nothing to render.');
           return;
@@ -525,13 +511,10 @@ class WordStage {
         const center = new THREE.Vector3();
         box.getSize(size);
         box.getCenter(center);
-        DEBUG && debugLog('[PERCEPTION MODEL] bbox size', { x: size.x, y: size.y, z: size.z });
-        DEBUG && debugLog('[PERCEPTION MODEL] bbox center', { x: center.x, y: center.y, z: center.z });
 
         const maxDim = Math.max(size.x, size.y, size.z) || 1;
         const TARGET = 60; // world units that fit comfortably in the canvas
         const scale = TARGET / maxDim;
-        DEBUG && debugLog('[PERCEPTION MODEL] applied scale', scale);
 
         // Apply scale first, then translate by -center * scale so the
         // geometric center lands at world origin. (Group.scale doesn't scale
@@ -546,7 +529,6 @@ class WordStage {
         // doesn't drift when models change.
         const VERTICAL_OFFSET = -TARGET * 0.08; // ≈ -4.8 world units
         root.position.y += VERTICAL_OFFSET;
-        DEBUG && debugLog('[PERCEPTION MODEL] vertical offset', VERTICAL_OFFSET);
 
         root.rotation.set(-0.05, 0, 0); // slight downward tilt so eyes are visible
 
@@ -559,7 +541,6 @@ class WordStage {
         this.camera.far  = distance * 100;
         this.camera.lookAt(0, 0, 0);
         this.camera.updateProjectionMatrix();
-        DEBUG && debugLog('[PERCEPTION MODEL] camera z', distance);
 
         this.perceptionModel.add(root);
         this.model = root;
@@ -1032,12 +1013,8 @@ if (canUseLenis) {
     requestAnimationFrame(raf);
   }
 
-  DEBUG && debugLog('[SCROLL] Lenis active as global smooth scroll', {
-    duration: isMobile ? 0.82 : 1.08,
-    smoothTouch: false,
-  });
 } else if (reduceMotion) {
-  DEBUG && debugLog('[SCROLL] Lenis disabled for reduced motion');
+
 }
 
 if (window.ScrollTrigger) {
@@ -1200,30 +1177,27 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
 
   const logHandoffHitTarget = (label) => {
     const el = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2);
-    DEBUG && debugLog(`[section3 handoff hit-test] ${label}`, describeHitElement(el));
+
   };
 
   const logBridgeToSection3HitTest = () => {
     const x = window.innerWidth / 2;
     const y = window.innerHeight / 2;
     const el = document.elementFromPoint(x, y);
-    DEBUG && debugLog("[BRIDGE TO S3 HIT TEST]", el);
-    DEBUG && debugLog("[BRIDGE TO S3 HIT TEST class]", el?.className);
-    DEBUG && debugLog("[BRIDGE TO S3 HIT TEST id]", el?.id);
 
     document.querySelectorAll(".project-row, [data-project-row], .work-row").forEach((row, i) => {
       const rect = row.getBoundingClientRect();
       const rowEl = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
-      DEBUG && debugLog("[PROJECT ROW HIT AFTER BRIDGE]", i, rowEl, rowEl?.className, rowEl?.id);
+
     });
   };
 
   const logWorkRowHitTest = (label) => {
-    DEBUG && debugLog('[WORK STATE] row hit-test', label);
+
     document.querySelectorAll('.panel--works .work-row > a').forEach((link, i) => {
       const rect = link.getBoundingClientRect();
       const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
-      DEBUG && debugLog('[WORK STATE] row hit', i, describeHitElement(hit));
+
     });
   };
 
@@ -1243,25 +1217,11 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     const pinSpacer = transitionScene?.parentElement?.classList?.contains('pin-spacer')
       ? transitionScene.parentElement
       : null;
-    DEBUG && debugLog(`[SECTION 2 to 3 GEOMETRY] ${label}`, {
-      section2ExitSceneRect: rectForLog(section2ExitScene),
-      section3Rect: rectForLog(section3Real),
-      pinSpacerHeight: pinSpacer ? getComputedStyle(pinSpacer).height : null,
-      scrollTriggerStart: self?.start,
-      scrollTriggerEnd: self?.end,
-      scrollY: Math.round(self?.scroll?.() ?? window.scrollY),
-    });
+
   };
 
   const logHorizontalHandoff = (label, self) => {
-    DEBUG && debugLog(`[SECTION 3 HORIZONTAL HANDOFF] ${label}`, {
-      section3RectTop: Math.round(section3Real?.getBoundingClientRect().top ?? 0),
-      horizontalWrapperRectTop: Math.round(wrap?.getBoundingClientRect().top ?? 0),
-      horizontalTrackTransform: track ? getComputedStyle(track).transform : '',
-      section3Transform: section3Real ? getComputedStyle(section3Real).transform : '',
-      horizontalStart: self?.start ?? ScrollTrigger.getById('horizontal-scroll')?.start,
-      scrollY: Math.round(self?.scroll?.() ?? window.scrollY),
-    });
+
   };
 
   const logShrinkLayout = (label) => {
@@ -1270,21 +1230,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     const section3Style = getComputedStyle(section3Real);
     const wrapStyle = wrap ? getComputedStyle(wrap) : null;
     const trackStyle = track ? getComputedStyle(track) : null;
-    DEBUG && debugLog(`[SECTION 2 to 3 SHRINK LAYOUT] ${label}`, {
-      section3Top: Math.round(section3Real.getBoundingClientRect().top),
-      horizontalWrapperTop: Math.round(wrap?.getBoundingClientRect().top ?? 0),
-      horizontalTrackTop: Math.round(track?.getBoundingClientRect().top ?? 0),
-      section3Transform: section3Style.transform,
-      horizontalWrapperTransform: wrapStyle?.transform ?? '',
-      horizontalTrackTransform: trackStyle?.transform ?? '',
-      section3ComputedTop: section3Style.top,
-      horizontalWrapperComputedTop: wrapStyle?.top ?? '',
-      horizontalTrackComputedTop: trackStyle?.top ?? '',
-      exitCircleRect: rectForLog(maskEl),
-      exitCircleParentPosition: circleParent ? getComputedStyle(circleParent).position : '',
-      exitCircleParentHeight: circleParent ? getComputedStyle(circleParent).height : '',
-      transitionSceneHeight: getComputedStyle(transitionScene).height,
-    });
+
   };
 
   const resetHorizontalHandoffY = () => {
@@ -1302,12 +1248,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
       if (phaseProgress < sample || section2LoggedSamples.has(sample)) return;
       section2LoggedSamples.add(sample);
       const aboutWrap = section2ContentLayer.querySelector('.about-wrap');
-      DEBUG && debugLog('[SECTION 2 to 3 OPACITY]', {
-        phaseProgress: sample.toFixed(2),
-        timelineProgress: ScrollTrigger.getById('hero-transition')?.progress?.toFixed(3) ?? '',
-        section2LayerOpacity: getComputedStyle(section2ContentLayer).opacity,
-        section2ContentOpacity: aboutWrap ? getComputedStyle(aboutWrap).opacity : '',
-      });
+
     });
   };
 
@@ -1364,12 +1305,11 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     document.body.classList.toggle('selected-works-preview-visible-ready', ready);
     window.dispatchEvent(new CustomEvent('selectedworkspreviewready', { detail: { ready } }));
     if (ready) {
-      DEBUG && debugLog('[WORK READY TEST] previewVisibleReady true');
-      DEBUG && debugLog('[PREVIEW READY UX] previewVisibleReady true', label);
+
       const maskScale = maskEl ? Number(gsap.getProperty(maskEl, 'scale')) : null;
-      DEBUG && debugLog('[PREVIEW READY UX] mask scale', maskScale);
+
     } else {
-      DEBUG && debugLog('[PREVIEW READY UX] hover blocked because mask still active', label);
+
     }
   };
 
@@ -1388,7 +1328,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     transitionScene?.classList.toggle('is-section3-click-through', active);
     setTransitionBlockersInactive(active);
     setSection2ContentPointer(!active);
-    if (active && !wasActive) DEBUG && debugLog('[WORK READY TEST] clickThrough true');
+
   };
 
   const setSection3InteractiveReady = (ready) => {
@@ -1406,17 +1346,15 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     // Step 2 (reversible): pointer-events gate flips alongside readiness.
     // Visual click-through (is-section3-click-through) still controls visuals.
     transitionScene?.classList.toggle('is-section3-pointer-through', ready);
-    if (ready) DEBUG && debugLog('[WORK READY TEST] pointerThrough true');
+
     window.dispatchEvent(new CustomEvent('selectedworksready', { detail: { ready } }));
-    if (ready) DEBUG && debugLog('[WORK STATE] selectedWorksReady true', label);
-    if (ready) DEBUG && debugLog('[WORK READY TEST] selectedWorksReady true', label);
-    DEBUG && debugLog('[STRETCH FIX] ready', ready, label);
+
     if (ready) {
       if (section3Real) section3Real.style.pointerEvents = 'auto';
       section3Real?.querySelectorAll('.work-row, .work-row > a').forEach((el) => {
         el.style.pointerEvents = 'auto';
       });
-      DEBUG && debugLog('[WORK STATE] preview enabled');
+
       setCursorState('work');
     } else if (currentCursorState === 'work') {
       setCursorState('transition');
@@ -1456,20 +1394,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
     const rect = maskEl.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    DEBUG && debugLog('[EXIT CURSOR ALIGNMENT]', {
-      mouseX: Math.round(mouseX),
-      mouseY: Math.round(mouseY),
-      circleRect: {
-        left: Math.round(rect.left),
-        top: Math.round(rect.top),
-        width: Math.round(rect.width),
-        height: Math.round(rect.height),
-      },
-      circleCenterX: Math.round(centerX),
-      circleCenterY: Math.round(centerY),
-      deltaX: Math.round((centerX - mouseX) * 10) / 10,
-      deltaY: Math.round((centerY - mouseY) * 10) / 10,
-    });
+
   };
 
   const activateExitCursor = () => {
@@ -1939,7 +1864,7 @@ if (!reduceMotion && window.gsap && window.ScrollTrigger) {
         invalidateOnRefresh: true,
         anticipatePin: 1,
         onEnter(self) {
-          DEBUG && debugLog('[WORK STATE] horizontal scroll enter');
+
           resetHorizontalHandoffY();
           logHorizontalHandoff('horizontal scroll starts', self);
         },
@@ -2886,13 +2811,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
       if (cur) {
         const r = cur.getBoundingClientRect();
         if (r.width > 0 && r.height > 0) {
-          DEBUG && debugLog('[MENU DEBUG] using works cursor', true);
-          DEBUG && debugLog('[MENU DEBUG] works cursor selector', CURSOR_SELECTOR);
-          DEBUG && debugLog('[MENU DEBUG] works cursor rect', {
-            left: Math.round(r.left), top: Math.round(r.top),
-            width: Math.round(r.width), height: Math.round(r.height),
-          });
-          DEBUG && debugLog('[MENU DEBUG] hero circle rejected because not in hero');
+
           return {
             x: r.left + r.width / 2,
             y: r.top + r.height / 2,
@@ -2971,12 +2890,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
     if (section !== 'hero') {
       const cursorOrigin = getLiveCursorOrigin();
       if (cursorOrigin) {
-        DEBUG && debugLog('[MENU DEBUG] close using cursor origin', cursorOrigin.source, {
-          x: Math.round(cursorOrigin.x),
-          y: Math.round(cursorOrigin.y),
-          startR: Math.round(cursorOrigin.startR),
-          section,
-        });
+
         return cursorOrigin;
       }
     }
@@ -3012,62 +2926,37 @@ if (!reduceMotion && !isMobile && window.gsap) {
   };
 
   const openMenu = (event) => {
-    DEBUG && debugLog('[MENU DEBUG] open clicked', event ? { x: event.clientX, y: event.clientY, type: event.type } : '(no event)');
+
     if (isOpen) {
-      DEBUG && debugLog('[MENU DEBUG] open ignored — already open');
+
       return;
     }
     isOpen = true;
-    if (closeTl) { DEBUG && debugLog('[MENU DEBUG] killing in-flight closeTl'); closeTl.kill(); closeTl = null; }
+    if (closeTl) {  closeTl.kill(); closeTl = null; }
 
     // ---- Pre-flight diagnostics ----
     const section = detectSection();
-    DEBUG && debugLog('[MENU DEBUG] current section', section);
 
     // Cursor element introspection
     const cursorEl = document.querySelector('.cursor');
     const cursorFound = Boolean(cursorEl);
-    DEBUG && debugLog('[MENU DEBUG] selected works cursor found', cursorFound, cursorEl);
+
     if (cursorEl) {
       const cr = cursorEl.getBoundingClientRect();
-      DEBUG && debugLog('[MENU DEBUG] selected works cursor rect', {
-        left: Math.round(cr.left), top: Math.round(cr.top),
-        width: Math.round(cr.width), height: Math.round(cr.height),
-        cx: Math.round(cr.left + cr.width / 2), cy: Math.round(cr.top + cr.height / 2),
-      });
+
       const cs = getComputedStyle(cursorEl);
-      DEBUG && debugLog('[MENU DEBUG] cursor computed', {
-        opacity: cs.opacity, visibility: cs.visibility, display: cs.display,
-      });
+
     }
-    DEBUG && debugLog('[MENU DEBUG] body classes', Array.from(document.body.classList));
 
     // Overlay element introspection — confirm we have ONE menu overlay
     const allMenuOverlays = document.querySelectorAll('.site-menu, [id="site-menu"], [class*="menu-overlay"]');
-    DEBUG && debugLog('[MENU DEBUG] overlay element', menu);
-    DEBUG && debugLog('[MENU DEBUG] overlay element count (selector survey)', allMenuOverlays.length, allMenuOverlays);
-    DEBUG && debugLog('[MENU DEBUG] overlay clip before', getComputedStyle(menu).clipPath);
-    DEBUG && debugLog('[MENU DEBUG] overlay computed before', {
-      visibility: getComputedStyle(menu).visibility,
-      pointerEvents: getComputedStyle(menu).pointerEvents,
-      background: getComputedStyle(menu).backgroundColor,
-      zIndex: getComputedStyle(menu).zIndex,
-    });
 
     // Active GSAP tweens on this overlay
     const existingTweens = gsap.getTweensOf(menu);
-    DEBUG && debugLog('[MENU DEBUG] existing tweens on overlay', existingTweens.length, existingTweens);
 
     const origin = getMenuRevealOrigin(event);
     const r = getCoverRadius(origin.x, origin.y);
     const fromDark = document.body.classList.contains('nav-on-dark');
-    DEBUG && debugLog('[MENU DEBUG] source type', origin.source);
-    DEBUG && debugLog('[MENU DEBUG] final source type', origin.source);
-    DEBUG && debugLog('[MENU DEBUG] origin x y', { x: Math.round(origin.x), y: Math.round(origin.y) });
-    DEBUG && debugLog('[MENU DEBUG] start radius', Math.round(origin.startR));
-    DEBUG && debugLog('[MENU DEBUG] target radius', r);
-    DEBUG && debugLog('[MENU DEBUG] theme', fromDark ? 'is-light (cream)' : 'default (black)');
-    DEBUG && debugLog('[MENU DEBUG] using last section reveal logic', !fromDark && origin.source !== 'hero-circle');
 
     // Cursor inversion — applied for Selected Works and Contact, where the
     // page background is light(ish) but the menu overlay is BLACK, and the
@@ -3081,25 +2970,16 @@ if (!reduceMotion && !isMobile && window.gsap) {
       const cursorEl = document.querySelector('.cursor');
       if (cursorEl) {
         cursorEl.classList.add('is-menu-invert');
-        DEBUG && debugLog('[MENU DEBUG] cursor invert applied (.cursor → .is-menu-invert)', '| section:', section);
+
       }
     }
     if (fromDark && cursorEl) {
       cursorEl.classList.remove('is-menu-invert');
       cursorEl.classList.add('is-menu-on-light');
-      DEBUG && debugLog('[MENU DEBUG] menu cursor contrast applied is-menu-on-light | section:', section);
+
     } else if (cursorEl) {
       cursorEl.classList.remove('is-menu-on-light');
     }
-
-    DEBUG && debugLog('[MENU SOURCE] section', fromDark ? 'dark (Section 2 / bridge)' : 'light');
-    DEBUG && debugLog('[MENU SOURCE] theme', fromDark ? 'is-light (cream menu, dark text)' : 'default (black menu, cream text)');
-    DEBUG && debugLog('[MENU SOURCE] cursor selector', origin.source === 'works-cursor' ? '.cursor' : `(${origin.source})`);
-    DEBUG && debugLog('[MENU SOURCE] cursor rect', { x: Math.round(origin.x), y: Math.round(origin.y), startR: Math.round(origin.startR) });
-    DEBUG && debugLog('[MENU SOURCE] reveal start radius', Math.round(origin.startR));
-    DEBUG && debugLog('[MENU SOURCE] reveal start x y', Math.round(origin.x), Math.round(origin.y));
-    DEBUG && debugLog('[MENU SOURCE] duplicate circle removed', origin.source === 'works-cursor' || origin.source === 'hero-circle');
-    DEBUG && debugLog('[MENU] cover radius', r);
 
     // CRITICAL ORDER: pin the clip-path origin/radius and the theme class
     // BEFORE flipping visibility, so the overlay never appears unclipped or
@@ -3112,24 +2992,15 @@ if (!reduceMotion && !isMobile && window.gsap) {
     if (meta) gsap.set(meta, { autoAlpha: 0, y: 16 });
     if (closeBtn) gsap.set(closeBtn, { autoAlpha: 0 });
 
-    DEBUG && debugLog('[MENU DEBUG] overlay clip after set', getComputedStyle(menu).clipPath);
-
     // Now make the overlay visible — the clip is already a tiny circle at
     // the source, so the user sees a small dot, not a full flash.
     document.body.classList.add('is-menu-open');
     menu.classList.add('is-open');
     menu.setAttribute('aria-hidden', 'false');
 
-    DEBUG && debugLog('[MENU DEBUG] overlay clip after .is-open class', getComputedStyle(menu).clipPath);
-    DEBUG && debugLog('[MENU DEBUG] overlay computed after open', {
-      visibility: getComputedStyle(menu).visibility,
-      pointerEvents: getComputedStyle(menu).pointerEvents,
-      background: getComputedStyle(menu).backgroundColor,
-    });
-
     if (typeof lenis !== 'undefined' && lenis && typeof lenis.stop === 'function') {
       lenis.stop();
-      DEBUG && debugLog('[MENU] lenis paused');
+
     }
 
     const state = { r: origin.startR };
@@ -3146,14 +3017,11 @@ if (!reduceMotion && !isMobile && window.gsap) {
         setClipR(state.r);
         _sampleCount += 1;
         if (_sampleCount === 6 || _sampleCount === 30 || _sampleCount === 55) {
-          DEBUG && debugLog('[MENU DEBUG] overlay clip during animation', {
-            stateR: Math.round(state.r),
-            computed: getComputedStyle(menu).clipPath,
-          });
+
         }
       },
       onComplete: () => {
-        DEBUG && debugLog('[MENU DEBUG] open animation complete — final clip', getComputedStyle(menu).clipPath);
+
       },
     }, 0);
     openTl.to(links, {
@@ -3184,7 +3052,6 @@ if (!reduceMotion && !isMobile && window.gsap) {
     if (!isOpen) return;
     isOpen = false;
     if (openTl) { openTl.kill(); openTl = null; }
-    DEBUG && debugLog('[MENU] close');
 
     const origin = getMenuCloseOrigin();
     menu.style.setProperty('--menu-x', `${origin.x}px`);
@@ -3208,15 +3075,15 @@ if (!reduceMotion && !isMobile && window.gsap) {
         const cursorEl = document.querySelector('.cursor');
         if (cursorEl && cursorEl.classList.contains('is-menu-invert')) {
           cursorEl.classList.remove('is-menu-invert');
-          DEBUG && debugLog('[MENU DEBUG] cursor invert removed');
+
         }
         if (cursorEl && cursorEl.classList.contains('is-menu-on-light')) {
           cursorEl.classList.remove('is-menu-on-light');
-          DEBUG && debugLog('[MENU DEBUG] light menu cursor removed');
+
         }
         if (typeof lenis !== 'undefined' && lenis && typeof lenis.start === 'function') {
           lenis.start();
-          DEBUG && debugLog('[MENU] lenis resumed');
+
         }
         if (typeof onCloseDone === 'function') onCloseDone();
       },
@@ -3371,11 +3238,7 @@ if (!reduceMotion && !isMobile && window.gsap) {
       e.preventDefault();
       const key = link.dataset.menuTarget || 'hero';
       const targetY = resolveTarget(key);
-      DEBUG && debugLog('[MENU DEBUG] link clicked', link.textContent.trim(), 'data-menu-target=', key);
-      DEBUG && debugLog('[MENU DEBUG] target', key);
-      DEBUG && debugLog('[MENU DEBUG] target scrollY', targetY);
-      DEBUG && debugLog('[MENU DEBUG] using hidden jump', typeof lenis !== 'undefined' && lenis ? 'lenis.scrollTo immediate' : 'window.scrollTo');
-      DEBUG && debugLog('[MENU DEBUG] menu close after navigation = scheduled');
+
       navigateTo(key);
     });
   });
