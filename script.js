@@ -2712,13 +2712,14 @@ function applyInitialScroll() {
     const finishReveal = () => {
       heldLoader.remove();
       document.body.classList.remove('loader-cursor-handoff');
-      document.body.classList.remove('white-iris-reveal');
+      // Release the cursor only now the reveal is done — it was hidden by
+      // html.reload-white-iris continuously since first paint (no mid-blink).
+      document.documentElement.classList.remove('reload-white-iris');
     };
 
     if (whiteIris) {
-      // Keep the cursor hidden for the whole collapse — the shrink is the ONLY
-      // thing on screen (no dot of any colour). Restored on finishReveal.
-      document.body.classList.add('white-iris-reveal');
+      // Cursor stays hidden the whole time via html.reload-white-iris (set before
+      // first paint); nothing on screen but the smooth light collapse.
       // Dark second-section/bridge reload: a PURE, smooth light-iris collapse toward
       // the cursor point — NOTHING else. No loader-cursor-handoff (that forced a
       // solid dark cursor dot at the center = the "black iris that turns white" as
